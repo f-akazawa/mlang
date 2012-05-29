@@ -1,0 +1,197 @@
+//===--- Builtins.def - Builtin function info database ----------*- C++ -*-===//
+//
+// Copyright (C) 2010 yabin @ CGCL
+// HuaZhong University of Science and Technology, China
+//
+//===----------------------------------------------------------------------===//
+//
+// This file defines the standard builtin function database.  Users of this file
+// must define the BUILTIN macro to make use of this information.
+//
+//===----------------------------------------------------------------------===//
+
+// FIXME: This should really be a .td file, but that requires modifying tblgen.
+// Perhaps tblgen should have plugins.
+
+// The first value provided to the macro specifies the function name of the
+// builtin, and results in a mlang::builtin::BIXX enum value for XX.
+
+// The second value provided to the macro specifies the type of the function
+// (result value, then each argument) as follows:
+//  v -> void
+//  b -> boolean
+//  c -> char
+//  s -> short
+//  i -> int
+//  f -> float
+//  d -> double
+//  z -> size_t
+//  F -> constant CFString
+//  G -> id
+//  H -> SEL
+//  a -> __builtin_va_list
+//  A -> "reference" to __builtin_va_list
+//  V -> Vector, following num elements and a base type.
+//  X -> _Complex, followed by the base type.
+//  P -> FILE
+//  J -> jmp_buf
+//  SJ -> sigjmp_buf
+//  . -> "...".  This may only occur at the end of the function list.
+//
+// Types may be prefixed with the following modifiers:
+//  L   -> long (e.g. Li for 'long int')
+//  LL  -> long long
+//  LLL -> __int128_t (e.g. LLLi)
+//  S   -> signed
+//  U   -> unsigned
+//  I   -> Required to constant fold to an integer constant expression.
+//
+// Types may be postfixed with the following modifiers:
+// * -> pointer (optionally followed by an address space number)
+// & -> reference (optionally followed by an address space number)
+// C -> const
+// D -> volatile
+
+// The third value provided to the macro specifies information about attributes
+// of the function.  These must be kept in sync with the predicates in the
+// Builtin::Context class.  Currently we have:
+//  n -> nothrow
+//  r -> noreturn
+//  c -> const
+//  F -> this is a libc/libm function with a '__builtin_' prefix added.
+//  f -> this is a libc/libm function without the '__builtin_' prefix. It can
+//       be followed by ':headername:' to state which header this function
+//       comes from.
+//  p:N: -> this is a printf-like function whose Nth argument is the format
+//          string.
+//  P:N: -> similar to the p:N: attribute, but the function is like vprintf
+//          in that it accepts its arguments as a va_list rather than
+//          through an ellipsis
+//  s:N: -> this is a scanf-like function whose Nth argument is the format
+//          string.
+//  S:N: -> similar to the s:N: attribute, but the function is like vscanf
+//          in that it accepts its arguments as a va_list rather than
+//          through an ellipsis
+//  e -> const, but only when -fmath-errno=0
+//  FIXME: gcc has nonnull
+
+#if defined(BUILTIN) && !defined(LIBBUILTIN)
+#  define LIBBUILTIN(ID, RETTYPE, ARGTYPE, ATTRS, HEADER) \
+            BUILTIN(ID, RETTYPE, ARGTYPE, ATTRS)
+#endif
+
+// Standard libc/libm functions:
+BUILTIN(__builtin_atan2 , "d" ,  "dd"  , "Fnc")
+BUILTIN(__builtin_atan2f, "f", "ff"  , "Fnc")
+BUILTIN(__builtin_atan2l, "Ld", "LdLd", "Fnc")
+
+
+// Standard unary libc/libm functions with double/float/long double variants:
+BUILTIN(__builtin_acos , "d","d"  , "Fnc")
+BUILTIN(__builtin_acosf, "f","f"  , "Fnc")
+BUILTIN(__builtin_acosl, "Ld","Ld", "Fnc")
+BUILTIN(__builtin_asin , "d","d"  , "Fnc")
+BUILTIN(__builtin_asinf, "f","f"  , "Fnc")
+BUILTIN(__builtin_asinl, "Ld","Ld", "Fnc")
+BUILTIN(__builtin_atan , "d","d"  , "Fnc")
+BUILTIN(__builtin_atanf, "f","f"  , "Fnc")
+BUILTIN(__builtin_atanl, "Ld","Ld", "Fnc")
+BUILTIN(__builtin_ceil , "d","d"  , "Fnc")
+BUILTIN(__builtin_ceilf, "f","f"  , "Fnc")
+BUILTIN(__builtin_ceill, "Ld","Ld", "Fnc")
+BUILTIN(__builtin_cos , "d","d"  , "Fnc")
+BUILTIN(__builtin_cosf, "f","f"  , "Fnc")
+BUILTIN(__builtin_cosh , "d","d"  , "Fnc")
+BUILTIN(__builtin_coshf, "f","f"  , "Fnc")
+BUILTIN(__builtin_coshl, "Ld","Ld", "Fnc")
+
+// C99 complex builtins
+BUILTIN(__builtin_cabs, "d","Xd", "Fnc")
+BUILTIN(__builtin_cabsf, "f","Xf", "Fnc")
+BUILTIN(__builtin_cabsl, "Ld","XLd", "Fnc")
+BUILTIN(__builtin_cacos, "Xd","Xd", "Fnc")
+BUILTIN(__builtin_cacosf, "Xf","Xf", "Fnc")
+BUILTIN(__builtin_cacosl, "XLd","XLd", "Fnc")
+
+// FP Comparisons.
+BUILTIN(__builtin_isgreater     , "i",".", "nc")
+
+
+// C99 library functions
+// C99 stdlib.h
+LIBBUILTIN(abort, "v", "v",       "fr",    "stdlib.h")
+LIBBUILTIN(calloc, "v*","zz",        "f",     "stdlib.h")
+LIBBUILTIN(exit, "v","i",            "fr",    "stdlib.h")
+LIBBUILTIN(_Exit, "v","i",           "fr",    "stdlib.h")
+LIBBUILTIN(malloc, "v*","z",         "f",     "stdlib.h")
+LIBBUILTIN(realloc, "v*","v*z",      "f",     "stdlib.h")
+// C99 string.h
+LIBBUILTIN(memcpy, "v*","v*vC*z",    "f",     "string.h")
+LIBBUILTIN(memmove, "v*","v*vC*z",   "f",     "string.h")
+LIBBUILTIN(strcpy, "c*","c*cC*",     "f",     "string.h")
+LIBBUILTIN(strncpy, "c*","c*cC*z",   "f",     "string.h")
+LIBBUILTIN(strcat, "c*","c*cC*",     "f",     "string.h")
+LIBBUILTIN(strncat, "c*","c*cC*z",   "f",     "string.h")
+LIBBUILTIN(strxfrm, "z","c*cC*z",    "f",     "string.h")
+LIBBUILTIN(memchr, "v*","vC*iz",     "f",     "string.h")
+LIBBUILTIN(strchr, "c*","cC*i",      "f",     "string.h")
+LIBBUILTIN(strcspn, "z","cC*cC*",    "f",     "string.h")
+LIBBUILTIN(strpbrk, "c*","cC*cC*",   "f",     "string.h")
+LIBBUILTIN(strrchr, "c*","cC*i",     "f",     "string.h")
+LIBBUILTIN(strspn, "z","cC*cC*",     "f",     "string.h")
+LIBBUILTIN(strstr, "c*","cC*cC*",    "f",     "string.h")
+LIBBUILTIN(strtok, "c*","c*cC*",     "f",     "string.h")
+LIBBUILTIN(memset, "v*","v*iz",      "f",     "string.h")
+LIBBUILTIN(strerror, "c*","i",       "f",     "string.h")
+LIBBUILTIN(strlen, "z","cC*",        "f",     "string.h")
+// C99 stdio.h
+LIBBUILTIN(printf, "i","cC*.",       "fp:0:", "stdio.h")
+LIBBUILTIN(fprintf, "i","P*cC*.",    "fp:1:", "stdio.h")
+LIBBUILTIN(snprintf, "i","c*zcC*.",  "fp:2:", "stdio.h")
+LIBBUILTIN(sprintf, "i","c*cC*.",    "fp:1:", "stdio.h")
+LIBBUILTIN(vprintf, "i","cC*a",      "fP:0:", "stdio.h")
+LIBBUILTIN(vfprintf, "i",".",        "fP:1:", "stdio.h")
+LIBBUILTIN(vsnprintf, "i","c*zcC*a", "fP:2:", "stdio.h")
+LIBBUILTIN(vsprintf, "i","c*cC*a",   "fP:1:", "stdio.h")
+LIBBUILTIN(scanf, "i","cC*.",       "fs:0:", "stdio.h")
+// C99
+LIBBUILTIN(longjmp, "v","Ji",        "fr",    "setjmp.h")
+
+// Non-C library functions
+// FIXME: Non-C-standard stuff shouldn't be builtins in non-GNU mode!
+LIBBUILTIN(alloca, "v*","z",         "f",     "stdlib.h")
+// POSIX string.h
+LIBBUILTIN(stpcpy, "c*","c*cC*",     "f",     "string.h")
+LIBBUILTIN(stpncpy, "c*","c*cC*z",   "f",     "string.h")
+LIBBUILTIN(strdup, "c*","cC*",       "f",     "string.h")
+LIBBUILTIN(strndup, "c*","cC*z",     "f",     "string.h")
+// POSIX strings.h
+LIBBUILTIN(index, "c*","cC*i",       "f",     "strings.h")
+LIBBUILTIN(rindex, "c*","cC*i",      "f",     "strings.h")
+LIBBUILTIN(bzero, "v","v*z",         "f",     "strings.h")
+// POSIX unistd.h
+LIBBUILTIN(_exit, "v","i",           "fr",    "unistd.h")
+// POSIX setjmp.h
+LIBBUILTIN(_longjmp, "v","Ji",       "fr",    "setjmp.h")
+LIBBUILTIN(siglongjmp, "v","SJi",    "fr",    "setjmp.h")
+
+
+// Builtin math library functions
+LIBBUILTIN(pow, "d","dd", "fe", "math.h")
+LIBBUILTIN(powl, "Ld","LdLd", "fe", "math.h")
+LIBBUILTIN(powf, "f","ff", "fe", "math.h")
+
+LIBBUILTIN(sqrt, "d","d", "fe", "math.h")
+LIBBUILTIN(sqrtl, "Ld","Ld", "fe", "math.h")
+LIBBUILTIN(sqrtf, "f","f", "fe", "math.h")
+
+LIBBUILTIN(sin, "d","d", "fe", "math.h")
+LIBBUILTIN(sinl, "Ld","Ld", "fe", "math.h")
+LIBBUILTIN(sinf, "f","f", "fe", "math.h")
+
+LIBBUILTIN(cos, "d","d", "fe", "math.h")
+LIBBUILTIN(cosl, "Ld","Ld", "fe", "math.h")
+LIBBUILTIN(cosf, "f","f", "fe", "math.h")
+
+#undef BUILTIN
+#undef LIBBUILTIN

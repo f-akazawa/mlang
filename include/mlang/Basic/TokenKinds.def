@@ -1,0 +1,247 @@
+//===--- TokenKinds.def - mlang Token Kind Database -------------*- C++ -*-===//
+//
+// Copyright Yabin Hu @ CGCL
+// HuaZhong University of Science and Technology, China
+//
+//===----------------------------------------------------------------------===//
+//
+// This file defines the TokenKind database.  This includes normal tokens like
+// tok::ampamp (corresponding to the && token) as well as keywords for various
+// languages.  Users of this file must optionally #define the TOK, KEYWORD,
+// ALIAS, or PPKEYWORD macros to make use of this file.
+//
+//===----------------------------------------------------------------------===//
+
+#ifndef TOK
+#define TOK(X)
+#endif
+#ifndef PUNCTUATOR
+#define PUNCTUATOR(X,Y) TOK(X)
+#endif
+#ifndef KEYWORD
+#define KEYWORD(X,Y) TOK(kw_ ## X)
+#endif
+#ifndef ALIAS
+#define ALIAS(X,Y,Z)
+#endif
+#ifndef PPKEYWORD
+#define PPKEYWORD(X)
+#endif
+#ifndef ANNOTATION
+#define ANNOTATION(X) TOK(annot_ ## X)
+#endif
+
+//===----------------------------------------------------------------------===//
+// Preprocessor keywords.
+//===----------------------------------------------------------------------===//
+// Pragma Directive
+PPKEYWORD(pragma)
+
+//===----------------------------------------------------------------------===//
+// Language keywords.
+//===----------------------------------------------------------------------===//
+
+// These define members of the tok::* namespace.
+TOK(Unknown)             // Not a token.
+TOK(EoF)                 // End of file.
+TOK(EoD)                 // End of directive.
+
+// Comments.
+TOK(Comment)             // Comment (only in -E -C[C] mode)
+
+// various token types
+// generic_token : various identifiers
+TOK(Identifier) 
+TOK(RawIdentifier)      // Used only in raw lexing mode.
+
+//Char Constant
+TOK(CharConstant)      // 'a'
+
+// string_token
+TOK(StringLiteral)      // "abc" 'abc'
+
+// double_token 
+TOK(NumericConstant)
+
+// pttype_token: plot token type
+TOK(Replot)
+TOK(TwoDee)
+TOK(ThreeDee)
+
+// sym_rec_token: symbol table record token
+// used for magic transformation of end keyword,
+// i.e. "__end__"
+TOK(SymRecord)
+
+// scls_rec_token : method record, class record, package record
+TOK(SclsRecord)
+
+// meta_rec_token : meta-class record, meta-package record
+TOK(MetaRecord)
+
+// Punctuators.
+// Specific uses
+PUNCTUATOR(Asterisk,            "*")
+PUNCTUATOR(At,                  "@")
+PUNCTUATOR(Colon,               ":")
+PUNCTUATOR(Comma,               ",")
+PUNCTUATOR(LCurlyBraces,        "{")
+PUNCTUATOR(RCurlyBraces,        "}")
+PUNCTUATOR(Dot,                 ".")
+PUNCTUATOR(DotDot,              "..")
+PUNCTUATOR(DotLParentheses,     ".(")
+PUNCTUATOR(DotRParentheses,     ")")
+PUNCTUATOR(Ellipsis,            "...")
+PUNCTUATOR(ExclamationPoint,    "!")
+PUNCTUATOR(LParentheses,        "(")
+PUNCTUATOR(RParentheses,        ")")
+PUNCTUATOR(Percent,             "%")
+PUNCTUATOR(LPercentBrace,       "%{")
+PUNCTUATOR(RPercentBrace,       "%}")
+PUNCTUATOR(Semicolon,           ";")
+PUNCTUATOR(Space,               " ")
+PUNCTUATOR(Slash,               "/")
+PUNCTUATOR(BackSlash,           "\\")
+PUNCTUATOR(LSquareBrackets,     "[")
+PUNCTUATOR(RSquareBrackets,     "]")
+PUNCTUATOR(Tilde,               "~")
+PUNCTUATOR(Assignment,          "=")
+
+// CompoundAssignment operator
+PUNCTUATOR(MatPowerAssign,      "^=")
+PUNCTUATOR(MatMulAssign,        "*=")
+PUNCTUATOR(MatRDivAssign,       "/=")
+PUNCTUATOR(MatLDivAssign,       "\\=")
+PUNCTUATOR(PowerAssign,         ".^=")
+PUNCTUATOR(MulAssign,           ".*=")
+PUNCTUATOR(RDivAssign,          "./=")
+PUNCTUATOR(LDivAssign,          ".\\=")
+PUNCTUATOR(AddAssign,           "+=")
+PUNCTUATOR(SubAssign,           "-=")
+PUNCTUATOR(ShlAssign,           "<<=")
+PUNCTUATOR(ShrAssign,           ">>=")
+PUNCTUATOR(AndAssign,           "&=")
+PUNCTUATOR(OrAssign,            "|=")
+
+// Arithmetic operator
+PUNCTUATOR(DotQuote,            ".\'")
+PUNCTUATOR(DotCaret,            ".^")
+PUNCTUATOR(Quote,               "\'")
+PUNCTUATOR(Caret,               "^")
+PUNCTUATOR(DoubleAdd,           "++")
+PUNCTUATOR(DoubleSub,           "--")
+PUNCTUATOR(DotAsterisk,         ".*")
+PUNCTUATOR(DotSlash,            "./")
+PUNCTUATOR(DotBackSlash,        ".\\")
+PUNCTUATOR(Addition,            "+")
+PUNCTUATOR(Subtraction,         "-")
+PUNCTUATOR(ShiftLeft,           "<<")
+PUNCTUATOR(ShiftRight,          ">>")
+PUNCTUATOR(LessThan,            "<")
+PUNCTUATOR(LessThanOREqualTo,   "<=")
+PUNCTUATOR(GreaterThan,         ">")
+PUNCTUATOR(GreaterThanOREqualTo,">=")
+PUNCTUATOR(EqualTo,             "==")
+PUNCTUATOR(NotEqualTo,          "~=")
+PUNCTUATOR(EleWiseAND,          "&")
+PUNCTUATOR(EleWiseOR,           "|")
+PUNCTUATOR(ShortCircuitAND,     "&&")
+PUNCTUATOR(ShortCircuitOR,      "||")
+
+// Keywords.  These turn into kw_* tokens.
+// at_beginning_of_statement flag should be true.
+
+// External Source File Inclusion.
+// KEYWORD(import, KEYALL)
+
+KEYWORD(break                       , KEYALL)
+KEYWORD(case                        , KEYALL)
+KEYWORD(catch                       , KEYALL)
+KEYWORD(classdef                    , KEYALL)
+KEYWORD(continue                    , KEYALL)
+KEYWORD(else                        , KEYALL)
+KEYWORD(elseif                      , KEYALL)
+KEYWORD(end                         , KEYALL)
+KEYWORD(for                         , KEYALL)
+KEYWORD(function                    , KEYALL)
+KEYWORD(global                      , KEYALL)
+KEYWORD(if                          , KEYALL)
+KEYWORD(otherwise                   , KEYALL)
+KEYWORD(persistent                  , KEYALL)
+KEYWORD(return                      , KEYALL)
+KEYWORD(switch                      , KEYALL)
+KEYWORD(try                         , KEYALL)
+KEYWORD(while                       , KEYALL)
+
+KEYWORD(parfor                      , KEYMATLAB)
+KEYWORD(spmd                        , KEYMATLAB)
+
+KEYWORD(static                      , KEYOCTAVE)
+KEYWORD(do                          , KEYOCTAVE)
+KEYWORD(until                       , KEYOCTAVE)
+KEYWORD(unwind_protect              , KEYOCTAVE)
+// built-in id, which can be primary expression 
+KEYWORD(magic_file                  , KEYOCTAVE)
+KEYWORD(magic_line                  , KEYOCTAVE)
+KEYWORD(magic_end                   , KEYOCTAVE)
+KEYWORD(magic_tilde                 , KEYOCTAVE)
+KEYWORD(magic_colon                 , KEYOCTAVE)
+// null expression
+KEYWORD(null                        , KEYOCTAVE)
+
+// ettype_token : end flag token type
+// KEYWORD(simple_end                  , KEYOCTAVE)
+// KEYWORD(classdef_end                , KEYOCTAVE)
+// KEYWORD(events_end                  , KEYOCTAVE)
+// KEYWORD(for_end                     , KEYOCTAVE)
+// KEYWORD(parfor_end                  , KEYMATLAB)
+// KEYWORD(function_end                , KEYOCTAVE)
+// KEYWORD(if_end                      , KEYOCTAVE)
+// KEYWORD(methods_end                 , KEYOCTAVE)
+// KEYWORD(properties_end              , KEYOCTAVE)
+// KEYWORD(switch_end                  , KEYOCTAVE)
+// KEYWORD(while_end                   , KEYOCTAVE)
+// KEYWORD(try_catch_end               , KEYOCTAVE)
+// KEYWORD(unwind_protect_end          , KEYOCTAVE)
+// KEYWORD(get                         , KEYOCTAVE)
+// KEYWORD(set                         , KEYOCTAVE)
+// KEYWORD(properties                  , KEYOCTAVE)
+// KEYWORD(methods                     , KEYOCTAVE)
+// KEYWORD(events                      , KEYOCTAVE)
+
+// Alternate spelling for various tokens.  There are GCC extensions in all
+// languages, but should not be disabled in strict conformance mode.
+//ALIAS("__attribute__", __attribute, KEYALL)
+//ALIAS("__const"      , const      , KEYALL)
+//ALIAS("__const__"    , const      , KEYALL)
+//ALIAS("__alignof__"  , __alignof  , KEYALL)
+//ALIAS("__asm"        , asm        , KEYALL)
+//ALIAS("__asm__"      , asm        , KEYALL)
+//ALIAS("__complex"    , _Complex   , KEYALL)
+//ALIAS("__complex__"  , _Complex   , KEYALL)
+//ALIAS("__imag__"     , __imag     , KEYALL)
+//ALIAS("__inline"     , inline     , KEYALL)
+//ALIAS("__inline__"   , inline     , KEYALL)
+//ALIAS("__nullptr"    , nullptr    , KEYALL)
+//ALIAS("__real__"     , __real     , KEYALL)
+//ALIAS("__restrict"   , restrict   , KEYALL)
+//ALIAS("__restrict__" , restrict   , KEYALL)
+//ALIAS("__signed"     , signed     , KEYALL)
+//ALIAS("__signed__"   , signed     , KEYALL)
+//ALIAS("__typeof"     , typeof     , KEYALL)
+//ALIAS("__typeof__"   , typeof     , KEYALL)
+//ALIAS("__volatile"   , volatile   , KEYALL)
+//ALIAS("__volatile__" , volatile   , KEYALL)
+
+// TODO: What to do about context-sensitive keywords like:
+//       bycopy/byref/in/inout/oneway/out?
+ANNOTATION(mlangscope)   // annotation for a scope spec, e.g. "::foo::bar::"
+ANNOTATION(typename)     // annotation for a C typedef name, a C++ (possibly
+                         // qualified) typename, e.g. "foo::MyClass"
+
+#undef ANNOTATION
+#undef PPKEYWORD
+#undef ALIAS
+#undef KEYWORD
+#undef PUNCTUATOR
+#undef TOK

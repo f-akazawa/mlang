@@ -1,0 +1,74 @@
+//===-- TypeNodes.def - Metadata about Type AST nodes -----------*- C++ -*-===//
+//
+// Copyright (C) 2010 yabin @ CGCL
+// HuaZhong University of Science and Technology, China
+//
+//===----------------------------------------------------------------------===//
+//
+//  This file defines the AST type info database. Each type node is
+//  enumerated by providing its name and base class. Depending on 
+//  where in the abstract syntax tree the type will show up, the 
+//  enumeration uses one of four different macros:
+//
+//    TYPE(Class, Base) - A type that can show up anywhere in the AST,
+//    and might be dependent, canonical, or non-canonical. All clients
+//    will need to understand these types.
+//
+//    ABSTRACT_TYPE(Class, Base) - An abstract class that shows up in
+//    the type hierarchy but has no concrete instances.
+//
+//  There is a third macro, independent of the others.  Most clients
+//  will not need to use it.
+//
+//    LEAF_TYPE(Class) - A type that never has inner types.  Clients
+//    which can operate on such types more efficiently may wish to do so.
+//
+//===----------------------------------------------------------------------===//
+
+#ifndef TYPE
+#  define TYPE(Class, Base)
+#endif
+
+#ifndef ABSTRACT_TYPE
+#  define ABSTRACT_TYPE(Class, Base) TYPE(Class, Base)
+#endif
+
+TYPE(SimpleNumeric, Type)
+
+ABSTRACT_TYPE(Array, Type)
+TYPE(Matrix, ArrayType)
+TYPE(NDArray, ArrayType)
+TYPE(Vector, ArrayType)
+
+ABSTRACT_TYPE(HeteroContainer, Type)
+TYPE(Struct, HeteroContainerType)
+TYPE(Cell, HeteroContainerType)
+TYPE(Map, HeteroContainerType)
+TYPE(Classdef, HeteroContainerType)
+
+ABSTRACT_TYPE(Function, Type)
+TYPE(FunctionNoProto, FunctionType)
+TYPE(FunctionProto, FunctionType)
+
+TYPE(FunctionHandle, Type)
+
+ABSTRACT_TYPE(Reference, Type)
+TYPE(LValueReference, ReferenceType)
+TYPE(RValueReference, ReferenceType)
+
+#ifdef LAST_TYPE
+LAST_TYPE(RValueReference)
+#undef LAST_TYPE
+#endif
+
+// These types are always leaves in the type hierarchy.
+#ifdef LEAF_TYPE
+LEAF_TYPE(SimpleNumeric)
+LEAF_TYPE(Struct)
+LEAF_TYPE(Cell)
+LEAF_TYPE(FunctionHandle)
+#undef LEAF_TYPE
+#endif
+
+#undef ABSTRACT_TYPE
+#undef TYPE
