@@ -35,7 +35,8 @@ static int HexDigitValue(char C) {
 static unsigned ProcessCharEscape(const char *&ThisTokBuf,
                                   const char *ThisTokEnd, bool &HadError,
                                   FullSourceLoc Loc, bool IsWide,
-                                  Diagnostic *Diags, const TargetInfo &Target) {
+                                  DiagnosticsEngine *Diags,
+                                  const TargetInfo &Target) {
   // Skip the '\' char.
   ++ThisTokBuf;
 
@@ -168,7 +169,7 @@ static unsigned ProcessCharEscape(const char *&ThisTokBuf,
 /// return the UTF32.
 static bool ProcessUCNEscape(const char *&ThisTokBuf, const char *ThisTokEnd,
                              uint32_t &UcnVal, unsigned short &UcnLen,
-                             FullSourceLoc Loc, Diagnostic *Diags, 
+                             FullSourceLoc Loc, DiagnosticsEngine *Diags,
                              const LangOptions &Features) {
 
   // Save the beginning of the string (for error diagnostics).
@@ -219,7 +220,8 @@ static bool ProcessUCNEscape(const char *&ThisTokBuf, const char *ThisTokEnd,
 /// we will likely rework our support for UCN's.
 static void EncodeUCNEscape(const char *&ThisTokBuf, const char *ThisTokEnd,
                             char *&ResultBuf, bool &HadError,
-                            FullSourceLoc Loc, bool wide, Diagnostic *Diags, 
+                            FullSourceLoc Loc, bool wide,
+                            DiagnosticsEngine *Diags,
                             const LangOptions &Features) {
   typedef uint32_t UTF32;
   UTF32 UcnVal = 0;
@@ -249,7 +251,6 @@ static void EncodeUCNEscape(const char *&ThisTokBuf, const char *ThisTokEnd,
       *ResultBuf++ = (UcnVal & 0x0000FF00) >> 8;
       return;
     }
-    if (Diags) Diags->Report(Loc, diag::warn_ucn_escape_too_large);
 
     typedef uint16_t UTF16;
     UcnVal -= 0x10000;
@@ -723,7 +724,7 @@ CharLiteralParser::CharLiteralParser(const char *begin, const char *end,
     // Warn about discarding the top bits for multi-char wide-character
     // constants (L'abcd').
     if (IsWide)
-      PP.Diag(Loc, diag::warn_extraneous_wide_char_constant);
+      PP.Diag(Loc, diag::warn_extraneous_char_constant);
     else if (NumCharsSoFar != 4)
       PP.Diag(Loc, diag::ext_multichar_character_literal);
     else
@@ -734,9 +735,6 @@ CharLiteralParser::CharLiteralParser(const char *begin, const char *end,
 
   // Transfer the value from APInt to uint64_t
   Value = LitVal.getZExtValue();
-
-  if (IsWide && PP.getLangOptions().ShortWChar && Value > 0xFFFF)
-    PP.Diag(Loc, diag::warn_ucn_escape_too_large);
 
   // If this is a single narrow character, sign extend it (e.g. '\xFF' is "-1")
   // if 'char' is signed for this target (C99 6.4.4.4p10).  Note that multiple

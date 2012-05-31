@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
-// 
+//
 //===----------------------------------------------------------------------===//
 //
 //  This file defines DefinitionName class.
@@ -17,6 +17,7 @@
 
 namespace mlang {
 class ClassSpecialName;
+class DiagnosticsEngine;
 
 class DefinitionName {
 public:
@@ -328,7 +329,7 @@ public:
 inline const DiagnosticBuilder &operator<<(const DiagnosticBuilder &DB,
                                            DefinitionName N) {
   DB.AddTaggedVal(N.getAsOpaqueInteger(),
-                  Diagnostic::ak_declarationname);
+                  DiagnosticsEngine::ak_declarationname);
   return DB;
 }
 
@@ -337,7 +338,7 @@ inline const DiagnosticBuilder &operator<<(const DiagnosticBuilder &DB,
 inline const PartialDiagnostic &operator<<(const PartialDiagnostic &PD,
                                            DefinitionName N) {
   PD.AddTaggedVal(N.getAsOpaqueInteger(),
-                  Diagnostic::ak_declarationname);
+                  DiagnosticsEngine::ak_declarationname);
   return PD;
 }
 

@@ -1,8 +1,8 @@
-//===--- Preprocessor.cpp - Mlang Preprocessor Implementation ----*- C++ -*-===//
+//===--- Preprocessor.cpp - Mlang Preprocessor Implementation ---*- C++ -*-===//
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
-// 
+//
 //===----------------------------------------------------------------------===//
 //
 //  This file implements the Preprocessor interface.
@@ -22,79 +22,76 @@
 
 using namespace mlang;
 
-Preprocessor::Preprocessor(Diagnostic &diags, const LangOptions &opts,
-		const TargetInfo &target, SourceManager &SM, ImportSearch &Imports,
-		IdentifierInfoLookup* IILookup) :
-		Diags(&diags), Features(opts), Target(target),
-		FileMgr(SM.getFileManager()),
-		SourceMgr(SM),
-		ImportInfo(Imports),
-		Identifiers(opts, IILookup),
-		BuiltinInfo(Target),
-		SkipMainFilePreamble(0, true),
-		CurPPLexer(0),
-		CurDirLookup(0),
-		Callbacks(0)
-{
-	ScratchBuf = new ScratchBuffer(SourceMgr);
+Preprocessor::Preprocessor(DiagnosticsEngine &diags, const LangOptions &opts,
+                           const TargetInfo &target, SourceManager &SM,
+                           ImportSearch &Imports,
+                           IdentifierInfoLookup* IILookup) :
+    Diags(&diags), Features(opts), Target(target),
+    FileMgr(SM.getFileManager()),
+    SourceMgr(SM),
+    ImportInfo(Imports),
+    Identifiers(opts, IILookup),
+    BuiltinInfo(),
+    SkipMainFilePreamble(0, true),
+    CurPPLexer(0),
+    CurDirLookup(0),
+    Callbacks(0) {
+  ScratchBuf = new ScratchBuffer(SourceMgr);
+  CounterValue = 0; // __COUNTER__ starts at 0.
+  // Clear stats.
+  NumSkipped = 0;
+  NumEnteredSourceFiles = 0;
 
-	CounterValue = 0; // __COUNTER__ starts at 0.
+  // Default to reserve comments.
+  KeepComments = true;
+  CachedLexPos = 0;
 
-	// Clear stats.
-	NumSkipped = 0;
-	NumEnteredSourceFiles = 0;
-
-	// Default to reserve comments.
-	KeepComments = true;
-
-	CachedLexPos = 0;
-
-	Predefines = "";
+  Predefines = "";
 }
 
 Preprocessor::~Preprocessor() {
-	assert(BacktrackPositions.empty() && "EnableBacktrack/Backtrack imbalance!");
+  assert(BacktrackPositions.empty() && "EnableBacktrack/Backtrack imbalance!");
 
-	// Delete the scratch buffer info.
-	delete ScratchBuf;
+  // Delete the scratch buffer info.
+  delete ScratchBuf;
 
-	delete Callbacks;
+  delete Callbacks;
 }
 
 void Preprocessor::DumpToken(const Token &Tok, bool DumpFlags) const {
-	llvm::errs() << tok::getTokenName(Tok.getKind()) << " '"
-			<< getSpelling(Tok) << "'";
+  llvm::errs() << tok::getTokenName(Tok.getKind()) << " '"
+               << getSpelling(Tok) << "'";
 
-	if (!DumpFlags)
-		return;
+  if (!DumpFlags)
+    return;
 
-	llvm::errs() << "\t";
-	if (Tok.isAtStartOfLine())
-		llvm::errs() << " [StartOfLine]";
-	if (Tok.hasLeadingSpace())
-		llvm::errs() << " [LeadingSpace]";
-	if (Tok.isExpandDisabled())
-		llvm::errs() << " [ExpandDisabled]";
-	if (Tok.needsCleaning()) {
-		const char *Start = SourceMgr.getCharacterData(Tok.getLocation());
-		llvm::errs() << " [UnClean='"
-				<< llvm::StringRef(Start, Tok.getLength()) << "']";
-	}
+  llvm::errs() << "\t";
+  if (Tok.isAtStartOfLine())
+    llvm::errs() << " [StartOfLine]";
+  if (Tok.hasLeadingSpace())
+    llvm::errs() << " [LeadingSpace]";
+  if (Tok.isExpandDisabled())
+    llvm::errs() << " [ExpandDisabled]";
+  if (Tok.needsCleaning()) {
+    const char *Start = SourceMgr.getCharacterData(Tok.getLocation());
+    llvm::errs() << " [UnClean='"
+                 << llvm::StringRef(Start, Tok.getLength()) << "']";
+  }
 
-	llvm::errs() << "\tLoc=<";
-	DumpLocation(Tok.getLocation());
-	llvm::errs() << ">";
+  llvm::errs() << "\tLoc=<";
+  DumpLocation(Tok.getLocation());
+  llvm::errs() << ">";
 }
 
 void Preprocessor::DumpLocation(SourceLocation Loc) const {
-	Loc.dump(SourceMgr);
+  Loc.dump(SourceMgr);
 }
 
 void Preprocessor::PrintStats() {
-	llvm::errs() << "\n*** Preprocessor Stats:\n";
-	llvm::errs() << "    " << NumEnteredSourceFiles
-			<< " source files entered.\n";
-	llvm::errs() << NumSkipped << " #if/#ifndef#ifdef regions skipped\n";
+  llvm::errs() << "\n*** Preprocessor Stats:\n";
+  llvm::errs() << "    " << NumEnteredSourceFiles
+               << " source files entered.\n";
+  llvm::errs() << NumSkipped << " #if/#ifndef#ifdef regions skipped\n";
 }
 
 /// getSpelling - This method is used to get the spelling of a token into a
@@ -102,37 +99,37 @@ void Preprocessor::PrintStats() {
 /// supplied buffer if a copy can be avoided.
 llvm::StringRef Preprocessor::getSpelling(const Token &Tok,
 		llvm::SmallVectorImpl<char> &Buffer, bool *Invalid) const {
-	// Try the fast path.
-	if (const IdentifierInfo *II = Tok.getIdentifierInfo())
-		return II->getName();
+  // Try the fast path.
+  if (const IdentifierInfo *II = Tok.getIdentifierInfo())
+    return II->getName();
 
-	// Resize the buffer if we need to copy into it.
-	if (Tok.needsCleaning())
-		Buffer.resize(Tok.getLength());
+  // Resize the buffer if we need to copy into it.
+  if (Tok.needsCleaning())
+    Buffer.resize(Tok.getLength());
 
-	const char *Ptr = Buffer.data();
-	unsigned Len = getSpelling(Tok, Ptr, Invalid);
-	return llvm::StringRef(Ptr, Len);
+  const char *Ptr = Buffer.data();
+  unsigned Len = getSpelling(Tok, Ptr, Invalid);
+  return llvm::StringRef(Ptr, Len);
 }
 
 /// CreateString - Plop the specified string into a scratch buffer and return a
 /// location for it.  If specified, the source location provides a source
 /// location for the token.
 void Preprocessor::CreateString(const char *Buf, unsigned Len, Token &Tok,
-		SourceLocation InstantiationLoc) {
-	Tok.setLength(Len);
+                                SourceLocation InstantiationLoc) {
+  Tok.setLength(Len);
 
-	const char *DestPtr;
-	SourceLocation Loc = ScratchBuf->getToken(Buf, Len, DestPtr);
+  const char *DestPtr;
+  SourceLocation Loc = ScratchBuf->getToken(Buf, Len, DestPtr);
 
-	if (InstantiationLoc.isValid())
-		Loc = SourceMgr.createInstantiationLoc(Loc, InstantiationLoc,
-				InstantiationLoc, Len);
-	Tok.setLocation(Loc);
+  if (InstantiationLoc.isValid())
+    Loc = SourceMgr.createExpansionLoc(Loc, InstantiationLoc,
+                                       InstantiationLoc, Len);
+  Tok.setLocation(Loc);
 
-	// If this is a literal token, set the pointer data.
-	if (Tok.isLiteral())
-		Tok.setLiteralData(DestPtr);
+  // If this is a literal token, set the pointer data.
+  if (Tok.isLiteral())
+    Tok.setLiteralData(DestPtr);
 }
 
 //===----------------------------------------------------------------------===//
@@ -143,24 +140,24 @@ void Preprocessor::CreateString(const char *Buf, unsigned Len, Token &Tok,
 /// EnterMainSourceFile - Enter the specified FileID as the main source file,
 /// which implicitly adds the builtin defines etc.
 void Preprocessor::EnterMainSourceFile() {
-	// We do not allow the preprocessor to reenter the main file.  Doing so will
-	// cause FileID's to accumulate information from both runs (e.g. #line
-	// information) and predefined macros aren't guaranteed to be set properly.
-	assert(NumEnteredSourceFiles == 0 && "Cannot reenter the main file!");
-	FileID MainFileID = SourceMgr.getMainFileID();
+  // We do not allow the preprocessor to reenter the main file.  Doing so will
+  // cause FileID's to accumulate information from both runs (e.g. #line
+  // information) and predefined macros aren't guaranteed to be set properly.
+  assert(NumEnteredSourceFiles == 0 && "Cannot reenter the main file!");
+  FileID MainFileID = SourceMgr.getMainFileID();
 
-	// Enter the main file source buffer.
-	EnterSourceFile(MainFileID, 0, SourceLocation());
+  // Enter the main file source buffer.
+  EnterSourceFile(MainFileID, 0, SourceLocation());
 
-	// If we've been asked to skip bytes in the main file (e.g., as part of a
-	// precompiled preamble), do so now.
-	if (SkipMainFilePreamble.first > 0)
-		CurLexer->SkipBytes(SkipMainFilePreamble.first,
-				SkipMainFilePreamble.second);
+  // If we've been asked to skip bytes in the main file (e.g., as part of a
+  // precompiled preamble), do so now.
+  if (SkipMainFilePreamble.first > 0)
+    CurLexer->SkipBytes(SkipMainFilePreamble.first,
+                        SkipMainFilePreamble.second);
 
-//	// Preprocess Predefines to populate the initial preprocessor state.
-//	llvm::MemoryBuffer *SB = llvm::MemoryBuffer::getMemBufferCopy(Predefines,
-//			"<built-in>");
+  // Preprocess Predefines to populate the initial preprocessor state.
+  //llvm::MemoryBuffer *SB = llvm::MemoryBuffer::getMemBufferCopy(Predefines,
+  //			"<built-in>");
 //	assert(SB && "Cannot create predefined source buffer");
 //	FileID FID = SourceMgr.createFileIDForMemBuffer(SB);
 //	assert(!FID.isInvalid() && "Could not create FileID for predefines?");
@@ -170,9 +167,9 @@ void Preprocessor::EnterMainSourceFile() {
 }
 
 void Preprocessor::EndSourceFile() {
-	// Notify the client that we reached the end of the source file.
-	if (Callbacks)
-		Callbacks->EndOfMainFile();
+  // Notify the client that we reached the end of the source file.
+  if (Callbacks)
+    Callbacks->EndOfMainFile();
 }
 
 //===----------------------------------------------------------------------===//
@@ -182,26 +179,26 @@ void Preprocessor::EndSourceFile() {
 /// LookUpIdentifierInfo - Given a tok::identifier token, look up the
 /// identifier information for the token and install it into the token.
 IdentifierInfo *Preprocessor::LookUpIdentifierInfo(Token &Identifier) const {
-	assert(Identifier.getRawIdentifierData() != 0 && "No raw identifier data!");
+  assert(Identifier.getRawIdentifierData() != 0 && "No raw identifier data!");
 
-	// Look up this token, see if it is a macro, or if it is a language keyword.
-	IdentifierInfo *II;
-	if (!Identifier.needsCleaning()) {
-		// No cleaning needed, just use the characters from the lexed buffer.
-		II = getIdentifierInfo(llvm::StringRef(
-				Identifier.getRawIdentifierData(), Identifier.getLength()));
-	} else {
-		// Cleaning needed, alloca a buffer, clean into it, then use the buffer.
-		llvm::SmallString<64> IdentifierBuffer;
-		llvm::StringRef CleanedStr = getSpelling(Identifier, IdentifierBuffer);
-		II = getIdentifierInfo(CleanedStr);
-	}
+  // Look up this token, see if it is a macro, or if it is a language keyword.
+  IdentifierInfo *II;
+  if (!Identifier.needsCleaning()) {
+    // No cleaning needed, just use the characters from the lexed buffer.
+    II = getIdentifierInfo(llvm::StringRef(
+        Identifier.getRawIdentifierData(), Identifier.getLength()));
+  } else {
+    // Cleaning needed, alloca a buffer, clean into it, then use the buffer.
+    llvm::SmallString<64> IdentifierBuffer;
+    llvm::StringRef CleanedStr = getSpelling(Identifier, IdentifierBuffer);
+    II = getIdentifierInfo(CleanedStr);
+  }
 
-	// Update the token info (identifier info and appropriate token kind).
-	Identifier.setIdentifierInfo(II);
-	Identifier.setKind(II->getTokenID());
+  // Update the token info (identifier info and appropriate token kind).
+  Identifier.setIdentifierInfo(II);
+  Identifier.setKind(II->getTokenID());
 
-	return II;
+  return II;
 }
 
 /// HandleIdentifier - This callback is invoked when the lexer reads an

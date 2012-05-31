@@ -23,7 +23,7 @@ static Type Desugar(ASTContext &Context, Type QT, bool &ShouldAKA) {
   return Type();
 }
 
-/// \brief Convert the given type to a string suitable for printing as part of 
+/// \brief Convert the given type to a string suitable for printing as part of
 /// a diagnostic.
 ///
 /// There are three main criteria when determining whether we should have an
@@ -44,7 +44,7 @@ static Type Desugar(ASTContext &Context, Type QT, bool &ShouldAKA) {
 /// \param Ty the type to print
 static std::string
 ConvertTypeToDiagnosticString(ASTContext &Context, Type Ty,
-                              const Diagnostic::ArgumentValue *PrevArgs,
+                              const DiagnosticsEngine::ArgumentValue *PrevArgs,
                               unsigned NumPrevArgs) {
   // FIXME: Playing with std::string is really slow.
   std::string S = Ty.getAsString(Context.PrintingPolicy);
@@ -54,7 +54,7 @@ ConvertTypeToDiagnosticString(ASTContext &Context, Type Ty,
   bool Repeated = false;
   for (unsigned i = 0; i != NumPrevArgs; ++i) {
     // TODO: Handle ak_declcontext case.
-    if (PrevArgs[i].first == Diagnostic::ak_qualtype) {
+    if (PrevArgs[i].first == DiagnosticsEngine::ak_qualtype) {
       void *Ptr = (void*)PrevArgs[i].second;
       Type PrevTy(Type::getFromOpaquePtr(Ptr));
       if (PrevTy == Ty) {
@@ -81,94 +81,95 @@ ConvertTypeToDiagnosticString(ASTContext &Context, Type Ty,
   return S;
 }
 
-void mlang::FormatASTNodeDiagnosticArgument(Diagnostic::ArgumentKind Kind,
-		intptr_t Val, const char *Modifier, unsigned ModLen,
-		const char *Argument, unsigned ArgLen,
-		const Diagnostic::ArgumentValue *PrevArgs,
-		unsigned NumPrevArgs, llvm::SmallVectorImpl<char> &Output,
-		void *Cookie) {
+void mlang::FormatASTNodeDiagnosticArgument(
+    DiagnosticsEngine::ArgumentKind Kind,
+    intptr_t Val, const char *Modifier, unsigned ModLen,
+    const char *Argument, unsigned ArgLen,
+    const DiagnosticsEngine::ArgumentValue *PrevArgs,
+    unsigned NumPrevArgs, llvm::SmallVectorImpl<char> &Output,
+    void *Cookie) {
   ASTContext &Context = *static_cast<ASTContext*>(Cookie);
-  
+
   std::string S;
   bool NeedQuotes = true;
-  
+
   switch (Kind) {
-    default: assert(0 && "unknown ArgumentKind");
-    case Diagnostic::ak_qualtype: {
-      assert(ModLen == 0 && ArgLen == 0 &&
-             "Invalid modifier for Type argument");
-      
-      Type Ty(Type::getFromOpaquePtr(reinterpret_cast<void*>(Val)));
-      S = ConvertTypeToDiagnosticString(Context, Ty, PrevArgs, NumPrevArgs);
-      NeedQuotes = false;
-      break;
-    }
-    case Diagnostic::ak_declarationname: {
-      DefinitionName N = DefinitionName::getFromOpaqueInteger(Val);
-      S = N.getAsString();
-      
-      if (ModLen == 9 && !memcmp(Modifier, "objcclass", 9) && ArgLen == 0)
-        S = '+' + S;
-      else if (ModLen == 12 && !memcmp(Modifier, "objcinstance", 12)
-                && ArgLen==0)
-        S = '-' + S;
-      else
-        assert(ModLen == 0 && ArgLen == 0 &&
-               "Invalid modifier for DefinitionName argument");
-      break;
-    }
-    case Diagnostic::ak_nameddecl: {
-      bool Qualified;
-      if (ModLen == 1 && Modifier[0] == 'q' && ArgLen == 0)
-        Qualified = true;
-      else {
-        assert(ModLen == 0 && ArgLen == 0 &&
-               "Invalid modifier for NamedDefn* argument");
-        Qualified = false;
-      }
-      reinterpret_cast<NamedDefn*>(Val)->
-      getNameForDiagnostic(S, Context.PrintingPolicy, Qualified);
-      break;
-    }
-    case Diagnostic::ak_nestednamespec: {
-      llvm::raw_string_ostream OS(S);
-      reinterpret_cast<NestedNameSpecifier*>(Val)->print(OS,
-                                                        Context.PrintingPolicy);
-      NeedQuotes = false;
-      break;
-    }
-    case Diagnostic::ak_declcontext: {
-      DefnContext *DC = reinterpret_cast<DefnContext *> (Val);
-      assert(DC && "Should never have a null declaration context");
-      
-      if (DC->isTranslationUnit()) {
-        S = "the global scope";
-      } else if (TypeDefn *Type = dyn_cast<TypeDefn>(DC)) {
-        S = ConvertTypeToDiagnosticString(Context, 
-                                          Context.getTypeDefnType(Type),
-                                          PrevArgs, NumPrevArgs);
-      } else {
-        // FIXME: Get these strings from some localized place
-        NamedDefn *ND = cast<NamedDefn>(DC);
-        if (isa<NamespaceDefn>(ND))
-          S += "namespace ";
-        else if (isa<FunctionDefn>(ND))
-          S += "function ";
-        
-        S += "'";
-        ND->getNameForDiagnostic(S, Context.PrintingPolicy, true);
-        S += "'";
-      }
-      NeedQuotes = false;
-      break;
-    }
+  default: assert(0 && "unknown ArgumentKind");
+  case DiagnosticsEngine::ak_qualtype: {
+    assert(ModLen == 0 && ArgLen == 0 &&
+           "Invalid modifier for Type argument");
+
+    Type Ty(Type::getFromOpaquePtr(reinterpret_cast<void*>(Val)));
+    S = ConvertTypeToDiagnosticString(Context, Ty, PrevArgs, NumPrevArgs);
+    NeedQuotes = false;
+    break;
   }
-  
+  case DiagnosticsEngine::ak_declarationname: {
+    DefinitionName N = DefinitionName::getFromOpaqueInteger(Val);
+    S = N.getAsString();
+
+    if (ModLen == 9 && !memcmp(Modifier, "objcclass", 9) && ArgLen == 0)
+      S = '+' + S;
+    else if (ModLen == 12 && !memcmp(Modifier, "objcinstance", 12)
+             && ArgLen==0)
+      S = '-' + S;
+    else
+      assert(ModLen == 0 && ArgLen == 0 &&
+             "Invalid modifier for DefinitionName argument");
+    break;
+  }
+  case DiagnosticsEngine::ak_nameddecl: {
+    bool Qualified;
+    if (ModLen == 1 && Modifier[0] == 'q' && ArgLen == 0)
+      Qualified = true;
+    else {
+      assert(ModLen == 0 && ArgLen == 0 &&
+             "Invalid modifier for NamedDefn* argument");
+      Qualified = false;
+    }
+    reinterpret_cast<NamedDefn*>(Val)->
+        getNameForDiagnostic(S, Context.PrintingPolicy, Qualified);
+    break;
+  }
+  case DiagnosticsEngine::ak_nestednamespec: {
+    llvm::raw_string_ostream OS(S);
+    reinterpret_cast<NestedNameSpecifier*>(Val)->print(OS,
+                                                       Context.PrintingPolicy);
+    NeedQuotes = false;
+    break;
+  }
+  case DiagnosticsEngine::ak_defncontext: {
+    DefnContext *DC = reinterpret_cast<DefnContext *> (Val);
+    assert(DC && "Should never have a null declaration context");
+
+    if (DC->isTranslationUnit()) {
+      S = "the global scope";
+    } else if (TypeDefn *Type = dyn_cast<TypeDefn>(DC)) {
+      S = ConvertTypeToDiagnosticString(Context,
+                                        Context.getTypeDefnType(Type),
+                                        PrevArgs, NumPrevArgs);
+    } else {
+      // FIXME: Get these strings from some localized place
+      NamedDefn *ND = cast<NamedDefn>(DC);
+      if (isa<NamespaceDefn>(ND))
+        S += "namespace ";
+      else if (isa<FunctionDefn>(ND))
+        S += "function ";
+
+      S += "'";
+      ND->getNameForDiagnostic(S, Context.PrintingPolicy, true);
+      S += "'";
+    }
+    NeedQuotes = false;
+    break;
+  }
+  }
+
   if (NeedQuotes)
     Output.push_back('\'');
-  
+
   Output.append(S.begin(), S.end());
-  
+
   if (NeedQuotes)
     Output.push_back('\'');
 }

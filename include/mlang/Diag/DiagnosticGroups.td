@@ -80,6 +80,7 @@ def : DiagGroup<"newline-eof">;
 def LongLong : DiagGroup<"long-long">;
 def MismatchedTags : DiagGroup<"mismatched-tags">;
 def MissingFieldInitializers : DiagGroup<"missing-field-initializers">;
+def NullCharacter : DiagGroup<"null-character">;
 def NullDereference : DiagGroup<"null-dereference">;
 def InitializerOverrides : DiagGroup<"initializer-overrides">;
 def NonNull : DiagGroup<"nonnull">;
@@ -96,8 +97,6 @@ def Padded : DiagGroup<"padded">;
 def PointerArith : DiagGroup<"pointer-arith">;
 def PoundWarning : DiagGroup<"#warnings">,
                    DiagCategory<"#warning Directive">;
-def PoundPragmaMessage : DiagGroup<"#pragma messages">,
-                         DiagCategory<"#pragma message Directive">;
 def : DiagGroup<"pointer-to-int-cast">;
 def : DiagGroup<"redundant-decls">;
 def ReturnType : DiagGroup<"return-type">;

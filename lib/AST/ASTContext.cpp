@@ -75,39 +75,39 @@ void ASTContext::setExternalSource(llvm::OwningPtr<ExternalASTSource> &Source) {
 }
 
 void ASTContext::PrintStats() const {
-	fprintf(stderr, "*** AST Context Stats:\n");
-	fprintf(stderr, "  %d types total.\n", (int) Types.size());
+  llvm::errs() <<  "\n*** AST Context Stats:\n";
+  llvm::errs() << "  " << Types.size() << " types total.\n";
 
-	unsigned counts[] = {
+  unsigned counts[] = {
 #define TYPE(Name, Parent) 0,
 #define ABSTRACT_TYPE(Name, Parent)
 #include "mlang/AST/TypeNodes.def"
-			0 // Extra
-			};
+    0 // Extra
+  };
 
-	for (unsigned i = 0, e = Types.size(); i != e; ++i) {
-		RawType *T = Types[i];
-		counts[(unsigned) T->getTypeClass()]++;
-	}
+  for (unsigned i = 0, e = Types.size(); i != e; ++i) {
+    RawType *T = Types[i];
+    counts[(unsigned) T->getTypeClass()]++;
+  }
 
-	unsigned Idx = 0;
-	unsigned TotalBytes = 0;
+  unsigned Idx = 0;
+  unsigned TotalBytes = 0;
 #define TYPE(Name, Parent)                                              \
   if (counts[Idx])                                                      \
-    fprintf(stderr, "    %d %s types\n", (int)counts[Idx], #Name);      \
+    llvm::errs() << "    " << counts[Idx] << #Name << " types\n";       \
   TotalBytes += counts[Idx] * sizeof(Name##Type);                       \
   ++Idx;
 #define ABSTRACT_TYPE(Name, Parent)
 #include "mlang/AST/TypeNodes.def"
 
-	fprintf(stderr, "Total bytes = %d\n", int(TotalBytes));
+  llvm::errs() <<  "Total bytes = " << TotalBytes << "\n";
 
-	if (ExternalSource.get()) {
-		fprintf(stderr, "\n");
-		ExternalSource->PrintStats();
-	}
+  if (ExternalSource.get()) {
+    llvm::errs() <<  "\n";
+    ExternalSource->PrintStats();
+  }
 
-	BumpAlloc.PrintStats();
+  BumpAlloc.PrintStats();
 }
 
 void ASTContext::InitSimpleNumericType(Type &R,
@@ -149,8 +149,8 @@ void ASTContext::InitBuiltinTypes() {
 	InitSimpleNumericType(LogicalTy, SimpleNumericType::Logical);
 }
 
-Diagnostic &ASTContext::getDiagnostics() const {
-	return SourceMgr.getDiagnostics();
+DiagnosticsEngine &ASTContext::getDiagnostics() const {
+  return SourceMgr.getDiagnostics();
 }
 
 //===----------------------------------------------------------------------===//
@@ -366,20 +366,19 @@ Type ASTContext::getTypeDefnType(const TypeDefn *Defn,
 /// TargetInfo, produce the corresponding type. The unsigned @p Type
 /// is actually a value of type @c TargetInfo::IntType.
 Type ASTContext::getFromTargetType(unsigned nType) const {
-	switch (nType) {
-	case TargetInfo::NoInt:  return Type();
-	case TargetInfo::Int8:   return Int8Ty;
-	case TargetInfo::UInt8:  return UInt8Ty;
-	case TargetInfo::Int16:  return Int16Ty;
-	case TargetInfo::UInt16: return UInt16Ty;
-	case TargetInfo::Int32:  return Int32Ty;
-	case TargetInfo::UInt32: return UInt32Ty;
-	case TargetInfo::Int64:  return UInt64Ty;
-	case TargetInfo::UInt64: return UInt64Ty;
-	}
+  switch (nType) {
+  case TargetInfo::NoInt:            return Type();
+  case TargetInfo::SignedShort:      return Int8Ty;
+  case TargetInfo::UnsignedShort:    return UInt8Ty;
+  case TargetInfo::SignedInt:        return Int16Ty;
+  case TargetInfo::UnsignedInt:      return UInt16Ty;
+  case TargetInfo::SignedLong:       return Int32Ty;
+  case TargetInfo::UnsignedLong:     return UInt32Ty;
+  case TargetInfo::SignedLongLong:   return UInt64Ty;
+  case TargetInfo::UnsignedLongLong: return UInt64Ty;
+  }
 
-	assert(false && "Unhandled TargetInfo::IntType value");
-	return Type();
+  llvm_unreachable("Unhandled TargetInfo::IntType value");
 }
 
 /// getLValueReferenceType - Return the uniqued reference to the type for an
@@ -513,67 +512,63 @@ Type ASTContext::getVectorType(Type T, unsigned NumElts,
 }
 
 Type ASTContext::getFunctionNoProtoType(Type ResultTy,
-		FunctionType::ExtInfo Info) {
-	const CallingConv DefaultCC = Info.getCC();
-	const CallingConv CallConv = (DefaultCC == CC_Default) ?
-	                              CC_X86StdCall : DefaultCC;
+                                        FunctionType::ExtInfo Info) const {
+  const CallingConv DefaultCC = Info.getCC();
+  const CallingConv CallConv = (DefaultCC == CC_Default) ?
+      CC_X86StdCall : DefaultCC;
 
-	// Unique functions, to guarantee there is only one function of a particular
-	// structure.
-	llvm::FoldingSetNodeID ID;
-	FunctionNoProtoType::Profile(ID, ResultTy, Info);
+  // Unique functions, to guarantee there is only one function of a particular
+  // structure.
+  llvm::FoldingSetNodeID ID;
+  FunctionNoProtoType::Profile(ID, ResultTy, Info);
 
-	void *InsertPos = 0;
-	if (FunctionNoProtoType *FT =
-			FunctionNoProtoTypes.FindNodeOrInsertPos(ID, InsertPos))
-		return Type(FT, 0);
+  void *InsertPos = 0;
+  if (FunctionNoProtoType *FT =
+      FunctionNoProtoTypes.FindNodeOrInsertPos(ID, InsertPos))
+    return Type(FT, 0);
 
-	FunctionProtoType::ExtInfo newInfo = Info.withCallingConv(CallConv);
-	FunctionNoProtoType *New;
-	New = new (*this, TypeAlignment) FunctionNoProtoType(
-						   ResultTy, newInfo);
-
-	Types.push_back(New);
-	FunctionNoProtoTypes.InsertNode(New, InsertPos);
-	return Type(New, 0);
+  FunctionProtoType::ExtInfo newInfo = Info.withCallingConv(CallConv);
+  FunctionNoProtoType *New;
+  New = new (*this, TypeAlignment) FunctionNoProtoType(ResultTy, newInfo);
+  Types.push_back(New);
+  FunctionNoProtoTypes.InsertNode(New, InsertPos);
+  return Type(New, 0);
 }
 
 Type ASTContext::getFunctionType(Type ResultTy,
                                  const Type *ArgArray, unsigned NumArgs,
-                                 const FunctionProtoType::ExtProtoInfo &EPI) {
-	// Unique functions, to guarantee there is only one function of a particular
-	// structure.
-	llvm::FoldingSetNodeID ID;
-	FunctionProtoType::Profile(ID, ResultTy, ArgArray, NumArgs, EPI, *this);
+                                 const FunctionProtoType::ExtProtoInfo &EPI) const {
+  // Unique functions, to guarantee there is only one function of a particular
+  // structure.
+  llvm::FoldingSetNodeID ID;
+  FunctionProtoType::Profile(ID, ResultTy, ArgArray, NumArgs, EPI, *this);
 
-	void *InsertPos = 0;
-	if (FunctionProtoType *FTP =
-	        FunctionProtoTypes.FindNodeOrInsertPos(ID, InsertPos))
-		return Type(FTP, 0);
+  void *InsertPos = 0;
+  if (FunctionProtoType *FTP =
+      FunctionProtoTypes.FindNodeOrInsertPos(ID, InsertPos))
+    return Type(FTP, 0);
 
-	const CallingConv DefaultCC = EPI.ExtInfo.getCC();
-	const CallingConv CallConv =
-			(DefaultCC == CC_Default) ? CC_X86StdCall
-					: DefaultCC;
+  const CallingConv DefaultCC = EPI.ExtInfo.getCC();
+  const CallingConv CallConv =
+      (DefaultCC == CC_Default) ? CC_X86StdCall	: DefaultCC;
 
-	// FunctionProtoType objects are allocated with extra bytes after them
-	// for two variable size arrays (for parameter and exception types) at the
-	// end of them. Instead of the exception types, there could be a noexcept
-	// expression and a context pointer.
-	size_t Size = sizeof(FunctionProtoType) + NumArgs * sizeof(Type);
+  // FunctionProtoType objects are allocated with extra bytes after them
+  // for two variable size arrays (for parameter and exception types) at the
+  // end of them. Instead of the exception types, there could be a noexcept
+  // expression and a context pointer.
+  size_t Size = sizeof(FunctionProtoType) + NumArgs * sizeof(Type);
 //	if (EPI.ExceptionSpecType == EST_Dynamic)
 //		Size += EPI.NumExceptions * sizeof(Type);
 //	else if (EPI.ExceptionSpecType == EST_ComputedNoexcept) {
 //		Size += sizeof(Expr*);
 //	}
-	FunctionProtoType *FTP = (FunctionProtoType*) Allocate(Size, TypeAlignment);
-	FunctionProtoType::ExtProtoInfo newEPI = EPI;
-	newEPI.ExtInfo = EPI.ExtInfo.withCallingConv(CallConv);
-	new (FTP) FunctionProtoType(
-				ResultTy,	ArgArray, NumArgs, newEPI);
-	Types.push_back(FTP);
-	FunctionProtoTypes.InsertNode(FTP, InsertPos);
-	return Type(FTP, 0);
+  FunctionProtoType *FTP = (FunctionProtoType*) Allocate(Size, TypeAlignment);
+  FunctionProtoType::ExtProtoInfo newEPI = EPI;
+  newEPI.ExtInfo = EPI.ExtInfo.withCallingConv(CallConv);
+  new (FTP) FunctionProtoType(ResultTy,	ArgArray, NumArgs, newEPI);
+  Types.push_back(FTP);
+  FunctionProtoTypes.InsertNode(FTP, InsertPos);
+  return Type(FTP, 0);
 }
 
 //===----------------------------------------------------------------------===//
@@ -615,8 +610,9 @@ unsigned ASTContext::getIntWidth(Type T) {
 /// RequiresICE is filled in on return to indicate whether the value is required
 /// to be an Integer Constant Expression.
 static Type DecodeTypeFromStr(const char *&Str,
-		const ASTContext &Context, ASTContext::GetBuiltinTypeError &Error,
-		bool &RequiresICE, bool AllowTypeModifiers) {
+                              const ASTContext &Context,
+                              ASTContext::GetBuiltinTypeError &Error,
+                              bool &RequiresICE, bool AllowTypeModifiers) {
   // Modifiers.
   int HowLong = 0;
   bool Signed = false, Unsigned = false;
@@ -804,81 +800,54 @@ static Type DecodeTypeFromStr(const char *&Str,
   return Ty;
 }
 
-static Type DecodeRetsTypeFromStr(const char *Str,
-		const ASTContext &Context, ASTContext::GetBuiltinTypeError &Error,
-		bool &RequiresICE, bool AllowTypeModifiers) {
-	llvm::SmallVector<Type,4> Outs;
-	while (Str[0] && Str[0] != '.') {
-		Type Ty =	DecodeTypeFromStr(Str, Context, Error, RequiresICE,	true);
-		if (Error != ASTContext::GE_None)
-			return Type();
+Type ASTContext::GetBuiltinType(unsigned Id, GetBuiltinTypeError &Error,
+                                unsigned *IntegerConstantArgs) const {
+  const char *TypeStr = BuiltinInfo.GetTypeString(Id);
+  SmallVector<Type, 8> ArgTypes;
+  bool RequiresICE = false;
+  Error = GE_None;
+  Type ResType = DecodeTypeFromStr(TypeStr, *this, Error, RequiresICE,
+                                   true);
+  if (Error != GE_None)
+    return Type();
 
-			// Do array -> pointer decay.  The builtin should use the decayed type.
-	//		if (Ty->isArrayType())
-	//			Ty = getArrayDecayedType(Ty);
+  assert(!RequiresICE && "Result of intrinsic cannot be required to be an ICE");
 
-		Outs.push_back(Ty);
-	}
+  while (TypeStr[0] && TypeStr[0] != '.') {
+    Type Ty = DecodeTypeFromStr(TypeStr, *this, Error, RequiresICE, true);
+    if (Error != GE_None)
+      return Type();
 
-	// if it is a multiple outputs function
-	if(Outs.size() > 1) {
-		//FIXME we should handle the multiple outputs case
-		return Type();
-	} else {
-		return *Outs.begin();
-	}
-}
+    // If this argument is required to be an IntegerConstantExpression and the
+    // caller cares, fill in the bitmask we return.
+    if (RequiresICE && IntegerConstantArgs)
+      *IntegerConstantArgs |= 1 << ArgTypes.size();
 
-Type ASTContext::GetBuiltinFunctionType(unsigned Id, GetBuiltinTypeError &Error,
-		unsigned *IntegerConstantArgs) {
-	const char *TypeStr = BuiltinInfo.GetRetsTypeString(Id);
-	bool RequiresICE = false;
-	Error = GE_None;
-	Type ResType =
-			DecodeRetsTypeFromStr(TypeStr, *this, Error, RequiresICE, true);
-	if (Error != GE_None)
-		return Type();
-
-	assert(!RequiresICE && "Result of intrinsic cannot be required to be an ICE");
-
-	TypeStr = BuiltinInfo.GetArgsTypeString(Id);
-	llvm::SmallVector<Type, 8> ArgTypes;
-	while (TypeStr[0] && TypeStr[0] != '.') {
-		Type Ty =	DecodeTypeFromStr(TypeStr, *this, Error, RequiresICE,	true);
-		if (Error != GE_None)
-			return Type();
-
-		// If this argument is required to be an IntegerConstantExpression and the
-		// caller cares, fill in the bitmask we return.
-		if (RequiresICE && IntegerConstantArgs)
-			*IntegerConstantArgs |= 1 << ArgTypes.size();
-
-		// Do array -> pointer decay.  The builtin should use the decayed type.
+    // Do array -> pointer decay.  The builtin should use the decayed type.
 //		if (Ty->isArrayType())
 //			Ty = getArrayDecayedType(Ty);
+    ArgTypes.push_back(Ty);
+  }
 
-		ArgTypes.push_back(Ty);
-	}
+  assert((TypeStr[0] != '.' || TypeStr[1] == 0)
+         && "'.' should only occur at end of builtin type list!");
 
-	assert((TypeStr[0] != '.' || TypeStr[1] == 0) &&
-			"'.' should only occur at end of builtin type list!");
+  FunctionType::ExtInfo EI;
+  if (BuiltinInfo.isNoReturn(Id))
+    EI = EI.withNoReturn(true);
 
-	FunctionType::ExtInfo EI;
-	if (BuiltinInfo.isNoReturn(Id))
-		EI = EI.withNoReturn(true);
+  bool Variadic = (TypeStr[0] == '.');
 
-	bool Variadic = (TypeStr[0] == '.');
+  // We really shouldn't be making a no-proto type here, especially in C++.
+  if (ArgTypes.empty() && Variadic) {
+    return getFunctionNoProtoType(ResType, EI);
+  }
 
-	// We really shouldn't be making a no-proto type here, especially in C++.
-	if (ArgTypes.empty() && Variadic) {
-		return getFunctionNoProtoType(ResType, EI);
-	}
+  FunctionProtoType::ExtProtoInfo EPI;
+  EPI.ExtInfo = EI;
+  EPI.Variadic = Variadic;
 
-	FunctionProtoType::ExtProtoInfo EPI;
-	EPI.ExtInfo = EI;
-	EPI.Variadic = Variadic;
-
-	return getFunctionType(ResType, ArgTypes.data(), ArgTypes.size(), EPI);
+  return getFunctionType(ResType, ArgTypes.data(), ArgTypes.size(), EPI);
 }
 
 /// getPointerType - Return the uniqued reference to the type for a pointer to

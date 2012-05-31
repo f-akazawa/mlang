@@ -13,8 +13,9 @@ BUILT_SOURCES = \
 	DiagnosticCommonKinds.inc DiagnosticDriverKinds.inc \
 	DiagnosticFrontendKinds.inc DiagnosticLexKinds.inc \
 	DiagnosticParseKinds.inc DiagnosticSemaKinds.inc \
-	DiagnosticIndexName.inc DiagnosticGroups.inc 
-	
+	DiagnosticIndexName.inc DiagnosticSerializationKinds.inc \
+	DiagnosticGroups.inc
+
 # #AttrList.inc arm_neon.inc Version.inc
 
 TABLEGEN_INC_FILES_COMMON = 1
@@ -24,16 +25,20 @@ TABLEGEN_INC_FILES_COMMON = 1
 #
 include $(LEVEL)/Makefile.common
 
+# Set up Mlang's tblgen.
+MLANG_TBLGEN := $(ToolDir)/mlang-tblgen$(EXEEXT)
+MlangTableGen = $(MLANG_TBLGEN) $(TableGen.Flags)
+
 INPUT_TDS = $(wildcard $(PROJ_SRC_DIR)/Diagnostic*.td)
 
-$(ObjDir)/Diagnostic%Kinds.inc.tmp : Diagnostic.td Diagnostic%Kinds.td $(TBLGEN) $(ObjDir)/.dir
+$(ObjDir)/Diagnostic%Kinds.inc.tmp : Diagnostic.td Diagnostic%Kinds.td $(MLANG_TBLGEN) $(ObjDir)/.dir
 	$(Echo) "Building mlang $(patsubst Diagnostic%Kinds.inc.tmp,%,$(@F)) diagnostic tables with tblgen"
-	$(Verb) $(TableGen) -gen-clang-diags-defs -clang-component=$(patsubst Diagnostic%Kinds.inc.tmp,%,$(@F)) -o $(call SYSPATH, $@) $<
+	$(Verb) $(MlangTableGen) -gen-mlang-diags-defs -mlang-component=$(patsubst Diagnostic%Kinds.inc.tmp,%,$(@F)) -o $(call SYSPATH, $@) $<
 
-$(ObjDir)/DiagnosticIndexName.inc.tmp : Diagnostic.td $(INPUT_TDS) $(TBLGEN) $(ObjDir)/.dir
+$(ObjDir)/DiagnosticIndexName.inc.tmp : Diagnostic.td $(INPUT_TDS) $(MLANG_TBLGEN) $(ObjDir)/.dir
 	$(Echo) "Building mlang diagnostic name index with tblgen"
-	$(Verb) $(TableGen) -gen-clang-diags-index-name -o $(call SYSPATH, $@) $<
+	$(Verb) $(MlangTableGen) -gen-mlang-diags-index-name -o $(call SYSPATH, $@) $<
 
-$(ObjDir)/DiagnosticGroups.inc.tmp : Diagnostic.td DiagnosticGroups.td $(INPUT_TDS) $(TBLGEN) $(ObjDir)/.dir
+$(ObjDir)/DiagnosticGroups.inc.tmp : Diagnostic.td DiagnosticGroups.td $(INPUT_TDS) $(MLANG_TBLGEN) $(ObjDir)/.dir
 	$(Echo) "Building mlang diagnostic groups with tblgen"
-	$(Verb) $(TableGen) -gen-clang-diag-groups -o $(call SYSPATH, $@) $<
+	$(Verb) $(MlangTableGen) -gen-mlang-diag-groups -o $(call SYSPATH, $@) $<

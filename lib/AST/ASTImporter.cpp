@@ -772,7 +772,7 @@ SourceLocation ASTImporter::Import(SourceLocation FromLoc) {
     return SourceLocation();
 
   SourceManager &FromSM = FromContext.getSourceManager();
-  
+
   // For now, map everything down to its spelling location, so that we
   // don't have to import macro instantiations.
   // FIXME: Import macro instantiations!
@@ -780,7 +780,7 @@ SourceLocation ASTImporter::Import(SourceLocation FromLoc) {
   std::pair<FileID, unsigned> Decomposed = FromSM.getDecomposedLoc(FromLoc);
   SourceManager &ToSM = ToContext.getSourceManager();
   return ToSM.getLocForStartOfFile(Import(Decomposed.first))
-             .getFileLocWithOffset(Decomposed.second);
+             .getLocWithOffset(Decomposed.second);
 }
 
 SourceRange ASTImporter::Import(SourceRange FromRange) {

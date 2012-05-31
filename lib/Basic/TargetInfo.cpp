@@ -1,36 +1,43 @@
-//===--- TargetInfo.cpp - Expose information about the target ---*- C++ -*-===//
+//===--- TargetInfo.cpp - Information about Target machine ----------------===//
 //
-// Copyright (C) 2010 yabin @ CGCL
-// HuaZhong University of Science and Technology, China
-// 
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
+//
 //===----------------------------------------------------------------------===//
 //
-//  This file implements TargetInfo interface.
+//  This file implements the TargetInfo and TargetInfoImpl interfaces.
 //
 //===----------------------------------------------------------------------===//
 
+#include "mlang/Basic/AddressSpaces.h"
 #include "mlang/Basic/TargetInfo.h"
 #include "mlang/Basic/LangOptions.h"
-#include "mlang/Basic/MacroBuilder.h"
-#include "mlang/Diag/Diagnostic.h"
 #include "llvm/ADT/APFloat.h"
-#include "llvm/ADT/OwningPtr.h"
 #include "llvm/ADT/STLExtras.h"
-#include "llvm/ADT/StringRef.h"
-#include "llvm/ADT/StringSwitch.h"
+#include "llvm/Support/ErrorHandling.h"
+#include <cctype>
 #include <cstdlib>
 using namespace mlang;
+
+static const LangAS::Map DefaultAddrSpaceMap = { 0 };
 
 // TargetInfo Constructor.
 TargetInfo::TargetInfo(const std::string &T) : Triple(T) {
   // Set defaults.  Defaults are set for a 32-bit RISC platform, like PPC or
   // SPARC.  These should be overridden by concrete targets as needed.
+  BigEndian = true;
   TLSSupported = true;
   NoAsmVariants = false;
   PointerWidth = PointerAlign = 32;
+  BoolWidth = BoolAlign = 8;
   IntWidth = IntAlign = 32;
   LongWidth = LongAlign = 32;
   LongLongWidth = LongLongAlign = 64;
+  SuitableAlign = 64;
+  HalfWidth = 16;
+  HalfAlign = 16;
   FloatWidth = 32;
   FloatAlign = 32;
   DoubleWidth = 64;
@@ -39,30 +46,48 @@ TargetInfo::TargetInfo(const std::string &T) : Triple(T) {
   LongDoubleAlign = 64;
   LargeArrayMinWidth = 0;
   LargeArrayAlign = 0;
-  SizeType = Int32;
-  PtrDiffType = Int32;
-  IntMaxType = Int64;
-  UIntMaxType = UInt64;
-  IntPtrType = Int32;
-  WCharType = Int16;
-  WIntType = Int32;
-  Char16Type = UInt16;
-  Char32Type = UInt32;
-  Int64Type = Int64;
-  SigAtomicType = Int32;
+  MaxAtomicPromoteWidth = MaxAtomicInlineWidth = 0;
+  SizeType = UnsignedLong;
+  PtrDiffType = SignedLong;
+  IntMaxType = SignedLongLong;
+  UIntMaxType = UnsignedLongLong;
+  IntPtrType = SignedLong;
+  WCharType = SignedInt;
+  WIntType = SignedInt;
+  Char16Type = UnsignedShort;
+  Char32Type = UnsignedInt;
+  Int64Type = SignedLongLong;
+  SigAtomicType = SignedInt;
+  UseSignedCharForObjCBool = true;
+  UseBitFieldTypeAlignment = true;
+  UseZeroLengthBitfieldAlignment = false;
+  ZeroLengthBitfieldBoundary = 0;
+  HalfFormat = &llvm::APFloat::IEEEhalf;
   FloatFormat = &llvm::APFloat::IEEEsingle;
   DoubleFormat = &llvm::APFloat::IEEEdouble;
   LongDoubleFormat = &llvm::APFloat::IEEEdouble;
   DescriptionString = "E-p:32:32:32-i1:8:8-i8:8:8-i16:16:16-i32:32:32-"
                       "i64:64:64-f32:32:32-f64:64:64-n32";
   UserLabelPrefix = "_";
+  MCountName = "mcount";
+  RegParmMax = 0;
+  SSERegParmMax = 0;
   HasAlignMac68kSupport = false;
 
   // Default to no types using fpret.
   RealTypeUsesObjCFPRet = 0;
 
+  // Default to not using fp2ret for __Complex long double
+  ComplexLongDoubleUsesFP2Ret = false;
+
   // Default to using the Itanium ABI.
-  GmatABI = GmatABI_Nvidia;
+  CXXABI = CXXABI_Itanium;
+
+  // Default to an empty address space map.
+  AddrSpaceMap = &DefaultAddrSpaceMap;
+
+  // Default to an unknown platform name.
+  PlatformName = "unknown";
 }
 
 // Out of line virtual dtor for TargetInfo.
@@ -72,15 +97,15 @@ TargetInfo::~TargetInfo() {}
 /// For example, SignedShort -> "short".
 const char *TargetInfo::getTypeName(IntType T) {
   switch (T) {
-  default: assert(0 && "not an integer!");
-  case Int8:      return "int8";
-  case UInt8:     return "uint8";
-  case Int16:     return "int16";
-  case UInt16:    return "uint16";
-  case Int32:     return "int32";
-  case UInt32:    return "uint32";
-  case Int64:     return "int64";
-  case UInt64:    return "uint64";
+  default: llvm_unreachable("not an integer!");
+  case SignedShort:      return "short";
+  case UnsignedShort:    return "unsigned short";
+  case SignedInt:        return "int";
+  case UnsignedInt:      return "unsigned int";
+  case SignedLong:       return "long int";
+  case UnsignedLong:     return "long unsigned int";
+  case SignedLongLong:   return "long long int";
+  case UnsignedLongLong: return "long long unsigned int";
   }
 }
 
@@ -88,15 +113,15 @@ const char *TargetInfo::getTypeName(IntType T) {
 /// integer type enum. For example, SignedLong -> "L".
 const char *TargetInfo::getTypeConstantSuffix(IntType T) {
   switch (T) {
-  default: assert(0 && "not an integer!");
-  case Int8:
-  case Int16:
-  case Int32:       return "";
-  case Int64:       return "L";
-  case UInt8:
-  case UInt16:
-  case UInt32:      return "U";
-  case UInt64:      return "UL";
+  default: llvm_unreachable("not an integer!");
+  case SignedShort:
+  case SignedInt:        return "";
+  case SignedLong:       return "L";
+  case SignedLongLong:   return "LL";
+  case UnsignedShort:
+  case UnsignedInt:      return "U";
+  case UnsignedLong:     return "UL";
+  case UnsignedLongLong: return "ULL";
   }
 }
 
@@ -104,15 +129,15 @@ const char *TargetInfo::getTypeConstantSuffix(IntType T) {
 /// enum. For example, SignedInt -> getIntWidth().
 unsigned TargetInfo::getTypeWidth(IntType T) const {
   switch (T) {
-  default: assert(0 && "not an integer!");
-  case Int8:
-  case UInt8:    return getShortWidth();
-  case Int16:
-  case UInt16:   return getIntWidth();
-  case Int32:
-  case UInt32:   return getLongWidth();
-  case Int64:
-  case UInt64:   return getLongLongWidth();
+  default: llvm_unreachable("not an integer!");
+  case SignedShort:
+  case UnsignedShort:    return getShortWidth();
+  case SignedInt:
+  case UnsignedInt:      return getIntWidth();
+  case SignedLong:
+  case UnsignedLong:     return getLongWidth();
+  case SignedLongLong:
+  case UnsignedLongLong: return getLongLongWidth();
   };
 }
 
@@ -120,32 +145,32 @@ unsigned TargetInfo::getTypeWidth(IntType T) const {
 /// enum. For example, SignedInt -> getIntAlign().
 unsigned TargetInfo::getTypeAlign(IntType T) const {
   switch (T) {
-  default: assert(0 && "not an integer!");
-  case Int8:
-  case UInt8:    return getShortAlign();
-  case Int16:
-  case UInt16:      return getIntAlign();
-  case Int32:
-  case UInt32:     return getLongAlign();
-  case Int64:
-  case UInt64: return getLongLongAlign();
+  default: llvm_unreachable("not an integer!");
+  case SignedShort:
+  case UnsignedShort:    return getShortAlign();
+  case SignedInt:
+  case UnsignedInt:      return getIntAlign();
+  case SignedLong:
+  case UnsignedLong:     return getLongAlign();
+  case SignedLongLong:
+  case UnsignedLongLong: return getLongLongAlign();
   };
 }
 
 /// isTypeSigned - Return whether an integer types is signed. Returns true if
 /// the type is signed; false otherwise.
-bool TargetInfo::isTypeSigned(IntType T) const {
+bool TargetInfo::isTypeSigned(IntType T) {
   switch (T) {
-  default: assert(0 && "not an integer!");
-  case Int8:
-  case Int16:
-  case Int32:
-  case Int64:
+  default: llvm_unreachable("not an integer!");
+  case SignedShort:
+  case SignedInt:
+  case SignedLong:
+  case SignedLongLong:
     return true;
-  case UInt8:
-  case UInt16:
-  case UInt32:
-  case UInt64:
+  case UnsignedShort:
+  case UnsignedInt:
+  case UnsignedLong:
+  case UnsignedLongLong:
     return false;
   };
 }
@@ -155,23 +180,31 @@ bool TargetInfo::isTypeSigned(IntType T) const {
 /// language options which change the target configuration.
 void TargetInfo::setForcedLangOptions(LangOptions &Opts) {
   if (Opts.ShortWChar)
-    WCharType = UInt8;
+    WCharType = UnsignedShort;
 }
 
 //===----------------------------------------------------------------------===//
 
 
-static llvm::StringRef removeGCCRegisterPrefix(llvm::StringRef Name) {
+static StringRef removeGCCRegisterPrefix(StringRef Name) {
   if (Name[0] == '%' || Name[0] == '#')
     Name = Name.substr(1);
 
   return Name;
 }
 
+/// isValidClobber - Returns whether the passed in string is
+/// a valid clobber in an inline asm statement. This is used by
+/// Sema.
+bool TargetInfo::isValidClobber(StringRef Name) const {
+  return (isValidGCCRegisterName(Name) ||
+	  Name == "memory" || Name == "cc");
+}
+
 /// isValidGCCRegisterName - Returns whether the passed in string
 /// is a valid register name according to GCC. This is used by Sema for
 /// inline asm statements.
-bool TargetInfo::isValidGCCRegisterName(llvm::StringRef Name) const {
+bool TargetInfo::isValidGCCRegisterName(StringRef Name) const {
   if (Name.empty())
     return false;
 
@@ -180,9 +213,6 @@ bool TargetInfo::isValidGCCRegisterName(llvm::StringRef Name) const {
 
   // Get rid of any register prefix.
   Name = removeGCCRegisterPrefix(Name);
-
-  if (Name == "memory" || Name == "cc")
-    return true;
 
   getGCCRegNames(Names, NumNames);
 
@@ -197,6 +227,20 @@ bool TargetInfo::isValidGCCRegisterName(llvm::StringRef Name) const {
   for (unsigned i = 0; i < NumNames; i++) {
     if (Name == Names[i])
       return true;
+  }
+
+  // Check any additional names that we have.
+  const AddlRegName *AddlNames;
+  unsigned NumAddlNames;
+  getGCCAddlRegNames(AddlNames, NumAddlNames);
+  for (unsigned i = 0; i < NumAddlNames; i++)
+    for (unsigned j = 0; j < llvm::array_lengthof(AddlNames[i].Names); j++) {
+      if (!AddlNames[i].Names[j])
+	break;
+      // Make sure the register that the additional name is for is within
+      // the bounds of the register names from above.
+      if (AddlNames[i].Names[j] == Name && AddlNames[i].RegNum < NumNames)
+	return true;
   }
 
   // Now check aliases.
@@ -216,8 +260,8 @@ bool TargetInfo::isValidGCCRegisterName(llvm::StringRef Name) const {
   return false;
 }
 
-llvm::StringRef
-TargetInfo::getNormalizedGCCRegisterName(llvm::StringRef Name) const {
+StringRef
+TargetInfo::getNormalizedGCCRegisterName(StringRef Name) const {
   assert(isValidGCCRegisterName(Name) && "Invalid register passed in");
 
   // Get rid of any register prefix.
@@ -237,6 +281,20 @@ TargetInfo::getNormalizedGCCRegisterName(llvm::StringRef Name) const {
       return Names[n];
     }
   }
+
+  // Check any additional names that we have.
+  const AddlRegName *AddlNames;
+  unsigned NumAddlNames;
+  getGCCAddlRegNames(AddlNames, NumAddlNames);
+  for (unsigned i = 0; i < NumAddlNames; i++)
+    for (unsigned j = 0; j < llvm::array_lengthof(AddlNames[i].Names); j++) {
+      if (!AddlNames[i].Names[j])
+	break;
+      // Make sure the register that the additional name is for is within
+      // the bounds of the register names from above.
+      if (AddlNames[i].Names[j] == Name && AddlNames[i].RegNum < NumNames)
+	return Name;
+    }
 
   // Now check aliases.
   const GCCRegAlias *Aliases;
@@ -354,7 +412,7 @@ bool TargetInfo::validateInputConstraint(ConstraintInfo *OutputConstraints,
         if (OutputConstraints[i].isReadWrite())
           return false;
 
-        // If the constraint is already tied, it must be tied to the
+        // If the constraint is already tied, it must be tied to the 
         // same operand referenced to by the number.
         if (Info.hasTiedOperand() && Info.getTiedOperand() != i)
           return false;
@@ -374,7 +432,7 @@ bool TargetInfo::validateInputConstraint(ConstraintInfo *OutputConstraints,
       if (!resolveSymbolicName(Name, OutputConstraints, NumOutputs, Index))
         return false;
 
-      // If the constraint is already tied, it must be tied to the
+      // If the constraint is already tied, it must be tied to the 
       // same operand referenced to by the number.
       if (Info.hasTiedOperand() && Info.getTiedOperand() != Index)
         return false;
@@ -419,7 +477,7 @@ bool TargetInfo::validateInputConstraint(ConstraintInfo *OutputConstraints,
     case ',': // multiple alternative constraint.  Ignore comma.
       break;
     case '?': // Disparage slightly code.
-    case '!': // Disparage severly.
+    case '!': // Disparage severely.
       break;  // Pass them.
     }
 

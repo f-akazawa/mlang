@@ -10,16 +10,17 @@
 //===----------------------------------------------------------------------===//
 
 #include "mlang/Basic/Builtins.h"
+#include "mlang/Basic/LangOptions.h"
 #include "mlang/Basic/IdentifierTable.h"
 #include "mlang/Basic/TargetInfo.h"
 using namespace mlang;
 
 static const Builtin::Info BuiltinInfo[] = {
-  { "not a builtin function", 0, 0, 0, 0, ALL_LANGUAGES, false },
-#define BUILTIN(ID, RETTYPE, ARGTYPE, ATTRS) \
-	{ #ID, RETTYPE, ARGTYPE, ATTRS, 0, ALL_LANGUAGES, false },
-#define LIBBUILTIN(ID, RETTYPE, ARGTYPE, ATTRS, HEADER) \
-	{ #ID, RETTYPE, ARGTYPE, ATTRS, HEADER, ALL_LANGUAGES, false },
+  { "not a builtin function", 0, 0, 0, ALL_LANGUAGES },
+#define BUILTIN(ID, TYPE, ATTRS) \
+	{ #ID, TYPE, ATTRS, 0, ALL_LANGUAGES },
+#define LIBBUILTIN(ID, TYPE, ATTRS, HEADER, BUILTIN_LANG) \
+	{ #ID, TYPE, ATTRS, HEADER, BUILTIN_LANG },
 #include "mlang/Basic/Builtins.def"
 };
 
@@ -30,10 +31,14 @@ const Builtin::Info &Builtin::Context::GetRecord(unsigned ID) const {
   return TSRecords[ID - Builtin::FirstTSBuiltin];
 }
 
-Builtin::Context::Context(const TargetInfo &Target) {
+Builtin::Context::Context() {
   // Get the target specific builtins from the target.
   TSRecords = 0;
   NumTSRecords = 0;
+}
+
+void Builtin::Context::InitializeTarget(const TargetInfo &Target) {
+  assert(NumTSRecords == 0 && "Already initialized target?");
   Target.getTargetBuiltins(TSRecords, NumTSRecords);
 }
 
@@ -41,19 +46,20 @@ Builtin::Context::Context(const TargetInfo &Target) {
 /// appropriate builtin ID # and mark any non-portable builtin identifiers as
 /// such.
 void Builtin::Context::InitializeBuiltins(IdentifierTable &Table,
-                                          bool NoBuiltins) {
+                                          const LangOptions& LangOpts) {
+#if 0
   // Step #1: mark all target-independent builtins with their ID's.
   for (unsigned i = Builtin::NotBuiltin+1; i != Builtin::FirstTSBuiltin; ++i)
-    if (!BuiltinInfo[i].Suppressed &&
-        (!NoBuiltins || !strchr(BuiltinInfo[i].Attributes, 'f')))
-      Table.get(BuiltinInfo[i].Name).setBuiltinID(i);
+     if (!LangOpts.NoBuiltin || !strchr(BuiltinInfo[i].Attributes, 'f')) {
+       if (LangOpts.ObjC1 ||
+           BuiltinInfo[i].builtin_lang != mlang::OBJC_LANG)
+         Table.get(BuiltinInfo[i].Name).setBuiltinID(i);
+     }
+#endif
 
   // Step #2: Register target-specific builtins.
   for (unsigned i = 0, e = NumTSRecords; i != e; ++i)
-    if (!TSRecords[i].Suppressed &&
-        (!NoBuiltins ||
-         (TSRecords[i].Attributes &&
-          !strchr(TSRecords[i].Attributes, 'f'))))
+    if (!LangOpts.NoBuiltin || !strchr(TSRecords[i].Attributes, 'f'))
       Table.get(TSRecords[i].Name).setBuiltinID(i+Builtin::FirstTSBuiltin);
 }
 
@@ -62,17 +68,17 @@ Builtin::Context::GetBuiltinNames(llvm::SmallVectorImpl<const char *> &Names,
                                   bool NoBuiltins) {
   // Final all target-independent names
   for (unsigned i = Builtin::NotBuiltin+1; i != Builtin::FirstTSBuiltin; ++i)
-    if (!BuiltinInfo[i].Suppressed &&
-        (!NoBuiltins || !strchr(BuiltinInfo[i].Attributes, 'f')))
+    if (!NoBuiltins || !strchr(BuiltinInfo[i].Attributes, 'f'))
       Names.push_back(BuiltinInfo[i].Name);
 
   // Find target-specific names.
   for (unsigned i = 0, e = NumTSRecords; i != e; ++i)
-    if (!TSRecords[i].Suppressed &&
-        (!NoBuiltins ||
-         (TSRecords[i].Attributes &&
-          !strchr(TSRecords[i].Attributes, 'f'))))
+    if (!NoBuiltins || !strchr(TSRecords[i].Attributes, 'f'))
       Names.push_back(TSRecords[i].Name);
+}
+
+void Builtin::Context::ForgetBuiltin(unsigned ID, IdentifierTable &Table) {
+  Table.get(GetRecord(ID).Name).setBuiltinID(0);
 }
 
 bool
@@ -111,5 +117,4 @@ Builtin::Context::isScanfLike(unsigned ID, unsigned &FormatIdx,
   FormatIdx = strtol(Scanf, 0, 10);
   return true;
 }
-
 

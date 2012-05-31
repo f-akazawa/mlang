@@ -47,27 +47,27 @@ class DirectoryLookup;
 /// Mainly deal with various comments in source files. And prepare related source
 /// for lexer. Currently we don't support pragma like directives.
 class Preprocessor : public llvm::RefCountedBase<Preprocessor> {
-	Diagnostic *Diags;
-	LangOptions Features;
-	const TargetInfo &Target;
-	FileManager &FileMgr;
-	SourceManager &SourceMgr;
-	ScratchBuffer *ScratchBuf;
-	ImportSearch &ImportInfo;
+  DiagnosticsEngine *Diags;
+  const LangOptions &Features;
+  const TargetInfo &Target;
+  FileManager &FileMgr;
+  SourceManager &SourceMgr;
+  ScratchBuffer *ScratchBuf;
+  ImportSearch &ImportInfo;
 
-	/// BP - A BumpPtrAllocator object used to quickly allocate and release
-	///  objects internal to the Preprocessor.
-	llvm::BumpPtrAllocator BP;
+  /// BP - A BumpPtrAllocator object used to quickly allocate and release
+  ///  objects internal to the Preprocessor.
+  llvm::BumpPtrAllocator BP;
 
-	/// Identifiers for builtin macros and other builtins.
-	IdentifierInfo *Ident__LINE__, *Ident__FILE__; // __LINE__, __FILE__
-	IdentifierInfo *Ident__DATE__, *Ident__TIME__; // __DATE__, __TIME__
-	IdentifierInfo *Ident__INCLUDE_LEVEL__; // __INCLUDE_LEVEL__
-	IdentifierInfo *Ident__BASE_FILE__; // __BASE_FILE__
-	IdentifierInfo *Ident__TIMESTAMP__; // __TIMESTAMP__
-	IdentifierInfo *Ident__COUNTER__; // __COUNTER__
-	IdentifierInfo *Ident_Pragma, *Ident__pragma; // _Pragma, __pragma
-	IdentifierInfo *Ident__VA_ARGS__; // __VA_ARGS__
+  /// Identifiers for builtin macros and other builtins.
+  IdentifierInfo *Ident__LINE__, *Ident__FILE__; // __LINE__, __FILE__
+  IdentifierInfo *Ident__DATE__, *Ident__TIME__; // __DATE__, __TIME__
+  IdentifierInfo *Ident__INCLUDE_LEVEL__; // __INCLUDE_LEVEL__
+  IdentifierInfo *Ident__BASE_FILE__; // __BASE_FILE__
+  IdentifierInfo *Ident__TIMESTAMP__; // __TIMESTAMP__
+  IdentifierInfo *Ident__COUNTER__; // __COUNTER__
+  IdentifierInfo *Ident_Pragma, *Ident__pragma; // _Pragma, __pragma
+  IdentifierInfo *Ident__VA_ARGS__; // __VA_ARGS__
 	IdentifierInfo *Ident__has_feature; // __has_feature
 	IdentifierInfo *Ident__has_builtin; // __has_builtin
 	IdentifierInfo *Ident__has_attribute; // __has_attribute
@@ -142,57 +142,57 @@ private:
 	std::vector<CachedTokensTy::size_type> BacktrackPositions;
 
 public:
-	Preprocessor(Diagnostic &diags, const LangOptions &opts,
-			const TargetInfo &target, SourceManager &SM,
-			ImportSearch &Imports, IdentifierInfoLookup *IILookup = 0);
+  Preprocessor(DiagnosticsEngine &diags, const LangOptions &opts,
+               const TargetInfo &target, SourceManager &SM,
+               ImportSearch &Imports, IdentifierInfoLookup *IILookup = 0);
 
-	~Preprocessor();
+  ~Preprocessor();
 
-	Diagnostic &getDiagnostics() const {
-		return *Diags;
-	}
-	void setDiagnostics(Diagnostic &D) {
-		Diags = &D;
-	}
+  DiagnosticsEngine &getDiagnostics() const {
+    return *Diags;
+  }
 
-	const LangOptions &getLangOptions() const {
-		return Features;
-	}
-	const TargetInfo &getTargetInfo() const {
-		return Target;
-	}
-	FileManager &getFileManager() const {
-		return FileMgr;
-	}
-	SourceManager &getSourceManager() const {
-		return SourceMgr;
-	}
-	ImportSearch &getImportSearchInfo() const {
-		return ImportInfo;
-	}
-	IdentifierTable &getIdentifierTable() {
-		return Identifiers;
-	}
-	Builtin::Context &getBuiltinInfo() {
-		return BuiltinInfo;
-	}
-	llvm::BumpPtrAllocator &getPreprocessorAllocator() {
-		return BP;
-	}
+  void setDiagnostics(DiagnosticsEngine &D) {
+    Diags = &D;
+  }
 
-	/// SetCommentRetentionState - Control whether or not the preprocessor retains
-	/// comments in output.
-	void SetCommentRetentionState(bool KeepComments) {
-		this->KeepComments = KeepComments;
-	}
+  const LangOptions &getLangOptions() const {
+    return Features;
+  }
+  const TargetInfo &getTargetInfo() const {
+    return Target;
+  }
+  FileManager &getFileManager() const {
+    return FileMgr;
+  }
+  SourceManager &getSourceManager() const {
+    return SourceMgr;
+  }
+  ImportSearch &getImportSearchInfo() const {
+    return ImportInfo;
+  }
+  IdentifierTable &getIdentifierTable() {
+    return Identifiers;
+  }
+  Builtin::Context &getBuiltinInfo() {
+    return BuiltinInfo;
+  }
+  llvm::BumpPtrAllocator &getPreprocessorAllocator() {
+    return BP;
+  }
+  /// SetCommentRetentionState - Control whether or not the preprocessor retains
+  /// comments in output.
+  void SetCommentRetentionState(bool KeepComments) {
+    this->KeepComments = KeepComments;
+  }
 
-	bool getCommentRetentionState() const {
-		return KeepComments;
-	}
+  bool getCommentRetentionState() const {
+    return KeepComments;
+  }
 
-	/// isCurrentLexer - Return true if we are lexing directly from the specified
-	/// lexer.
-	bool isCurrentLexer(const PreprocessorLexer *L) const {
+  /// isCurrentLexer - Return true if we are lexing directly from the specified
+  /// lexer.
+  bool isCurrentLexer(const PreprocessorLexer *L) const {
 		//return CurLexer == L;
 		return true;
 	}

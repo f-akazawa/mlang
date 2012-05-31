@@ -21,15 +21,23 @@
 namespace mlang {
 class PartialDiagnostic {
 public:
+  enum {
+    // The MaxArguments and MaxFixItHints member enum values from
+    // DiagnosticsEngine are private but DiagnosticsEngine declares
+    // PartialDiagnostic a friend.  These enum values are redeclared
+    // here so that the nested Storage class below can access them.
+    MaxArguments = DiagnosticsEngine::MaxArguments
+  };
+
   struct Storage {
-    Storage() : NumDiagArgs(0), NumDiagRanges(0), NumFixItHints(0) { }
+    Storage() : NumDiagArgs(0), NumDiagRanges(0) { }
 
     enum {
         /// MaxArguments - The maximum number of arguments we can hold. We
         /// currently only support up to 10 arguments (%0-%9).
         /// A single diagnostic with more than that almost certainly has to
         /// be simplified anyway.
-        MaxArguments = 10
+        MaxArguments = PartialDiagnostic::MaxArguments
     };
 
     /// NumDiagArgs - This contains the number of entries in Arguments.
@@ -37,10 +45,6 @@ public:
 
     /// NumDiagRanges - This is the number of ranges in the DiagRanges array.
     unsigned char NumDiagRanges;
-
-    /// \brief The number of code modifications hints in the
-    /// FixItHints array.
-    unsigned char NumFixItHints;
 
     /// DiagArgumentsKind - This is an array of ArgumentKind::ArgumentKind enum
     /// values, with one for each argument.  This specifies whether the argument
@@ -61,11 +65,9 @@ public:
     /// only support 10 ranges, could easily be extended if needed.
     CharSourceRange DiagRanges[10];
 
-    enum { MaxFixItHints = 3 };
-
     /// FixItHints - If valid, provides a hint with some code
     /// to insert, remove, or modify at a particular position.
-    FixItHint FixItHints[MaxFixItHints];
+    SmallVector<FixItHint, 6>  FixItHints;
   };
 
   /// \brief An allocator for Storage objects, which uses a small cache to
@@ -88,7 +90,7 @@ public:
       Storage *Result = FreeList[--NumFreeListEntries];
       Result->NumDiagArgs = 0;
       Result->NumDiagRanges = 0;
-      Result->NumFixItHints = 0;
+      Result->FixItHints.clear();
       return Result;
     }
 
@@ -159,13 +161,16 @@ private:
     if (!DiagStorage)
       DiagStorage = getStorage();
 
-    assert(DiagStorage->NumFixItHints < Storage::MaxFixItHints &&
-           "Too many code modification hints!");
-    DiagStorage->FixItHints[DiagStorage->NumFixItHints++]
-      = Hint;
-  }
+    DiagStorage->FixItHints.push_back(Hint);
+ }
 
 public:
+  struct NullDiagnostic {};
+  /// \brief Create a null partial diagnostic, which cannot carry a payload,
+  /// and only exists to be swapped with a real partial diagnostic.
+  PartialDiagnostic(NullDiagnostic)
+    : DiagID(0), DiagStorage(0), Allocator(0) { }
+
   PartialDiagnostic(unsigned DiagID, StorageAllocator &Allocator)
     : DiagID(DiagID), DiagStorage(0), Allocator(&Allocator) { }
 
@@ -186,12 +191,12 @@ public:
       *this->DiagStorage = *Other.DiagStorage;
   }
 
-  PartialDiagnostic(const DiagnosticInfo &Other, StorageAllocator &Allocator)
+  PartialDiagnostic(const Diagnostic &Other, StorageAllocator &Allocator)
     : DiagID(Other.getID()), DiagStorage(0), Allocator(&Allocator)
   {
     // Copy arguments.
     for (unsigned I = 0, N = Other.getNumArgs(); I != N; ++I) {
-      if (Other.getArgKind(I) == Diagnostic::ak_std_string)
+      if (Other.getArgKind(I) == DiagnosticsEngine::ak_std_string)
         AddString(Other.getArgStdStr(I));
       else
         AddTaggedVal(Other.getRawArg(I), Other.getArgKind(I));
@@ -224,9 +229,15 @@ public:
     freeStorage();
   }
 
+  void swap(PartialDiagnostic &PD) {
+    std::swap(DiagID, PD.DiagID);
+    std::swap(DiagStorage, PD.DiagStorage);
+    std::swap(Allocator, PD.Allocator);
+  }
+
   unsigned getDiagID() const { return DiagID; }
 
-  void AddTaggedVal(intptr_t V, Diagnostic::ArgumentKind Kind) const {
+  void AddTaggedVal(intptr_t V, DiagnosticsEngine::ArgumentKind Kind) const {
     if (!DiagStorage)
       DiagStorage = getStorage();
 
@@ -243,7 +254,7 @@ public:
     assert(DiagStorage->NumDiagArgs < Storage::MaxArguments &&
            "Too many arguments to diagnostic!");
     DiagStorage->DiagArgumentsKind[DiagStorage->NumDiagArgs]
-      = Diagnostic::ak_std_string;
+      = DiagnosticsEngine::ak_std_string;
     DiagStorage->DiagArgumentsStr[DiagStorage->NumDiagArgs++] = V;
   }
 
@@ -253,12 +264,12 @@ public:
 
     // Add all arguments.
     for (unsigned i = 0, e = DiagStorage->NumDiagArgs; i != e; ++i) {
-      if ((Diagnostic::ArgumentKind)DiagStorage->DiagArgumentsKind[i]
-            == Diagnostic::ak_std_string)
+      if ((DiagnosticsEngine::ArgumentKind)DiagStorage->DiagArgumentsKind[i]
+            == DiagnosticsEngine::ak_std_string)
         DB.AddString(DiagStorage->DiagArgumentsStr[i]);
       else
         DB.AddTaggedVal(DiagStorage->DiagArgumentsVal[i],
-                   (Diagnostic::ArgumentKind)DiagStorage->DiagArgumentsKind[i]);
+            (DiagnosticsEngine::ArgumentKind)DiagStorage->DiagArgumentsKind[i]);
     }
 
     // Add all ranges.
@@ -266,8 +277,20 @@ public:
       DB.AddSourceRange(DiagStorage->DiagRanges[i]);
 
     // Add all fix-its.
-    for (unsigned i = 0, e = DiagStorage->NumFixItHints; i != e; ++i)
+    for (unsigned i = 0, e = DiagStorage->FixItHints.size(); i != e; ++i)
       DB.AddFixItHint(DiagStorage->FixItHints[i]);
+  }
+
+  void EmitToString(DiagnosticsEngine &Diags,
+                    llvm::SmallVectorImpl<char> &Buf) const {
+    // FIXME: It should be possible to render a diagnostic to a string without
+    //        messing with the state of the diagnostics engine.
+    DiagnosticBuilder DB(Diags.Report(getDiagID()));
+    Emit(DB);
+    DB.FlushCounts();
+    Diagnostic(&Diags).FormatDiagnostic(Buf);
+    DB.Clear();
+    Diags.Clear();
   }
 
   /// \brief Clear out this partial diagnostic, giving it a new diagnostic ID
@@ -281,19 +304,20 @@ public:
 
   friend const PartialDiagnostic &operator<<(const PartialDiagnostic &PD,
                                              unsigned I) {
-    PD.AddTaggedVal(I, Diagnostic::ak_uint);
+    PD.AddTaggedVal(I, DiagnosticsEngine::ak_uint);
     return PD;
   }
 
   friend const PartialDiagnostic &operator<<(const PartialDiagnostic &PD,
                                              int I) {
-    PD.AddTaggedVal(I, Diagnostic::ak_sint);
+    PD.AddTaggedVal(I, DiagnosticsEngine::ak_sint);
     return PD;
   }
 
   friend inline const PartialDiagnostic &operator<<(const PartialDiagnostic &PD,
                                                     const char *S) {
-    PD.AddTaggedVal(reinterpret_cast<intptr_t>(S), Diagnostic::ak_c_string);
+    PD.AddTaggedVal(reinterpret_cast<intptr_t>(S),
+                    DiagnosticsEngine::ak_c_string);
     return PD;
   }
 

@@ -21,7 +21,7 @@
 
 namespace mlang {
 
-class Diagnostic;
+class DiagnosticsEngine;
 class Preprocessor;
 class Token;
 class SourceLocation;
@@ -142,8 +142,8 @@ class StringLiteralParser {
   const SourceManager &SM;
   const LangOptions &Features;
   const TargetInfo &Target;
-  Diagnostic *Diags;
-  
+  DiagnosticsEngine *Diags;
+
   unsigned MaxTokenLength;
   unsigned SizeBound;
   unsigned wchar_tByteWidth;
@@ -154,11 +154,10 @@ public:
                       Preprocessor &PP, bool Complain = true);
   StringLiteralParser(const Token *StringToks, unsigned NumStringToks,
                       const SourceManager &sm, const LangOptions &features,
-                      const TargetInfo &target, Diagnostic *diags = 0)
+                      const TargetInfo &target, DiagnosticsEngine *diags = 0)
     : SM(sm), Features(features), Target(target), Diags(diags) {
     init(StringToks, NumStringToks);
   }
-    
 
   bool hadError;
   bool AnyWide;
@@ -172,6 +171,7 @@ public:
       return GetStringLength() / wchar_tByteWidth;
     return GetStringLength();
   }
+
   /// getOffsetOfStringByte - This function returns the offset of the
   /// specified byte of the string data represented by Token.  This handles
   /// advancing over escape sequences in the string.
@@ -179,7 +179,7 @@ public:
   /// If the Diagnostics pointer is non-null, then this will do semantic
   /// checking of the string literal and emit errors and warnings.
   unsigned getOffsetOfStringByte(const Token &TheTok, unsigned ByteNo) const;
-  
+
 private:
   void init(const Token *StringToks, unsigned NumStringToks);
 };

@@ -4,7 +4,7 @@
 # Indicates our relative path to the top of the project's root directory.
 #
 LEVEL = ../..
-DIRS = Diag 
+DIRS = Diag
 
 #
 # Include Makefile.common so we know what to do.

@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
-// 
+//
 //===----------------------------------------------------------------------===//
 //
 //  This file defines the NestedNameSpecifier class.
@@ -172,12 +172,12 @@ public:
   void dump(const LangOptions &LO);
 };
 
-/// Insertion operator for diagnostics.  This allows sending NestedNameSpecifiers
+/// Insertion operator for diagnostics. This allows sending NestedNameSpecifiers
 /// into a diagnostic with <<.
 inline const DiagnosticBuilder &operator<<(const DiagnosticBuilder &DB,
                                            NestedNameSpecifier *NNS) {
   DB.AddTaggedVal(reinterpret_cast<intptr_t>(NNS),
-                  Diagnostic::ak_nestednamespec);
+                  DiagnosticsEngine::ak_nestednamespec);
   return DB;
 }
 

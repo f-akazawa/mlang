@@ -43,7 +43,7 @@ namespace mlang {
   class ClassMethodDefn;
   class Defn;
   class DefinitionNameTable;
-  class Diagnostic;
+  class DiagnosticsEngine;
   class Expr;
   class ExternalASTSource;
   class FileManager;
@@ -148,7 +148,7 @@ public:
 
   const LangOptions& getLangOptions() const { return LangOpts; }
 
-  Diagnostic &getDiagnostics() const;
+  DiagnosticsEngine &getDiagnostics() const;
 
   FullSourceLoc getFullLoc(SourceLocation Loc) const {
     return FullSourceLoc(Loc, getSourceManager());
@@ -232,10 +232,10 @@ public:
   Type getNDArrayType(Type T, DimVector &DV) const;
   Type getVectorType(Type T, unsigned NumElts, VectorType::VectorKind K,
 		  bool isRowVec) const;
-  Type getFunctionNoProtoType(Type T, FunctionType::ExtInfo E);
+  Type getFunctionNoProtoType(Type T, FunctionType::ExtInfo E) const;
   Type getFunctionType(Type ResultTy,
                        const Type *Args, unsigned NumArgs,
-                       const FunctionProtoType::ExtProtoInfo &EPI);
+                       const FunctionProtoType::ExtProtoInfo &EPI) const;
   Type getFunctionHandleType(Type T) const;
 
   enum GetBuiltinTypeError {
@@ -244,12 +244,12 @@ public:
      GE_Missing_setjmp     //< Missing a type from <setjmp.h>
    };
 
-  /// GetBuiltinFunctionType - Return the type for the specified builtin.  If
+  /// GetBuiltinType - Return the type for the specified builtin.  If
   /// IntegerConstantArgs is non-null, it is filled in with a bitmask of
   /// arguments to the builtin that are required to be integer constant
   /// expressions.
-  Type GetBuiltinFunctionType(unsigned ID, GetBuiltinTypeError &Error,
-		  unsigned *IntegerConstantArgs = 0);
+  Type GetBuiltinType(unsigned ID, GetBuiltinTypeError &Error,
+		      unsigned *IntegerConstantArgs = 0) const;
 
 private:
   Type getFromTargetType(unsigned nType) const;

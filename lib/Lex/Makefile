@@ -14,4 +14,3 @@ LIBRARYNAME = mlangLex
 # Include Makefile.common so we know what to do.
 #
 include $(LEVEL)/Makefile.common
-	

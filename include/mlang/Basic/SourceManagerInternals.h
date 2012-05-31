@@ -1,7 +1,9 @@
 //===--- SourceManagerInternals.h - SourceManager Internals -----*- C++ -*-===//
 //
-// Copyright (C) 2010 yabin @ CGCL
-// HuaZhong University of Science and Technology, China
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -10,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef MLANG_SOURCEMANAGER_INTERNALS_H_
-#define MLANG_SOURCEMANAGER_INTERNALS_H_
+#ifndef MLANG_SOURCEMANAGER_INTERNALS_H
+#define MLANG_SOURCEMANAGER_INTERNALS_H
 
 #include "mlang/Basic/SourceManager.h"
 #include "llvm/ADT/StringMap.h"
@@ -82,7 +84,7 @@ class LineTableInfo {
 
   /// LineEntries - This is a map from FileIDs to a list of line entries (sorted
   /// by the offset they occur in the file.
-  std::map<unsigned, std::vector<LineEntry> > LineEntries;
+  std::map<int, std::vector<LineEntry> > LineEntries;
 public:
   LineTableInfo() {
   }
@@ -95,34 +97,34 @@ public:
 
   ~LineTableInfo() {}
 
-  unsigned getLineTableFilenameID(llvm::StringRef Name);
+  unsigned getLineTableFilenameID(StringRef Str);
   const char *getFilename(unsigned ID) const {
     assert(ID < FilenamesByID.size() && "Invalid FilenameID");
     return FilenamesByID[ID]->getKeyData();
   }
   unsigned getNumFilenames() const { return FilenamesByID.size(); }
 
-  void AddLineNote(unsigned FID, unsigned Offset,
+  void AddLineNote(int FID, unsigned Offset,
                    unsigned LineNo, int FilenameID);
-  void AddLineNote(unsigned FID, unsigned Offset,
+  void AddLineNote(int FID, unsigned Offset,
                    unsigned LineNo, int FilenameID,
                    unsigned EntryExit, SrcMgr::CharacteristicKind FileKind);
 
 
   /// FindNearestLineEntry - Find the line entry nearest to FID that is before
   /// it.  If there is no line entry before Offset in FID, return null.
-  const LineEntry *FindNearestLineEntry(unsigned FID, unsigned Offset);
+  const LineEntry *FindNearestLineEntry(int FID, unsigned Offset);
 
   // Low-level access
-  typedef std::map<unsigned, std::vector<LineEntry> >::iterator iterator;
+  typedef std::map<int, std::vector<LineEntry> >::iterator iterator;
   iterator begin() { return LineEntries.begin(); }
   iterator end() { return LineEntries.end(); }
 
   /// \brief Add a new line entry that has already been encoded into
   /// the internal representation of the line table.
-  void AddEntry(unsigned FID, const std::vector<LineEntry> &Entries);
+  void AddEntry(int FID, const std::vector<LineEntry> &Entries);
 };
 
 } // end namespace mlang
 
-#endif /* MLANG_SOURCEMANAGER_INTERNALS_H_ */
+#endif

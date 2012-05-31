@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
-// 
+//
 //===----------------------------------------------------------------------===//
 //
 //  This file implements the Lexer interfaces.
@@ -229,85 +229,85 @@ static bool isWhitespace(unsigned char c);
 /// that are part of that.
 unsigned Lexer::MeasureTokenLength(SourceLocation Loc, const SourceManager &SM,
 		const LangOptions &LangOpts) {
-	// TODO: this could be special cased for common tokens like identifiers, ')',
-	// etc to make this faster, if it mattered.  Just look at StrData[0] to handle
-	// all obviously single-char tokens.  This could use
-	// Lexer::isObviouslySimpleCharacter for example to handle identifiers or
-	// something.
+  // TODO: this could be special cased for common tokens like identifiers, ')',
+  // etc to make this faster, if it mattered.  Just look at StrData[0] to handle
+  // all obviously single-char tokens.  This could use
+  // Lexer::isObviouslySimpleCharacter for example to handle identifiers or
+  // something.
 
-	// If this comes from a macro expansion, we really do want the macro name, not
-	// the token this macro expanded to.
-	Loc = SM.getInstantiationLoc(Loc);
-	std::pair<FileID, unsigned> LocInfo = SM.getDecomposedLoc(Loc);
-	bool Invalid = false;
-	llvm::StringRef Buffer = SM.getBufferData(LocInfo.first, &Invalid);
-	if (Invalid)
-		return 0;
+  // If this comes from a macro expansion, we really do want the macro name, not
+  // the token this macro expanded to.
+  Loc = SM.getExpansionLoc(Loc);
+  std::pair<FileID, unsigned> LocInfo = SM.getDecomposedLoc(Loc);
+  bool Invalid = false;
+  llvm::StringRef Buffer = SM.getBufferData(LocInfo.first, &Invalid);
+  if (Invalid)
+    return 0;
 
-	const char *StrData = Buffer.data() + LocInfo.second;
+  const char *StrData = Buffer.data() + LocInfo.second;
 
-	if (isWhitespace(StrData[0]))
-		return 0;
+  if (isWhitespace(StrData[0]))
+    return 0;
 
-	// Create a lexer starting at the beginning of this token.
-	Lexer TheLexer(SM.getLocForStartOfFile(LocInfo.first), LangOpts,
-			Buffer.begin(), StrData, Buffer.end());
-	TheLexer.SetCommentRetentionState(true);
-	Token TheTok;
-	TheLexer.LexFromRawLexer(TheTok);
-	return TheTok.getLength();
+  // Create a lexer starting at the beginning of this token.
+  Lexer TheLexer(SM.getLocForStartOfFile(LocInfo.first), LangOpts,
+                 Buffer.begin(), StrData, Buffer.end());
+  TheLexer.SetCommentRetentionState(true);
+  Token TheTok;
+  TheLexer.LexFromRawLexer(TheTok);
+  return TheTok.getLength();
 }
 
 SourceLocation Lexer::GetBeginningOfToken(SourceLocation Loc,
 		const SourceManager &SM, const LangOptions &LangOpts) {
-	std::pair<FileID, unsigned> LocInfo = SM.getDecomposedLoc(Loc);
-	bool Invalid = false;
-	llvm::StringRef Buffer = SM.getBufferData(LocInfo.first, &Invalid);
-	if (Invalid)
-		return Loc;
+  std::pair<FileID, unsigned> LocInfo = SM.getDecomposedLoc(Loc);
+  bool Invalid = false;
+  llvm::StringRef Buffer = SM.getBufferData(LocInfo.first, &Invalid);
+  if (Invalid)
+    return Loc;
 
-	// Back up from the current location until we hit the beginning of a line
-	// (or the buffer). We'll relex from that point.
-	const char *BufStart = Buffer.data();
-	const char *StrData = BufStart + LocInfo.second;
-	if (StrData[0] == '\n' || StrData[0] == '\r')
-		return Loc;
+  // Back up from the current location until we hit the beginning of a line
+  // (or the buffer). We'll relex from that point.
+  const char *BufStart = Buffer.data();
+  const char *StrData = BufStart + LocInfo.second;
+  if (StrData[0] == '\n' || StrData[0] == '\r')
+    return Loc;
 
-	const char *LexStart = StrData;
-	while (LexStart != BufStart) {
-		if (LexStart[0] == '\n' || LexStart[0] == '\r') {
-			++LexStart;
-			break;
-		}
+  const char *LexStart = StrData;
+  while (LexStart != BufStart) {
+    if (LexStart[0] == '\n' || LexStart[0] == '\r') {
+      ++LexStart;
+      break;
+    }
 
-		--LexStart;
-	}
+    --LexStart;
+  }
 
-	// Create a lexer starting at the beginning of this token.
-	SourceLocation LexerStartLoc = Loc.getFileLocWithOffset(-LocInfo.second);
-	Lexer TheLexer(LexerStartLoc, LangOpts, BufStart, LexStart, Buffer.end());
-	TheLexer.SetCommentRetentionState(true);
+  // Create a lexer starting at the beginning of this token.
+  SourceLocation LexerStartLoc = Loc.getLocWithOffset(-LocInfo.second);
+  Lexer TheLexer(LexerStartLoc, LangOpts, BufStart, LexStart, Buffer.end());
+  TheLexer.SetCommentRetentionState(true);
 
-	// Lex tokens until we find the token that contains the source location.
-	Token TheTok;
-	do {
-		TheLexer.LexFromRawLexer(TheTok);
+  // Lex tokens until we find the token that contains the source location.
+  Token TheTok;
+  do {
+    TheLexer.LexFromRawLexer(TheTok);
 
-		if (TheLexer.getBufferLocation() > StrData) {
-			// Lexing this token has taken the lexer past the source location we're
-			// looking for. If the current token encompasses our source location,
-			// return the beginning of that token.
-			if (TheLexer.getBufferLocation() - TheTok.getLength() <= StrData)
-				return TheTok.getLocation();
+    if (TheLexer.getBufferLocation() > StrData) {
+      // Lexing this token has taken the lexer past the source location we're
+      // looking for. If the current token encompasses our source location,
+      // return the beginning of that token.
+      if (TheLexer.getBufferLocation() - TheTok.getLength() <= StrData)
+	return TheTok.getLocation();
 
-			// We ended up skipping over the source location entirely, which means
-			// that it points into whitespace. We're done here.
-			break;
-		}
-	} while (TheTok.getKind() != tok::EoF);
+      // We ended up skipping over the source location entirely, which means
+      // that it points into whitespace. We're done here.
+      break;
+    }
+  } while (TheTok.getKind() != tok::EoF);
 
-	// We've passed our source location; just return the original source location.
-	return Loc;
+  // We've passed our source location; just return the original source location.
+  return Loc;
 }
 
 /// AdvanceToTokenCharacter - Given a location that specifies the start of a
@@ -331,7 +331,7 @@ SourceLocation Lexer::AdvanceToTokenCharacter(SourceLocation TokStart,
 	// chars, this method is extremely fast.
 	while (Lexer::isObviouslySimpleCharacter(*TokPtr)) {
 		if (CharNo == 0)
-			return TokStart.getFileLocWithOffset(PhysOffset);
+			return TokStart.getLocWithOffset(PhysOffset);
 		++TokPtr, --CharNo, ++PhysOffset;
 	}
 
@@ -351,7 +351,7 @@ SourceLocation Lexer::AdvanceToTokenCharacter(SourceLocation TokStart,
 	if (!Lexer::isObviouslySimpleCharacter(*TokPtr))
 		PhysOffset += Lexer::SkipEscapedNewLines(TokPtr) - TokPtr;
 
-	return TokStart.getFileLocWithOffset(PhysOffset);
+	return TokStart.getLocWithOffset(PhysOffset);
 }
 
 /// \brief Computes the source location just past the end of the
@@ -595,50 +595,54 @@ static inline bool isNumberBody(unsigned char c) {
 /// lexer buffer was all instantiated at a single point, perform the mapping.
 /// This is currently only used for _Pragma implementation, so it is the slow
 /// path of the hot getSourceLocation method.  Do not allow it to be inlined.
-static /*LLVM_ATTRIBUTE_NOINLINE*/ SourceLocation GetMappedTokenLoc(Preprocessor &PP,
-		SourceLocation FileLoc, unsigned CharNo, unsigned TokLen) {
-	assert(FileLoc.isMacroID() && "Must be an instantiation");
+static LLVM_ATTRIBUTE_NOINLINE SourceLocation GetMappedTokenLoc(
+    Preprocessor &PP, SourceLocation FileLoc, unsigned CharNo, unsigned TokLen);
+static SourceLocation GetMappedTokenLoc(Preprocessor &PP,
+                                        SourceLocation FileLoc, unsigned CharNo,
+                                        unsigned TokLen) {
+  assert(FileLoc.isMacroID() && "Must be an instantiation");
 
-	// Otherwise, we're lexing "mapped tokens".  This is used for things like
-	// _Pragma handling.  Combine the instantiation location of FileLoc with the
-	// spelling location.
-	SourceManager &SM = PP.getSourceManager();
+  // Otherwise, we're lexing "mapped tokens".  This is used for things like
+  // _Pragma handling.  Combine the instantiation location of FileLoc with the
+  // spelling location.
+  SourceManager &SM = PP.getSourceManager();
 
-	// Create a new SLoc which is expanded from Instantiation(FileLoc) but whose
-	// characters come from spelling(FileLoc)+Offset.
-	SourceLocation SpellingLoc = SM.getSpellingLoc(FileLoc);
-	SpellingLoc = SpellingLoc.getFileLocWithOffset(CharNo);
+  // Create a new SLoc which is expanded from Instantiation(FileLoc) but whose
+  // characters come from spelling(FileLoc)+Offset.
+  SourceLocation SpellingLoc = SM.getSpellingLoc(FileLoc);
+  SpellingLoc = SpellingLoc.getLocWithOffset(CharNo);
 
-	// Figure out the expansion loc range, which is the range covered by the
-	// original _Pragma(...) sequence.
-	std::pair<SourceLocation, SourceLocation> II =
-			SM.getImmediateInstantiationRange(FileLoc);
+  // Figure out the expansion loc range, which is the range covered by the
+  // original _Pragma(...) sequence.
+  std::pair<SourceLocation, SourceLocation> II =
+  SM.getImmediateExpansionRange(FileLoc);
 
-	return SM.createInstantiationLoc(SpellingLoc, II.first, II.second, TokLen);
+  return SM.createExpansionLoc(SpellingLoc, II.first, II.second, TokLen);
 }
 
 /// getSourceLocation - Return a source location identifier for the specified
 /// offset in the current file.
-SourceLocation Lexer::getSourceLocation(const char *Loc, unsigned TokLen) const {
-	assert(Loc >= BufferStart && Loc <= BufferEnd
-			&& "Location out of range for this buffer!");
+SourceLocation Lexer::getSourceLocation(const char *Loc,
+                                        unsigned TokLen) const {
+  assert(Loc >= BufferStart && Loc <= BufferEnd
+         && "Location out of range for this buffer!");
 
-	// In the normal case, we're just lexing from a simple file buffer, return
-	// the file id from FileLoc with the offset specified.
-	unsigned CharNo = Loc - BufferStart;
-	if (FileLoc.isFileID())
-		return FileLoc.getFileLocWithOffset(CharNo);
+  // In the normal case, we're just lexing from a simple file buffer, return
+  // the file id from FileLoc with the offset specified.
+  unsigned CharNo = Loc - BufferStart;
+  if (FileLoc.isFileID())
+    return FileLoc.getLocWithOffset(CharNo);
 
-	// Otherwise, this is the _Pragma lexer case, which pretends that all of the
-	// tokens are lexed from where the _Pragma was defined.
-	assert(PP && "This doesn't work on raw lexers");
-	return GetMappedTokenLoc(*PP, FileLoc, CharNo, TokLen);
+  // Otherwise, this is the _Pragma lexer case, which pretends that all of the
+  // tokens are lexed from where the _Pragma was defined.
+  assert(PP && "This doesn't work on raw lexers");
+  return GetMappedTokenLoc(*PP, FileLoc, CharNo, TokLen);
 }
 
 /// Diag - Forwarding function for diagnostics.  This translate a source
 /// position in the current buffer into a SourceLocation object for rendering.
 DiagnosticBuilder Lexer::Diag(const char *Loc, unsigned DiagID) const {
-	return PP->Diag(getSourceLocation(Loc), DiagID);
+  return PP->Diag(getSourceLocation(Loc), DiagID);
 }
 
 //===----------------------------------------------------------------------===//
@@ -671,24 +675,26 @@ unsigned Lexer::getEscapedNewLineSize(const char *Ptr) {
 /// them), skip over them and return the first non-escaped-newline found,
 /// otherwise return P.
 const char *Lexer::SkipEscapedNewLines(const char *P) {
-	while (1) {
-		const char *AfterEscape;
-		if (*P == '\\') {
-			AfterEscape = P + 1;
-		} else if (*P == '?') {
-			// If not a trigraph for escape, bail out.
-			if (P[1] != '?' || P[2] != '/')
-				return P;
-			AfterEscape = P + 3;
-		} else {
-			return P;
-		}
+  while (1) {
+    const char *AfterEscape;
+    if (*P == '\\') {
+      AfterEscape = P + 1;
+    } else if (*P == '?') {
+      // If not a trigraph for escape, bail out.
+      if (P[1] != '?' || P[2] != '/')
+        return P;
 
-		unsigned NewLineSize = Lexer::getEscapedNewLineSize(AfterEscape);
-		if (NewLineSize == 0)
-			return P;
-		P = AfterEscape + NewLineSize;
-	}
+      AfterEscape = P + 3;
+    } else {
+      return P;
+    }
+
+    unsigned NewLineSize = Lexer::getEscapedNewLineSize(AfterEscape);
+    if (NewLineSize == 0)
+      return P;
+
+    P = AfterEscape + NewLineSize;
+  }
 }
 
 /// getCharAndSizeSlow - Peek a single 'character' from the specified buffer,
@@ -709,40 +715,40 @@ const char *Lexer::SkipEscapedNewLines(const char *P) {
 /// be updated to match.
 ///
 char Lexer::getCharAndSizeSlow(const char *Ptr, unsigned &Size, Token *Tok) {
-	// If we have a slash, look for an escaped newline.
-	if (Ptr[0] == '\\') {
-		++Size;
-		++Ptr;
-		Slash:
-		// Common case, backslash-char where the char is not whitespace.
-		if (!isWhitespace(Ptr[0]))
-			return '\\';
+  // If we have a slash, look for an escaped newline.
+  if (Ptr[0] == '\\') {
+    ++Size;
+    ++Ptr;
+Slash:
+    // Common case, backslash-char where the char is not whitespace.
+    if (!isWhitespace(Ptr[0]))
+      return '\\';
 
-		// See if we have optional whitespace characters between the slash and
-		// newline.
-		if (unsigned EscapedNewLineSize = getEscapedNewLineSize(Ptr)) {
-			// Remember that this token needs to be cleaned.
-			if (Tok)
-				Tok->setFlag(Token::NeedsCleaning);
+    // See if we have optional whitespace characters between the slash and
+    // newline.
+    if (unsigned EscapedNewLineSize = getEscapedNewLineSize(Ptr)) {
+      // Remember that this token needs to be cleaned.
+      if (Tok)
+        Tok->setFlag(Token::NeedsCleaning);
+      // Warn if there was whitespace between the backslash and newline.
+      if (Ptr[0] != '\n' && Ptr[0] != '\r' && Tok && !isLexingRawMode())
+	Diag(Ptr, diag::backslash_newline_space);
 
-			// Warn if there was whitespace between the backslash and newline.
-			if (Ptr[0] != '\n' && Ptr[0] != '\r' && Tok && !isLexingRawMode())
-				Diag(Ptr, diag::backslash_newline_space);
+      // Found backslash<whitespace><newline>.  Parse the char after it.
+      Size += EscapedNewLineSize;
+      Ptr += EscapedNewLineSize;
 
-			// Found backslash<whitespace><newline>.  Parse the char after it.
-			Size += EscapedNewLineSize;
-			Ptr += EscapedNewLineSize;
-			// Use slow version to accumulate a correct size field.
-			return getCharAndSizeSlow(Ptr, Size, Tok);
-		}
+      // Use slow version to accumulate a correct size field.
+      return getCharAndSizeSlow(Ptr, Size, Tok);
+    }
 
-		// Otherwise, this is not an escaped newline, just return the slash.
-		return '\\';
-	}
+    // Otherwise, this is not an escaped newline, just return the slash.
+    return '\\';
+  }
 
-	// If this is neither, return a single character.
-	++Size;
-	return *Ptr;
+  // If this is neither, return a single character.
+  ++Size;
+  return *Ptr;
 }
 
 /// getCharAndSizeSlowNoWarn - Handle the slow/uncommon case of the
