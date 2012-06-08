@@ -32,13 +32,13 @@
 #include <algorithm>
 using namespace mlang;
 
-void mlang::ProcessWarningOptions(Diagnostic &Diags,
+void mlang::ProcessWarningOptions(DiagnosticsEngine &Diags,
                                   const DiagnosticOptions &Opts) {
   Diags.setSuppressSystemWarnings(true);  // Default to -Wno-system-headers
   Diags.setIgnoreAllWarnings(Opts.IgnoreWarnings);
   Diags.setShowOverloads(
-    static_cast<Diagnostic::OverloadsShown>(Opts.ShowOverloads));
-  
+    static_cast<DiagnosticsEngine::OverloadsShown>(Opts.ShowOverloads));
+
   // Handle -ferror-limit
   if (Opts.ErrorLimit)
     Diags.setErrorLimit(Opts.ErrorLimit);
@@ -49,11 +49,11 @@ void mlang::ProcessWarningOptions(Diagnostic &Diags,
   // extension diagnostics onto WARNING or ERROR unless the user has futz'd
   // around with them explicitly.
   if (Opts.PedanticErrors)
-    Diags.setExtensionHandlingBehavior(Diagnostic::Ext_Error);
+    Diags.setExtensionHandlingBehavior(DiagnosticsEngine::Ext_Error);
   else if (Opts.Pedantic)
-    Diags.setExtensionHandlingBehavior(Diagnostic::Ext_Warn);
+    Diags.setExtensionHandlingBehavior(DiagnosticsEngine::Ext_Warn);
   else
-    Diags.setExtensionHandlingBehavior(Diagnostic::Ext_Ignore);
+    Diags.setExtensionHandlingBehavior(DiagnosticsEngine::Ext_Ignore);
 
   for (unsigned i = 0, e = Opts.Warnings.size(); i != e; ++i) {
     const std::string &Opt = Opts.Warnings[i];
@@ -100,7 +100,7 @@ void mlang::ProcessWarningOptions(Diagnostic &Diags,
       }
 
       // -Werror=foo maps foo to Error, -Wno-error=foo maps it to Warning.
-      Mapping = isPositive ? diag::MAP_ERROR : diag::MAP_WARNING_NO_WERROR;
+//      Mapping = isPositive ? diag::MAP_ERROR : diag::MAP_WARNING_NO_WERROR;
       OptStart = Specifier;
     }
 
@@ -124,7 +124,7 @@ void mlang::ProcessWarningOptions(Diagnostic &Diags,
 
       // -Wfatal-errors=foo maps foo to Fatal, -Wno-fatal-errors=foo
       // maps it to Error.
-      Mapping = isPositive ? diag::MAP_FATAL : diag::MAP_ERROR_NO_WFATAL;
+//      Mapping = isPositive ? diag::MAP_FATAL : diag::MAP_ERROR_NO_WFATAL;
       OptStart = Specifier;
     }
 

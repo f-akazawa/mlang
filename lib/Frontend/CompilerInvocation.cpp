@@ -487,7 +487,7 @@ using namespace mlang::driver::cc1options;
 //
 
 static unsigned getOptimizationLevel(ArgList &Args, InputKind IK,
-                                     Diagnostic &Diags) {
+                                     DiagnosticsEngine &Diags) {
   unsigned DefaultOpt = 0;
   if (IK == IK_OpenCL && !Args.hasArg(OPT_cl_opt_disable))
     DefaultOpt = 2;
@@ -497,7 +497,7 @@ static unsigned getOptimizationLevel(ArgList &Args, InputKind IK,
 }
 
 static void ParseCodeGenArgs(CodeGenOptions &Opts, ArgList &Args, InputKind IK,
-                             Diagnostic &Diags) {
+                             DiagnosticsEngine &Diags) {
   using namespace cc1options;
 
   Opts.OptimizationLevel = getOptimizationLevel(Args, IK, Diags);
@@ -576,7 +576,7 @@ static void ParseDependencyOutputArgs(DependencyOutputOptions &Opts,
 }
 
 static void ParseDiagnosticArgs(DiagnosticOptions &Opts, ArgList &Args,
-                                Diagnostic &Diags) {
+                                DiagnosticsEngine &Diags) {
   using namespace cc1options;
   Opts.DiagnosticLogFile = Args.getLastArgValue(OPT_diagnostic_log_file);
   Opts.IgnoreWarnings = Args.hasArg(OPT_w);
@@ -596,9 +596,9 @@ static void ParseDiagnosticArgs(DiagnosticOptions &Opts, ArgList &Args,
   llvm::StringRef ShowOverloads =
     Args.getLastArgValue(OPT_fshow_overloads_EQ, "all");
   if (ShowOverloads == "best")
-    Opts.ShowOverloads = Diagnostic::Ovl_Best;
+    Opts.ShowOverloads = DiagnosticsEngine::Ovl_Best;
   else if (ShowOverloads == "all")
-    Opts.ShowOverloads = Diagnostic::Ovl_All;
+    Opts.ShowOverloads = DiagnosticsEngine::Ovl_All;
   else
     Diags.Report(diag::err_drv_invalid_value)
       << Args.getLastArg(OPT_fshow_overloads_EQ)->getAsString(Args)
@@ -645,7 +645,7 @@ static void ParseFileSystemArgs(FileSystemOptions &Opts, ArgList &Args) {
 }
 
 static InputKind ParseFrontendArgs(FrontendOptions &Opts, ArgList &Args,
-                                   Diagnostic &Diags) {
+                                   DiagnosticsEngine &Diags) {
   using namespace cc1options;
   Opts.ProgramAction = frontend::ParseSyntaxOnly;
   if (const Arg *A = Args.getLastArg(OPT_Action_Group)) {
@@ -891,7 +891,7 @@ void CompilerInvocation::setLangDefaults(LangOptions &Opts, InputKind IK,
 }
 
 static void ParseLangArgs(LangOptions &Opts, ArgList &Args, InputKind IK,
-                          Diagnostic &Diags) {
+                          DiagnosticsEngine &Diags) {
   // FIXME: Cleanup per-file based stuff.
   LangStandard::Kind LangStd = LangStandard::lang_unspecified;
   if (const Arg *A = Args.getLastArg(OPT_std_EQ)) {
@@ -1009,7 +1009,7 @@ static void ParseLangArgs(LangOptions &Opts, ArgList &Args, InputKind IK,
 
 static void ParsePreprocessorArgs(PreprocessorOptions &Opts, ArgList &Args,
                                   FileManager &FileMgr,
-                                  Diagnostic &Diags) {
+                                  DiagnosticsEngine &Diags) {
   using namespace cc1options;
   Opts.ImplicitPTHInclude = Args.getLastArgValue(OPT_include_pth);
   if (const Arg *A = Args.getLastArg(OPT_token_cache))
@@ -1070,47 +1070,48 @@ static void ParseTargetArgs(TargetOptions &Opts, ArgList &Args) {
 
   // Use the host triple if unspecified.
   if (Opts.Triple.empty())
-    Opts.Triple = llvm::sys::getHostTriple();
+    Opts.Triple = llvm::sys::getDefaultTargetTriple();
 }
 //
 
 void CompilerInvocation::CreateFromArgs(CompilerInvocation &Res,
-		const char * const *ArgBegin, const char * const *ArgEnd,
-		Diagnostic &Diags) {
-	// Parse the arguments.
-	llvm::OwningPtr<OptTable> Opts(createCC1OptTable());
-	unsigned MissingArgIndex, MissingArgCount;
-	llvm::OwningPtr<InputArgList> Args(Opts->ParseArgs(ArgBegin, ArgEnd,
-			MissingArgIndex, MissingArgCount));
+                                        const char * const *ArgBegin,
+                                        const char * const *ArgEnd,
+                                        DiagnosticsEngine &Diags) {
+  // Parse the arguments.
+  llvm::OwningPtr<OptTable> Opts(createCC1OptTable());
+  unsigned MissingArgIndex, MissingArgCount;
+  llvm::OwningPtr<InputArgList> Args(Opts->ParseArgs(ArgBegin, ArgEnd,
+                                                     MissingArgIndex,
+                                                     MissingArgCount));
 
-	// Check for missing argument error.
-	if (MissingArgCount)
-		Diags.Report(diag::err_drv_missing_argument) << Args->getArgString(
-				MissingArgIndex) << MissingArgCount;
+  // Check for missing argument error.
+  if (MissingArgCount)
+    Diags.Report(diag::err_drv_missing_argument) << Args->getArgString(
+      MissingArgIndex) << MissingArgCount;
 
-	// Issue errors on unknown arguments.
-	for (arg_iterator it = Args->filtered_begin(OPT_UNKNOWN), ie =
-			Args->filtered_end(); it != ie; ++it)
-		Diags.Report(diag::err_drv_unknown_argument) << (*it)->getAsString(
-				*Args);
+  // Issue errors on unknown arguments.
+  for (arg_iterator it = Args->filtered_begin(OPT_UNKNOWN), ie =
+    Args->filtered_end(); it != ie; ++it)
+    Diags.Report(diag::err_drv_unknown_argument) << (*it)->getAsString(*Args);
 
-	//ParseAnalyzerArgs(Res.getAnalyzerOpts(), *Args, Diags);
-	ParseDependencyOutputArgs(Res.getDependencyOutputOpts(), *Args);
-	ParseDiagnosticArgs(Res.getDiagnosticOpts(), *Args, Diags);
-	ParseFileSystemArgs(Res.getFileSystemOpts(), *Args);
-	// FIXME: We shouldn't have to pass the DashX option around here
-	InputKind DashX = ParseFrontendArgs(Res.getFrontendOpts(), *Args, Diags);
-	ParseCodeGenArgs(Res.getCodeGenOpts(), *Args, DashX, Diags);
-	ParseImportSearchArgs(Res.getImportSearchOpts(), *Args);
-	if (DashX != IK_AST && DashX != IK_LLVM_IR) {
-		ParseLangArgs(Res.getLangOpts(), *Args, DashX, Diags);
-	}
-	// FIXME: ParsePreprocessorArgs uses the FileManager to read the contents of
-	// PCH file and find the original header name. Remove the need to do that in
-	// ParsePreprocessorArgs and remove the FileManager
-	// parameters from the function and the "FileManager.h" #include.
-	FileManager FileMgr(Res.getFileSystemOpts());
-	ParsePreprocessorArgs(Res.getPreprocessorOpts(), *Args, FileMgr, Diags);
-	ParsePreprocessorOutputArgs(Res.getPreprocessorOutputOpts(), *Args);
-	ParseTargetArgs(Res.getTargetOpts(), *Args);
+  //ParseAnalyzerArgs(Res.getAnalyzerOpts(), *Args, Diags);
+  ParseDependencyOutputArgs(Res.getDependencyOutputOpts(), *Args);
+  ParseDiagnosticArgs(Res.getDiagnosticOpts(), *Args, Diags);
+  ParseFileSystemArgs(Res.getFileSystemOpts(), *Args);
+  // FIXME: We shouldn't have to pass the DashX option around here
+  InputKind DashX = ParseFrontendArgs(Res.getFrontendOpts(), *Args, Diags);
+  ParseCodeGenArgs(Res.getCodeGenOpts(), *Args, DashX, Diags);
+  ParseImportSearchArgs(Res.getImportSearchOpts(), *Args);
+  if (DashX != IK_AST && DashX != IK_LLVM_IR) {
+    ParseLangArgs(Res.getLangOpts(), *Args, DashX, Diags);
+  }
+  // FIXME: ParsePreprocessorArgs uses the FileManager to read the contents of
+  // PCH file and find the original header name. Remove the need to do that in
+  // ParsePreprocessorArgs and remove the FileManager
+  // parameters from the function and the "FileManager.h" #include.
+  FileManager FileMgr(Res.getFileSystemOpts());
+  ParsePreprocessorArgs(Res.getPreprocessorOpts(), *Args, FileMgr, Diags);
+  ParsePreprocessorOutputArgs(Res.getPreprocessorOutputOpts(), *Args);
+  ParseTargetArgs(Res.getTargetOpts(), *Args);
 }

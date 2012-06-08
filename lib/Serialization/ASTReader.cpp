@@ -14,11 +14,8 @@
 
 #include "mlang/Serialization/ASTReader.h"
 #include "mlang/Serialization/ASTDeserializationListener.h"
+#include "mlang/Serialization/SerializationDiagnostic.h"
 #include "ASTCommon.h"
-#include "mlang/Frontend/FrontendDiagnostic.h"
-#include "mlang/Frontend/Utils.h"
-#include "mlang/Sema/Sema.h"
-#include "mlang/Sema/Scope.h"
 #include "mlang/AST/ASTConsumer.h"
 #include "mlang/AST/ASTContext.h"
 #include "mlang/AST/DefnOOP.h"
@@ -35,6 +32,7 @@
 #include "mlang/Basic/TargetInfo.h"
 //#include "mlang/Basic/Version.h"
 //#include "mlang/Basic/VersionTuple.h"
+#include "mlang/Sema/Scope.h"
 #include "llvm/ADT/StringExtras.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/Bitcode/BitstreamReader.h"
@@ -616,7 +614,7 @@ ASTReader::ASTReadResult ASTReader::ReadSourceManagerBlock(PerFileData &F) {
 
     case SM_SLOC_FILE_ENTRY:
     case SM_SLOC_BUFFER_ENTRY:
-    case SM_SLOC_INSTANTIATION_ENTRY:
+    case SM_SLOC_EXPANSION_ENTRY:
       // Once we hit one of the source location entries, we're done.
       return Success;
     }
@@ -658,7 +656,7 @@ resolveFileRelativeToOriginalDir(const std::string &Filename,
 
 /// \brief Get a cursor that's correctly positioned for reading the source
 /// location entry with the given ID.
-ASTReader::PerFileData *ASTReader::SLocCursorForID(unsigned ID) {
+ASTReader::PerFileData *ASTReader::SLocCursorForID(int ID) {
   assert(ID != 0 && ID <= TotalNumSLocEntries &&
          "SLocCursorForID should only be called for real IDs.");
 
@@ -677,7 +675,7 @@ ASTReader::PerFileData *ASTReader::SLocCursorForID(unsigned ID) {
 }
 
 /// \brief Read in the source location entry with the given ID.
-ASTReader::ASTReadResult ASTReader::ReadSLocEntryRecord(unsigned ID) {
+ASTReader::ASTReadResult ASTReader::ReadSLocEntryRecord(int ID) {
   if (ID == 0)
     return Success;
 
@@ -765,14 +763,11 @@ ASTReader::ASTReadResult ASTReader::ReadSLocEntryRecord(unsigned ID) {
     break;
   }
 
-  case SM_SLOC_INSTANTIATION_ENTRY: {
+  case SM_SLOC_EXPANSION_ENTRY: {
     SourceLocation SpellingLoc = ReadSourceLocation(*F, Record[1]);
-    SourceMgr.createInstantiationLoc(SpellingLoc,
-                                     ReadSourceLocation(*F, Record[2]),
-                                     ReadSourceLocation(*F, Record[3]),
-                                     Record[4],
-                                     ID,
-                                     Record[0]);
+    SourceMgr.createExpansionLoc(SpellingLoc, ReadSourceLocation(*F, Record[2]),
+                                 ReadSourceLocation(*F, Record[3]), Record[4],
+                                 ID, Record[0]);
     break;
   }
   }
@@ -807,9 +802,9 @@ namespace {
   /// \brief Trait class used to search the on-disk hash table containing all of
   /// the header search information.
   ///
-  /// The on-disk hash table contains a mapping from each header path to 
+  /// The on-disk hash table contains a mapping from each header path to
   /// information about that header (how many times it has been included, its
-  /// controlling macro, etc.). Note that we actually hash based on the 
+  /// controlling macro, etc.). Note that we actually hash based on the
   /// filename, and support "deep" comparisons of file names based on current
   /// inode numbers, so that the search can cope with non-normalized path names
   /// and symlinks.
@@ -817,12 +812,12 @@ namespace {
     const char *SearchPath;
     struct stat SearchPathStatBuf;
     llvm::Optional<int> SearchPathStatResult;
-    
+
     int StatSimpleCache(const char *Path, struct stat *StatBuf) {
       if (Path == SearchPath) {
         if (!SearchPathStatResult)
           SearchPathStatResult = stat(Path, &SearchPathStatBuf);
-        
+
         *StatBuf = SearchPathStatBuf;
         return *SearchPathStatResult;
       }
@@ -1338,6 +1333,7 @@ ASTReader::ASTReadResult ASTReader::ReadAST(const std::string &FileName,
     TotalNumTypes += Chain[I]->LocalNumTypes;
     TotalNumDefns += Chain[I]->LocalNumDefns;
   }
+#if 0
   SourceMgr.PreallocateSLocEntries(this, TotalNumSLocEntries, NextSLocOffset);
   IdentifiersLoaded.resize(TotalNumIdentifiers);
   TypesLoaded.resize(TotalNumTypes);
@@ -1401,7 +1397,7 @@ ASTReader::ASTReadResult ASTReader::ReadAST(const std::string &FileName,
   if (DeserializationListener)
     DeserializationListener->ReaderInitialized(this);
 
-  // If this AST file is a precompiled preamble, then set the main file ID of 
+  // If this AST file is a precompiled preamble, then set the main file ID of
   // the source manager to the file source file from which the preamble was
   // built. This is the only valid way to use a precompiled preamble.
   if (Type == Preamble) {
@@ -1411,11 +1407,11 @@ ASTReader::ASTReadResult ASTReader::ReadAST(const std::string &FileName,
       if (Loc.isValid())
         OriginalFileID = SourceMgr.getDecomposedLoc(Loc).first;
     }
-    
+
 //    if (!OriginalFileID.isInvalid())
 //      SourceMgr.SetPreambleFileID(OriginalFileID);
   }
-  
+#endif
   return Success;
 }
 
@@ -1509,7 +1505,7 @@ ASTReader::ASTReadResult ASTReader::ReadASTCore(llvm::StringRef FileName,
 
         // Clear out any preallocated source location entries, so that
         // the source manager does not try to resolve them later.
-        SourceMgr.ClearPreallocatedSLocEntries();
+        // SourceMgr.ClearPreallocatedSLocEntries();
 
         // Remove the stat cache.
         if (F.StatCache)
@@ -1565,7 +1561,7 @@ void ASTReader::InitializeContext(ASTContext &Ctx) {
 /// file.
 std::string ASTReader::getOriginalSourceFile(const std::string &ASTFileName,
                                              FileManager &FileMgr,
-                                             Diagnostic &Diags) {
+                                             DiagnosticsEngine &Diags) {
   // Open the AST file.
   std::string ErrStr;
   llvm::OwningPtr<llvm::MemoryBuffer> Buffer;
@@ -1708,11 +1704,11 @@ ImportedFileInfo ASTReader::GetImportedFileInfo(const FileEntry *FE) {
 
     return HFI;
   }
-  
+
   return ImportedFileInfo();
 }
 
-void ASTReader::ReadPragmaDiagnosticMappings(Diagnostic &Diag) {
+void ASTReader::ReadPragmaDiagnosticMappings(DiagnosticsEngine &Diag) {
   unsigned Idx = 0;
   while (Idx < PragmaDiagMappings.size()) {
     SourceLocation
@@ -2400,7 +2396,7 @@ IdentifierInfo *ASTReader::DecodeIdentifierInfo(unsigned ID) {
   return IdentifiersLoaded[ID];
 }
 
-bool ASTReader::ReadSLocEntry(unsigned ID) {
+bool ASTReader::ReadSLocEntry(int ID) {
   return ReadSLocEntryRecord(ID) != Success;
 }
 
@@ -2616,17 +2612,17 @@ ASTReader::ASTReader(Preprocessor &PP, ASTContext *Context,
     SourceMgr(PP.getSourceManager()), FileMgr(PP.getFileManager()),
     Diags(PP.getDiagnostics()), SemaObj(0), PP(&PP), Context(Context),
     Consumer(0), isysroot(isysroot),
-    DisableStatCache(DisableStatCache), NumStatHits(0), NumStatMisses(0), 
-    NumSLocEntriesRead(0), TotalNumSLocEntries(0), NextSLocOffset(0), 
+    DisableStatCache(DisableStatCache), NumStatHits(0), NumStatMisses(0),
+    NumSLocEntriesRead(0), TotalNumSLocEntries(0), NextSLocOffset(0),
     NumStatementsRead(0), TotalNumStatements(0),
     NumLexicalDefnContextsRead(0), TotalLexicalDefnContexts(0),
     NumVisibleDefnContextsRead(0), TotalVisibleDefnContexts(0),
-    NumCurrentElementsDeserializing(0) 
+    NumCurrentElementsDeserializing(0)
 {
 }
 
 ASTReader::ASTReader(SourceManager &SourceMgr, FileManager &FileMgr,
-                     Diagnostic &Diags, const char *isysroot,
+                     DiagnosticsEngine &Diags, const char *isysroot,
                      bool DisableValidation, bool DisableStatCache)
   : DeserializationListener(0), SourceMgr(SourceMgr), FileMgr(FileMgr),
     Diags(Diags), SemaObj(0), PP(0), Context(0), Consumer(0),

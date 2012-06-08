@@ -87,7 +87,7 @@ void mlang::FormatASTNodeDiagnosticArgument(
     const char *Argument, unsigned ArgLen,
     const DiagnosticsEngine::ArgumentValue *PrevArgs,
     unsigned NumPrevArgs, llvm::SmallVectorImpl<char> &Output,
-    void *Cookie) {
+    void *Cookie, llvm::ArrayRef<intptr_t> TypeVals) {
   ASTContext &Context = *static_cast<ASTContext*>(Cookie);
 
   std::string S;

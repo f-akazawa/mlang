@@ -47,7 +47,7 @@ CGDebugInfo::~CGDebugInfo() {
 
 void CGDebugInfo::setLocation(SourceLocation Loc) {
   if (Loc.isValid())
-    CurLoc = CGM.getContext().getSourceManager().getInstantiationLoc(Loc);
+    CurLoc = CGM.getContext().getSourceManager().getExpansionLoc(Loc);
 }
 
 /// getContextDescriptor - Get context info for the decl.
@@ -319,8 +319,9 @@ llvm::DIType CGDebugInfo::CreatePointerLikeType(unsigned Tag,
                                                 llvm::DIFile Unit) {
 
   if (Tag == llvm::dwarf::DW_TAG_reference_type)
-    return DBuilder.createReferenceType(CreatePointeeType(PointeeTy, Unit));
-                                    
+    return DBuilder.createReferenceType(Tag,
+                                        CreatePointeeType(PointeeTy, Unit));
+
   // Bit size, align and offset of the type.
   // Size is always the size of a pointer. We can't use getTypeSize here
   // because that does not return the correct value for references.
@@ -328,8 +329,8 @@ llvm::DIType CGDebugInfo::CreatePointerLikeType(unsigned Tag,
   uint64_t Size = CGM.getContext().Target.getPointerWidth(AS);
   uint64_t Align = CGM.getContext().getTypeAlign(Ty);
 
-  return 
-    DBuilder.createPointerType(CreatePointeeType(PointeeTy, Unit), Size, Align);
+  return DBuilder.createPointerType(CreatePointeeType(PointeeTy, Unit),
+                                    Size, Align);
 }
 
 llvm::DIType CGDebugInfo::CreateType(const FunctionType *Ty,
@@ -883,9 +884,9 @@ llvm::DIType CGDebugInfo::CreateTypeNode(Type Ty,
   case RawType::RValueReference:
     return CreateType(cast<RValueReferenceType>(Ty), Unit);
   }
-  
+
   assert(Diag && "Fall through without a diagnostic?");
-  unsigned DiagID = CGM.getDiags().getCustomDiagID(Diagnostic::Error,
+  unsigned DiagID = CGM.getDiags().getCustomDiagID(DiagnosticsEngine::Error,
                                "debug information for %0 is not yet supported");
   CGM.getDiags().Report(DiagID)
     << Diag;
@@ -1013,8 +1014,8 @@ void CGDebugInfo::EmitStopPoint(CGBuilderTy &Builder) {
   // Don't bother if things are the same as last time.
   SourceManager &SM = CGM.getContext().getSourceManager();
   if (CurLoc == PrevLoc
-       || (SM.getInstantiationLineNumber(CurLoc) ==
-           SM.getInstantiationLineNumber(PrevLoc)
+       || (SM.getExpansionLineNumber(CurLoc) ==
+           SM.getExpansionLineNumber(PrevLoc)
            && SM.isFromSameFile(CurLoc, PrevLoc)))
     // New Builder may not be in sync with CGDebugInfo.
     if (!Builder.getCurrentDebugLocation().isUnknown())
@@ -1208,7 +1209,7 @@ void CGDebugInfo::EmitDeclare(const VarDefn *VD, unsigned Tag,
     // If Storage is an aggregate returned as 'sret' then let debugger know
     // about this.
     if (Arg->hasStructRetAttr())
-      Ty = DBuilder.createReferenceType(Ty);
+      Ty = DBuilder.createReferenceType(Tag, Ty);
 //    else if (UserClassDefn *Record = VD->getType()->getAsUserClassDefn()) {
 //      // If an aggregate variable has non trivial destructor or non trivial copy
 //      // constructor than it is pass indirectly. Let debug info know about this

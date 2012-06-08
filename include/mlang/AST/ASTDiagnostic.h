@@ -44,7 +44,8 @@ namespace mlang {
       const DiagnosticsEngine::ArgumentValue *PrevArgs,
       unsigned NumPrevArgs,
       llvm::SmallVectorImpl<char> &Output,
-      void *Cookie);
+      void *Cookie,
+      llvm::ArrayRef<intptr_t> TypeVals);
 }  // end namespace mlang
 
 #endif /* MLANG_DIAG_DIAGNOSTICAST_H_ */

@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
-// 
+//
 //===----------------------------------------------------------------------===//
 //
 //  This file defines Scope and scope_id_cache.
@@ -99,46 +99,46 @@ private:
 	DiagnosticErrorTrap ErrorTrap;
 
 public:
-	Scope(Scope *Parent, unsigned ScopeFlags, Diagnostic &Diag) :
-		ErrorTrap(Diag) {
-		Init(Parent, ScopeFlags);
-	}
+  Scope(Scope *Parent, unsigned ScopeFlags, DiagnosticsEngine &Diag) :
+    ErrorTrap(Diag) {
+      Init(Parent, ScopeFlags);
+  }
 
-	/// getFlags - Return the flags for this scope.
-	///
-	unsigned getFlags() const {
-		return Flags;
-	}
-	void setFlags(unsigned F) {
-		Flags = F;
-	}
+  /// getFlags - Return the flags for this scope.
+  ///
+  unsigned getFlags() const {
+    return Flags;
+  }
+  void setFlags(unsigned F) {
+    Flags = F;
+  }
 
-	/// getParent - Return the scope that this is nested in.
-	///
-	const Scope *getParent() const {
-		return AnyParent;
-	}
-	Scope *getParent() {
-		return AnyParent;
-	}
+  /// getParent - Return the scope that this is nested in.
+  ///
+  const Scope *getParent() const {
+    return AnyParent;
+  }
+  Scope *getParent() {
+    return AnyParent;
+  }
 
-	/// getFnParent - Return the closest scope that is a function body.
-	///
-	const Scope *getFnParent() const {
-		return FnParent;
-	}
-	Scope *getFnParent() {
-		return FnParent;
-	}
+  /// getFnParent - Return the closest scope that is a function body.
+  ///
+  const Scope *getFnParent() const {
+    return FnParent;
+  }
+  Scope *getFnParent() {
+    return FnParent;
+  }
 
-	/// getClassParent - Return the closest scope that is a classdef body.
-	///
-	const Scope *getClassParent() const {
-		return ClassParent;
-	}
-	Scope *getClassParent() {
-		return ClassParent;
-	}
+  /// getClassParent - Return the closest scope that is a classdef body.
+  ///
+  const Scope *getClassParent() const {
+    return ClassParent;
+  }
+  Scope *getClassParent() {
+    return ClassParent;
+  }
 
 	/// getGlobalParent - Return the closest scope that is a function body.
 	///

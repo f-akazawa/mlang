@@ -10,6 +10,3 @@ LEVEL = ..
 PARALLEL_DIRS = Basic AST Lex Sema Parse Frontend
 
 include $(LEVEL)/Makefile.common
-
-clean::
-	$(Verb) $(RM) -f *Tests

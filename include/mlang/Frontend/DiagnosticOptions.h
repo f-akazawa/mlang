@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
-// 
+//
 // This file is distributed under the University of Illinois Open Source
 // License. See LICENSE.TXT for details.
 //
@@ -82,7 +82,7 @@ public:
     PedanticErrors = 0;
     ShowCarets = 1;
     ShowColors = 0;
-    ShowOverloads = Diagnostic::Ovl_All;
+    ShowOverloads = DiagnosticsEngine::Ovl_All;
     ShowColumn = 1;
     ShowFixits = 1;
     ShowLocation = 1;

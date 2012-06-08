@@ -270,7 +270,7 @@ private:
                                const char* isysroot);
   void WritePreprocessor(const Preprocessor &PP);
   void WriteImportSearch(ImportSearch &HS, const char* isysroot);
-  void WritePragmaDiagnosticMappings(const Diagnostic &Diag);
+  void WritePragmaDiagnosticMappings(const DiagnosticsEngine &Diag);
   void WriteClassBaseSpecifiersOffsets();
   void WriteType(Type T);
   uint64_t WriteDeclContextLexicalBlock(ASTContext &Context, DefnContext *DC);

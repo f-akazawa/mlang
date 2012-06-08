@@ -1,4 +1,4 @@
-//===-- VerifyDiagnosticsClient.h - Verifying Diagnostic Client -*- C++ -*-===//
+//===-- VerifyDiagnosticConsumer.h - Verifying Diagnostic Client -*- C++ -*-=//
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
@@ -8,15 +8,15 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef MLANG_FRONTEND_VERIFYDIAGNOSTICSCLIENT_H_
-#define MLANG_FRONTEND_VERIFYDIAGNOSTICSCLIENT_H_
+#ifndef MLANG_FRONTEND_VERIFYDIAGNOSTICCONSUMER_H_
+#define MLANG_FRONTEND_VERIFYDIAGNOSTICCONSUMER_H_
 
 #include "mlang/Diag/Diagnostic.h"
 #include "llvm/ADT/OwningPtr.h"
 
 namespace mlang {
 
-class Diagnostic;
+class DiagnosticsEngine;
 class TextDiagnosticBuffer;
 
 /// VerifyDiagnosticsClient - Create a diagnostic client which will use markers
@@ -63,14 +63,16 @@ class TextDiagnosticBuffer;
 ///   // expected-error-re {{variable has has type 'struct (.*)'}}
 ///   // expected-error-re {{variable has has type 'struct[[:space:]](.*)'}}
 ///
-class VerifyDiagnosticsClient : public DiagnosticClient {
+class VerifyDiagnosticConsumer : public DiagnosticConsumer {
 public:
-  Diagnostic &Diags;
-  llvm::OwningPtr<DiagnosticClient> PrimaryClient;
+  DiagnosticsEngine &Diags;
+  DiagnosticConsumer *PrimaryClient;
+  bool OwnsPrimaryClient;
   llvm::OwningPtr<TextDiagnosticBuffer> Buffer;
   Preprocessor *CurrentPreprocessor;
 
 private:
+  FileID FirstErrorFID; // FileID of first diagnostic
   void CheckDiagnostics();
 
 public:
@@ -78,18 +80,20 @@ public:
   /// PrimaryClient when a diagnostic does not match what is expected (as
   /// indicated in the source file). The verifying diagnostic client takes
   /// ownership of \arg PrimaryClient.
-  VerifyDiagnosticsClient(Diagnostic &Diags, DiagnosticClient *PrimaryClient);
-  ~VerifyDiagnosticsClient();
+  VerifyDiagnosticConsumer(DiagnosticsEngine &Diags);
+  ~VerifyDiagnosticConsumer();
 
   virtual void BeginSourceFile(const LangOptions &LangOpts,
                                const Preprocessor *PP);
 
   virtual void EndSourceFile();
 
-  virtual void HandleDiagnostic(Diagnostic::Level DiagLevel,
-                                const DiagnosticInfo &Info);
+  virtual void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel,
+                                const Diagnostic &Info);
+
+  virtual DiagnosticConsumer *clone(DiagnosticsEngine &Diags) const;
 };
 
 } // end namspace mlang
 
-#endif /* MLANG_FRONTEND_VERIFYDIAGNOSTICSCLIENT_H_ */
+#endif /* MLANG_FRONTEND_VERIFYDIAGNOSTICCONSUMER_H_ */

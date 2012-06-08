@@ -9,7 +9,7 @@
 #
 LEVEL = .
 DIRS = utils/TableGen include lib tools unittests
-EXTRA_DIST = unittests include
+EXTRA_DIST = include
 
 #
 # Include the Master Makefile that knows how to build all.

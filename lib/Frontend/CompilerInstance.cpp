@@ -24,12 +24,12 @@
 //#include "mlang/Lex/HeaderSearch.h"
 #include "mlang/Lex/Preprocessor.h"
 //#include "mlang/Lex/PTHManager.h"
-#include "mlang/Frontend/ChainedDiagnosticClient.h"
+#include "mlang/Frontend/ChainedDiagnosticConsumer.h"
 #include "mlang/Frontend/FrontendAction.h"
 #include "mlang/Frontend/FrontendDiagnostic.h"
 #include "mlang/Frontend/LogDiagnosticPrinter.h"
 #include "mlang/Frontend/TextDiagnosticPrinter.h"
-#include "mlang/Frontend/VerifyDiagnosticsClient.h"
+#include "mlang/Frontend/VerifyDiagnosticConsumer.h"
 #include "mlang/Frontend/Utils.h"
 #include "mlang/Serialization/ASTReader.h"
 //#include "mlang/Sema/CodeCompleteConsumer.h"
@@ -56,7 +56,7 @@ void CompilerInstance::setInvocation(CompilerInvocation *Value) {
   Invocation = Value;
 }
 
-void CompilerInstance::setDiagnostics(Diagnostic *Value) {
+void CompilerInstance::setDiagnostics(DiagnosticsEngine *Value) {
   Diagnostics = Value;
 }
 
@@ -87,7 +87,7 @@ void CompilerInstance::setASTConsumer(ASTConsumer *Value) {
 // Diagnostics
 static void SetUpBuildDumpLog(const DiagnosticOptions &DiagOpts,
                               unsigned argc, const char* const *argv,
-                              Diagnostic &Diags) {
+                              DiagnosticsEngine &Diags) {
   std::string ErrorInfo;
   llvm::OwningPtr<llvm::raw_ostream> OS(
     new llvm::raw_fd_ostream(DiagOpts.DumpBuildInformation.c_str(), ErrorInfo));
@@ -103,14 +103,14 @@ static void SetUpBuildDumpLog(const DiagnosticOptions &DiagOpts,
   (*OS) << '\n';
 
   // Chain in a diagnostic client which will log the diagnostics.
-  DiagnosticClient *Logger =
+  DiagnosticConsumer *Logger =
     new TextDiagnosticPrinter(*OS.take(), DiagOpts, /*OwnsOutputStream=*/true);
-  Diags.setClient(new ChainedDiagnosticClient(Diags.takeClient(), Logger));
+  Diags.setClient(new ChainedDiagnosticConsumer(Diags.takeClient(), Logger));
 }
 
 static void SetUpDiagnosticLog(const DiagnosticOptions &DiagOpts,
                                const CodeGenOptions *CodeGenOpts,
-                               Diagnostic &Diags) {
+                               DiagnosticsEngine &Diags) {
   std::string ErrorInfo;
   bool OwnsStream = false;
   llvm::raw_ostream *OS = &llvm::errs();
@@ -135,22 +135,23 @@ static void SetUpDiagnosticLog(const DiagnosticOptions &DiagOpts,
                                                           OwnsStream);
   if (CodeGenOpts)
     Logger->setDwarfDebugFlags(CodeGenOpts->DwarfDebugFlags);
-  Diags.setClient(new ChainedDiagnosticClient(Diags.takeClient(), Logger));
+  Diags.setClient(new ChainedDiagnosticConsumer(Diags.takeClient(), Logger));
 }
 
 void CompilerInstance::createDiagnostics(int Argc, const char* const *Argv,
-                                         DiagnosticClient *Client) {
+                                         DiagnosticConsumer *Client) {
   Diagnostics = createDiagnostics(getDiagnosticOpts(), Argc, Argv, Client,
                                   &getCodeGenOpts());
 }
 
-llvm::IntrusiveRefCntPtr<Diagnostic>
+llvm::IntrusiveRefCntPtr<DiagnosticsEngine>
 CompilerInstance::createDiagnostics(const DiagnosticOptions &Opts,
                                     int Argc, const char* const *Argv,
-                                    DiagnosticClient *Client,
+                                    DiagnosticConsumer *Client,
                                     const CodeGenOptions *CodeGenOpts) {
   llvm::IntrusiveRefCntPtr<DiagnosticIDs> DiagID(new DiagnosticIDs());
-  llvm::IntrusiveRefCntPtr<Diagnostic> Diags(new Diagnostic(DiagID));
+  llvm::IntrusiveRefCntPtr<DiagnosticsEngine> Diags(
+    new DiagnosticsEngine(DiagID));
 
   // Create the diagnostic client for reporting errors or for
   // implementing -verify.
@@ -161,7 +162,7 @@ CompilerInstance::createDiagnostics(const DiagnosticOptions &Opts,
 
   // Chain in -verify checker, if requested.
   if (Opts.VerifyDiagnostics)
-    Diags->setClient(new VerifyDiagnosticsClient(*Diags, Diags->takeClient()));
+    Diags->setClient(new VerifyDiagnosticConsumer(*Diags));
 
   // Chain in -diagnostic-log-file dumper, if requested.
 //  if (!Opts.DiagnosticLogFile.empty())
@@ -199,7 +200,7 @@ void CompilerInstance::createPreprocessor() {
 }
 
 Preprocessor *
-CompilerInstance::createPreprocessor(Diagnostic &Diags,
+CompilerInstance::createPreprocessor(DiagnosticsEngine &Diags,
                                      const LangOptions &LangInfo,
                                      const PreprocessorOptions &PPOpts,
                                      const ImportSearchOptions &HSOpts,
@@ -276,7 +277,7 @@ void CompilerInstance::clearOutputFiles(bool EraseFiles) {
         FileMgr->FixupRelativePath(NewOutFile);
         if (llvm::error_code ec = llvm::sys::fs::rename(it->TempFilename,
                                                         NewOutFile.str())) {
-          getDiagnostics().Report(diag::err_fe_unable_to_rename_temp)
+          getDiagnostics().Report(diag::err_unable_to_rename_temp)
             << it->TempFilename << it->Filename << ec.message();
 
           bool existed;
@@ -390,7 +391,7 @@ bool CompilerInstance::InitializeSourceManager(llvm::StringRef InputFile) {
 }
 
 bool CompilerInstance::InitializeSourceManager(llvm::StringRef InputFile,
-                                               Diagnostic &Diags,
+                                               DiagnosticsEngine &Diags,
                                                FileManager &FileMgr,
                                                SourceManager &SourceMgr,
                                                const FrontendOptions &Opts) {
@@ -449,7 +450,7 @@ bool CompilerInstance::ExecuteAction(FrontendAction &Act) {
   if (getImportSearchOpts().Verbose)
     OS << "mlang -cc1 version "
        << " based upon "
-       << " hosted on " << llvm::sys::getHostTriple() << "\n";
+       << "\n";
 
   if (getFrontendOpts().ShowTimers)
     createFrontendTimer();

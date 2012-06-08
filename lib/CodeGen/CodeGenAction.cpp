@@ -29,10 +29,11 @@ using namespace llvm;
 
 namespace {
   class BackendConsumer : public ASTConsumer {
-    Diagnostic &Diags;
+    DiagnosticsEngine &Diags;
     BackendAction Action;
     const CodeGenOptions &CodeGenOpts;
     const TargetOptions &TargetOpts;
+    const LangOptions &LangOpts;
     llvm::raw_ostream *AsmOutStream;
     ASTContext *Context;
 
@@ -43,15 +44,17 @@ namespace {
     llvm::OwningPtr<llvm::Module> TheModule;
 
   public:
-    BackendConsumer(BackendAction action, Diagnostic &_Diags,
+    BackendConsumer(BackendAction action, DiagnosticsEngine &_Diags,
                     const CodeGenOptions &compopts,
-                    const TargetOptions &targetopts, bool TimePasses,
+                    const TargetOptions &targetopts,
+                    const LangOptions &langopts, bool TimePasses,
                     const std::string &infile, llvm::raw_ostream *OS,
                     LLVMContext &C) :
       Diags(_Diags),
       Action(action),
       CodeGenOpts(compopts),
       TargetOpts(targetopts),
+      LangOpts(langopts),
       AsmOutStream(OS),
       LLVMIRGeneration("LLVM IR Generation Time"),
       Gen(CreateLLVMCodeGen(Diags, infile, compopts, C)) {
@@ -125,9 +128,9 @@ namespace {
       void *OldContext = Ctx.getInlineAsmDiagnosticContext();
       Ctx.setInlineAsmDiagnosticHandler(InlineAsmDiagHandler, this);
 
-      EmitBackendOutput(Diags, CodeGenOpts, TargetOpts,
+      EmitBackendOutput(Diags, CodeGenOpts, TargetOpts, LangOpts,
                         TheModule.get(), Action, AsmOutStream);
-      
+
       Ctx.setInlineAsmDiagnosticHandler(OldHandler, OldContext);
     }
 
@@ -278,8 +281,8 @@ ASTConsumer *CodeGenAction::CreateASTConsumer(CompilerInstance &CI,
   if (BA != Backend_EmitNothing && !OS)
     return 0;
 
-  return new BackendConsumer(BA, CI.getDiagnostics(),
-                             CI.getCodeGenOpts(), CI.getTargetOpts(),
+  return new BackendConsumer(BA, CI.getDiagnostics(), CI.getCodeGenOpts(),
+                             CI.getTargetOpts(), CI.getLangOpts(),
                              CI.getFrontendOpts().ShowTimers, InFile, OS.take(),
                              *VMContext);
 }
@@ -309,7 +312,7 @@ void CodeGenAction::ExecuteAction() {
     TheModule.reset(ParseIR(MainFileCopy, Err, *VMContext));
     if (!TheModule) {
       // Translate from the diagnostic info to the SourceManager location.
-      SourceLocation Loc = SM.getLocation(
+      SourceLocation Loc = SM.translateFileLineCol(
         SM.getFileEntryForID(SM.getMainFileID()), Err.getLineNo(),
         Err.getColumnNo() + 1);
 
@@ -318,15 +321,15 @@ void CodeGenAction::ExecuteAction() {
       llvm::StringRef Msg = Err.getMessage();
       if (Msg.startswith("error: "))
         Msg = Msg.substr(7);
-      unsigned DiagID = CI.getDiagnostics().getCustomDiagID(Diagnostic::Error,
-                                                            Msg);
+      unsigned DiagID =
+        CI.getDiagnostics().getCustomDiagID(DiagnosticsEngine::Error, Msg);
 
       CI.getDiagnostics().Report(Loc, DiagID);
       return;
     }
 
     EmitBackendOutput(CI.getDiagnostics(), CI.getCodeGenOpts(),
-                      CI.getTargetOpts(), TheModule.get(),
+                      CI.getTargetOpts(), CI.getLangOpts(), TheModule.get(),
                       BA, OS);
     return;
   }

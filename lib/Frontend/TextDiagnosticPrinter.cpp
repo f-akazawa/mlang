@@ -84,8 +84,8 @@ void TextDiagnosticPrinter::HighlightRange(const CharSourceRange &R,
          "Expect a correspondence between source and caret line!");
   if (!R.isValid()) return;
 
-  SourceLocation Begin = SM.getInstantiationLoc(R.getBegin());
-  SourceLocation End = SM.getInstantiationLoc(R.getEnd());
+  SourceLocation Begin = SM.getExpansionLoc(R.getBegin());
+  SourceLocation End = SM.getExpansionLoc(R.getEnd());
 
   // If the End location and the start location are the same and are a macro
   // location, then the range was something that came from a macro expansion
@@ -93,27 +93,27 @@ void TextDiagnosticPrinter::HighlightRange(const CharSourceRange &R,
   // highlight the range.  If this is a function-like macro, we'd also like to
   // highlight the arguments.
   if (Begin == End && R.getEnd().isMacroID())
-    End = SM.getInstantiationRange(R.getEnd()).second;
+    End = SM.getExpansionRange(R.getEnd()).second;
 
-  unsigned StartLineNo = SM.getInstantiationLineNumber(Begin);
+  unsigned StartLineNo = SM.getExpansionLineNumber(Begin);
   if (StartLineNo > LineNo || SM.getFileID(Begin) != FID)
     return;  // No intersection.
 
-  unsigned EndLineNo = SM.getInstantiationLineNumber(End);
+  unsigned EndLineNo = SM.getExpansionLineNumber(End);
   if (EndLineNo < LineNo || SM.getFileID(End) != FID)
     return;  // No intersection.
 
   // Compute the column number of the start.
   unsigned StartColNo = 0;
   if (StartLineNo == LineNo) {
-    StartColNo = SM.getInstantiationColumnNumber(Begin);
+    StartColNo = SM.getExpansionColumnNumber(Begin);
     if (StartColNo) --StartColNo;  // Zero base the col #.
   }
 
   // Compute the column number of the end.
   unsigned EndColNo = CaretLine.size();
   if (EndLineNo == LineNo) {
-    EndColNo = SM.getInstantiationColumnNumber(End);
+    EndColNo = SM.getExpansionColumnNumber(End);
     if (EndColNo) {
       --EndColNo;  // Zero base the col #.
 
@@ -296,7 +296,7 @@ void TextDiagnosticPrinter::EmitCaretDiagnostic(SourceLocation Loc,
                                                 const SourceManager &SM,
                                                 const FixItHint *Hints,
                                                 unsigned NumHints,
-                                                unsigned Columns,  
+                                                unsigned Columns,
                                                 unsigned OnMacroInst,
                                                 unsigned MacroSkipStart,
                                                 unsigned MacroSkipEnd) {
@@ -312,7 +312,7 @@ void TextDiagnosticPrinter::EmitCaretDiagnostic(SourceLocation Loc,
       = OnMacroInst >= MacroSkipStart && OnMacroInst < MacroSkipEnd;
     
 
-    SourceLocation OneLevelUp = SM.getImmediateInstantiationRange(Loc).first;
+    SourceLocation OneLevelUp = SM.getImmediateExpansionRange(Loc).first;
     // FIXME: Map ranges?
     EmitCaretDiagnostic(OneLevelUp, Ranges, NumRanges, SM, 0, 0, Columns,
                         OnMacroInst + 1, MacroSkipStart, MacroSkipEnd);
@@ -460,7 +460,7 @@ void TextDiagnosticPrinter::EmitCaretDiagnostic(SourceLocation Loc,
         // We have an insertion hint. Determine whether the inserted
         // code is on the same line as the caret.
         std::pair<FileID, unsigned> HintLocInfo
-          = SM.getDecomposedInstantiationLoc(Hint->RemoveRange.getBegin());
+          = SM.getDecomposedExpansionLoc(Hint->RemoveRange.getBegin());
         if (SM.getLineNumber(HintLocInfo.first, HintLocInfo.second) ==
               SM.getLineNumber(FID, FileOffset)) {
           // Insert the new code into the line just below the code
@@ -769,10 +769,10 @@ static bool PrintWordWrapped(llvm::raw_ostream &OS,
   return true;
 }
 
-void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
-                                             const DiagnosticInfo &Info) {
+void TextDiagnosticPrinter::HandleDiagnostic(DiagnosticsEngine::Level Level,
+                                             const Diagnostic &Info) {
   // Default implementation (Warnings/errors count).
-  DiagnosticClient::HandleDiagnostic(Level, Info);
+  DiagnosticConsumer::HandleDiagnostic(Level, Info);
 
   // Keeps track of the the starting position of the location
   // information (e.g., "foo.c:10:4:") that precedes the error
@@ -791,7 +791,7 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
     PresumedLoc PLoc = SM.getPresumedLoc(Info.getLocation());
     if (PLoc.isInvalid())
       return;
-    
+
     unsigned LineNo = PLoc.getLine();
 
     // First, if this diagnostic is not in the main file, print out the
@@ -819,7 +819,7 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
       }
       if (DiagOpts->ShowSourceRanges && Info.getNumRanges()) {
         FileID CaretFileID =
-          SM.getFileID(SM.getInstantiationLoc(Info.getLocation()));
+          SM.getFileID(SM.getExpansionLoc(Info.getLocation()));
         bool PrintedRange = false;
 
         for (unsigned i = 0, e = Info.getNumRanges(); i != e; ++i) {
@@ -828,8 +828,8 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
 
           SourceLocation B = Info.getRange(i).getBegin();
           SourceLocation E = Info.getRange(i).getEnd();
-          B = SM.getInstantiationLoc(B);
-          E = SM.getInstantiationLoc(E);
+          B = SM.getExpansionLoc(B);
+          E = SM.getExpansionLoc(E);
 
           // If the End location and the start location are the same and are a
           // macro location, then the range was something that came from a macro
@@ -837,7 +837,7 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
           // can do is to highlight the range.  If this is a function-like
           // macro, we'd also like to highlight the arguments.
           if (B == E && Info.getRange(i).getEnd().isMacroID())
-            E = SM.getInstantiationRange(Info.getRange(i).getEnd()).second;
+            E = SM.getExpansionRange(Info.getRange(i).getEnd()).second;
 
           std::pair<FileID, unsigned> BInfo = SM.getDecomposedLoc(B);
           std::pair<FileID, unsigned> EInfo = SM.getDecomposedLoc(E);
@@ -872,20 +872,20 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
   if (DiagOpts->ShowColors) {
     // Print diagnostic category in bold and color
     switch (Level) {
-    case Diagnostic::Ignored: assert(0 && "Invalid diagnostic type");
-    case Diagnostic::Note:    OS.changeColor(noteColor, true); break;
-    case Diagnostic::Warning: OS.changeColor(warningColor, true); break;
-    case Diagnostic::Error:   OS.changeColor(errorColor, true); break;
-    case Diagnostic::Fatal:   OS.changeColor(fatalColor, true); break;
+    case DiagnosticsEngine::Ignored: assert(0 && "Invalid diagnostic type");
+    case DiagnosticsEngine::Note:    OS.changeColor(noteColor, true); break;
+    case DiagnosticsEngine::Warning: OS.changeColor(warningColor, true); break;
+    case DiagnosticsEngine::Error:   OS.changeColor(errorColor, true); break;
+    case DiagnosticsEngine::Fatal:   OS.changeColor(fatalColor, true); break;
     }
   }
 
   switch (Level) {
-  case Diagnostic::Ignored: assert(0 && "Invalid diagnostic type");
-  case Diagnostic::Note:    OS << "note: "; break;
-  case Diagnostic::Warning: OS << "warning: "; break;
-  case Diagnostic::Error:   OS << "error: "; break;
-  case Diagnostic::Fatal:   OS << "fatal error: "; break;
+  case DiagnosticsEngine::Ignored: assert(0 && "Invalid diagnostic type");
+  case DiagnosticsEngine::Note:    OS << "note: "; break;
+  case DiagnosticsEngine::Warning: OS << "warning: "; break;
+  case DiagnosticsEngine::Error:   OS << "error: "; break;
+  case DiagnosticsEngine::Fatal:   OS << "fatal error: "; break;
   }
 
   if (DiagOpts->ShowColors)
@@ -893,44 +893,43 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
 
   llvm::SmallString<100> OutStr;
   Info.FormatDiagnostic(OutStr);
-
+#if 0
   if (DiagOpts->ShowNames &&
         !DiagnosticIDs::isBuiltinNote(Info.getID())) {
       OutStr += " [";
       OutStr += DiagnosticIDs::getName(Info.getID());
       OutStr += "]";
     }
-
+#endif
   std::string OptionName;
-	if (DiagOpts->ShowOptionNames) {
-		// Was this a warning mapped to an error using -Werror or pragma?
-		if (Level == Diagnostic::Error
-				&& DiagnosticIDs::isBuiltinWarningOrExtension(Info.getID())) {
-			diag::Mapping mapping = diag::MAP_IGNORE;
-			Info.getDiags()->getDiagnosticLevel(Info.getID(),
-					Info.getLocation(), &mapping);
-			if (mapping == diag::MAP_WARNING)
-				OptionName += "-Werror";
-		}
-		llvm::StringRef Opt = DiagnosticIDs::getWarningOptionForDiag(
-				Info.getID());
-		if (!Opt.empty()) {
-			if (!OptionName.empty())
-				OptionName += ',';
-			OptionName += "-W";
-			OptionName += Opt;
-		} else if (Info.getID() == diag::fatal_too_many_errors) {
-			OptionName = "-ferror-limit=";
-		} else {
-			// If the diagnostic is an extension diagnostic and not enabled by default
-			// then it must have been turned on with -pedantic.
-			bool EnabledByDefault;
-			if (DiagnosticIDs::isBuiltinExtensionDiag(Info.getID(),
-					EnabledByDefault) && !EnabledByDefault)
-				OptionName = "-pedantic";
-		}
-	}
-  
+  if (DiagOpts->ShowOptionNames) {
+    // Was this a warning mapped to an error using -Werror or pragma?
+    if (Level == DiagnosticsEngine::Error
+	&& DiagnosticIDs::isBuiltinWarningOrExtension(Info.getID())) {
+      diag::Mapping mapping = diag::MAP_IGNORE;
+      Info.getDiags()->getDiagnosticLevel(Info.getID(),Info.getLocation());
+      if (mapping == diag::MAP_WARNING)
+        OptionName += "-Werror";
+    }
+    llvm::StringRef Opt = DiagnosticIDs::getWarningOptionForDiag(Info.getID());
+    if (!Opt.empty()) {
+      if (!OptionName.empty())
+        OptionName += ',';
+      OptionName += "-W";
+      OptionName += Opt;
+    } else if (Info.getID() == diag::fatal_too_many_errors) {
+      OptionName = "-ferror-limit=";
+    } else {
+      // If the diagnostic is an extension diagnostic and not enabled by default
+      // then it must have been turned on with -pedantic.
+      bool EnabledByDefault;
+      if (DiagnosticIDs::isBuiltinExtensionDiag(Info.getID(),
+                                                EnabledByDefault)
+          && !EnabledByDefault)
+        OptionName = "-pedantic";
+    }
+  }
+
   // If the user wants to see category information, include it too.
   unsigned DiagCategory = 0;
   if (DiagOpts->ShowCategories)
@@ -940,12 +939,12 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
   if (!OptionName.empty() || DiagCategory != 0) {
     bool NeedsComma = false;
     OutStr += " [";
-    
+
     if (!OptionName.empty()) {
       OutStr += OptionName;
       NeedsComma = true;
     }
-    
+
     if (DiagCategory) {
       if (NeedsComma) OutStr += ',';
       if (DiagOpts->ShowCategories == 1)
@@ -955,17 +954,17 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
         OutStr += DiagnosticIDs::getCategoryNameFromID(DiagCategory);
       }
     }
-    
+
     OutStr += "]";
   }
 
-  
+
   if (DiagOpts->ShowColors) {
     // Print warnings, errors and fatal errors in bold, no color
     switch (Level) {
-    case Diagnostic::Warning: OS.changeColor(savedColor, true); break;
-    case Diagnostic::Error:   OS.changeColor(savedColor, true); break;
-    case Diagnostic::Fatal:   OS.changeColor(savedColor, true); break;
+    case DiagnosticsEngine::Warning: OS.changeColor(savedColor, true); break;
+    case DiagnosticsEngine::Error:   OS.changeColor(savedColor, true); break;
+    case DiagnosticsEngine::Fatal:   OS.changeColor(savedColor, true); break;
     default: break; //don't bold notes
     }
   }
@@ -991,11 +990,11 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
   // multiple times if one loc has multiple diagnostics.
   if (DiagOpts->ShowCarets && Info.getLocation().isValid() &&
       ((LastLoc != Info.getLocation()) || Info.getNumRanges() ||
-       (LastCaretDiagnosticWasNote && Level != Diagnostic::Note) ||
+       (LastCaretDiagnosticWasNote && Level != DiagnosticsEngine::Note) ||
        Info.getNumFixItHints())) {
     // Cache the LastLoc, it allows us to omit duplicate source/caret spewage.
     LastLoc = FullSourceLoc(Info.getLocation(), Info.getSourceManager());
-    LastCaretDiagnosticWasNote = (Level == Diagnostic::Note);
+    LastCaretDiagnosticWasNote = (Level == DiagnosticsEngine::Note);
 
     // Get the ranges into a local array we can hack on.
     CharSourceRange Ranges[20];
@@ -1021,22 +1020,27 @@ void TextDiagnosticPrinter::HandleDiagnostic(Diagnostic::Level Level,
       unsigned Depth = 0;
       do {
         ++Depth;
-        Loc = LastLoc.getManager().getImmediateInstantiationRange(Loc).first;
+        Loc = LastLoc.getManager().getImmediateExpansionRange(Loc).first;
       } while (!Loc.isFileID());
-      
+
       if (Depth > DiagOpts->MacroBacktraceLimit) {
-        MacroInstSkipStart = DiagOpts->MacroBacktraceLimit / 2 + 
+        MacroInstSkipStart = DiagOpts->MacroBacktraceLimit / 2 +
                              DiagOpts->MacroBacktraceLimit % 2;
         MacroInstSkipEnd = Depth - DiagOpts->MacroBacktraceLimit / 2;
       }
-    }        
-    
+    }
+
     EmitCaretDiagnostic(LastLoc, Ranges, NumRanges, LastLoc.getManager(),
                         Info.getFixItHints(),
                         Info.getNumFixItHints(),
-                        DiagOpts->MessageLength, 
+                        DiagOpts->MessageLength,
                         0, MacroInstSkipStart, MacroInstSkipEnd);
   }
 
   OS.flush();
+}
+
+DiagnosticConsumer *
+TextDiagnosticPrinter::clone(DiagnosticsEngine &Diags) const {
+    return new TextDiagnosticPrinter(OS, *DiagOpts, /*OwnsOutputStream=*/false);
 }

@@ -14,10 +14,11 @@ namespace llvm {
 }
 
 namespace mlang {
-  class Diagnostic;
+  class DiagnosticsEngine;
   class CodeGenOptions;
+  class LangOptions;
   class TargetOptions;
-  
+
   enum BackendAction {
     Backend_EmitAssembly,  ///< Emit native assembly files
     Backend_EmitBC,        ///< Emit LLVM bitcode files
@@ -26,10 +27,11 @@ namespace mlang {
     Backend_EmitMCNull,    ///< Run CodeGen, but don't emit anything
     Backend_EmitObj        ///< Emit native object files
   };
-  
-  void EmitBackendOutput(Diagnostic &Diags, const CodeGenOptions &CGOpts,
-                         const TargetOptions &TOpts, llvm::Module *M,
-                         BackendAction Action, llvm::raw_ostream *OS);
+
+  void EmitBackendOutput(DiagnosticsEngine &Diags, const CodeGenOptions &CGOpts,
+                         const TargetOptions &TOpts, const LangOptions &LOpts,
+                         llvm::Module *M, BackendAction Action,
+                         llvm::raw_ostream *OS);
 }
 
 #endif /* MLANG_CODEGEN_BACKEND_UTIL_H_ */

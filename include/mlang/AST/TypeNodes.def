@@ -6,8 +6,8 @@
 //===----------------------------------------------------------------------===//
 //
 //  This file defines the AST type info database. Each type node is
-//  enumerated by providing its name and base class. Depending on 
-//  where in the abstract syntax tree the type will show up, the 
+//  enumerated by providing its name and base class. Depending on
+//  where in the abstract syntax tree the type will show up, the
 //  enumeration uses one of four different macros:
 //
 //    TYPE(Class, Base) - A type that can show up anywhere in the AST,
@@ -33,26 +33,26 @@
 #  define ABSTRACT_TYPE(Class, Base) TYPE(Class, Base)
 #endif
 
-TYPE(SimpleNumeric, Type)
+TYPE(SimpleNumeric, RawType)
 
-ABSTRACT_TYPE(Array, Type)
+ABSTRACT_TYPE(Array, RawType)
 TYPE(Matrix, ArrayType)
 TYPE(NDArray, ArrayType)
 TYPE(Vector, ArrayType)
 
-ABSTRACT_TYPE(HeteroContainer, Type)
+ABSTRACT_TYPE(HeteroContainer, RawType)
 TYPE(Struct, HeteroContainerType)
 TYPE(Cell, HeteroContainerType)
 TYPE(Map, HeteroContainerType)
 TYPE(Classdef, HeteroContainerType)
 
-ABSTRACT_TYPE(Function, Type)
+ABSTRACT_TYPE(Function, RawType)
 TYPE(FunctionNoProto, FunctionType)
 TYPE(FunctionProto, FunctionType)
 
-TYPE(FunctionHandle, Type)
+TYPE(FunctionHandle, RawType)
 
-ABSTRACT_TYPE(Reference, Type)
+ABSTRACT_TYPE(Reference, RawType)
 TYPE(LValueReference, ReferenceType)
 TYPE(RValueReference, ReferenceType)
 

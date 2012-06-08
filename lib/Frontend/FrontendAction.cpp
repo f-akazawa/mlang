@@ -1,4 +1,4 @@
-//===--- FrontendAction.cpp - XXXXXXX for Mlang  ---------------------*- C++ -*-===//
+//===--- FrontendAction.cpp - XXXXXXX for Mlang  ----------------*- C++ -*-===//
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
@@ -56,29 +56,28 @@ public:
 /// \brief Checks deserialized definitions and emits error if a name
 /// matches one given in command-line using -error-on-deserialized-decl.
 class DeserializedDefnsChecker: public ASTDeserializationListener {
-	ASTContext &Ctx;
-	std::set<std::string> NamesToCheck;
-	ASTDeserializationListener *Previous;
+  ASTContext &Ctx;
+  std::set<std::string> NamesToCheck;
+  ASTDeserializationListener *Previous;
 
 public:
-	DeserializedDefnsChecker(ASTContext &Ctx,
-			const std::set<std::string> &NamesToCheck,
-			ASTDeserializationListener *Previous) :
-		Ctx(Ctx), NamesToCheck(NamesToCheck), Previous(Previous) {
-	}
+  DeserializedDefnsChecker(ASTContext &Ctx,
+                           const std::set<std::string> &NamesToCheck,
+                           ASTDeserializationListener *Previous) :
+    Ctx(Ctx), NamesToCheck(NamesToCheck), Previous(Previous) { }
 
-	virtual void DeclRead(serialization::DefnID ID, const Defn *D) {
-		if (const NamedDefn *ND = dyn_cast<NamedDefn>(D))
-			if (NamesToCheck.find(ND->getNameAsString()) != NamesToCheck.end()) {
-				unsigned DiagID = Ctx.getDiagnostics().getCustomDiagID(
-						Diagnostic::Error, "%0 was deserialized");
-				Ctx.getDiagnostics().Report(Ctx.getFullLoc(D->getLocation()),
-						DiagID) << ND->getNameAsString();
-			}
+  virtual void DeclRead(serialization::DefnID ID, const Defn *D) {
+    if (const NamedDefn *ND = dyn_cast<NamedDefn>(D))
+      if (NamesToCheck.find(ND->getNameAsString()) != NamesToCheck.end()) {
+        unsigned DiagID = Ctx.getDiagnostics().getCustomDiagID(
+          DiagnosticsEngine::Error, "%0 was deserialized");
+        Ctx.getDiagnostics().Report(Ctx.getFullLoc(D->getLocation()),
+                                    DiagID) << ND->getNameAsString();
+      }
 
-		if (Previous)
-			Previous->DefnRead(ID, D);
-	}
+    if (Previous)
+      Previous->DefnRead(ID, D);
+  }
 };
 
 } // end anonymous namespace
@@ -143,7 +142,7 @@ bool FrontendAction::BeginSourceFile(CompilerInstance &CI,
     assert(hasASTFileSupport() &&
            "This action does not have AST file support!");
 
-    llvm::IntrusiveRefCntPtr<Diagnostic> Diags(&CI.getDiagnostics());
+    llvm::IntrusiveRefCntPtr<DiagnosticsEngine> Diags(&CI.getDiagnostics());
     std::string Error;
     ASTUnit *AST = ASTUnit::LoadFromASTFile(Filename, Diags,
                                             CI.getFileSystemOpts());
@@ -225,7 +224,7 @@ bool FrontendAction::BeginSourceFile(CompilerInstance &CI,
   if (!CI.hasASTContext() || !CI.getASTContext().getExternalSource()) {
     Preprocessor &PP = CI.getPreprocessor();
     PP.getBuiltinInfo().InitializeBuiltins(PP.getIdentifierTable(),
-                                           false);
+                                           PP.getLangOptions());
   }
 
   return true;

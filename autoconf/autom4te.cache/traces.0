@@ -1,32 +1,4 @@
-# generated automatically by aclocal 1.11.1 -*- Autoconf -*-
-
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
-# 2005, 2006, 2007, 2008, 2009  Free Software Foundation, Inc.
-# This file is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.
-
-# AM_CONDITIONAL                                            -*- Autoconf -*-
-
-# Copyright (C) 1997, 2000, 2001, 2003, 2004, 2005, 2006, 2008
-# Free Software Foundation, Inc.
-#
-# This file is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-# serial 9
-
-# AM_CONDITIONAL(NAME, SHELL-CONDITION)
-# -------------------------------------
-# Define a conditional.
-AC_DEFUN([AM_CONDITIONAL],
-[AC_PREREQ(2.52)dnl
+m4trace:/usr/share/aclocal-1.11/cond.m4:15: -1- AC_DEFUN([AM_CONDITIONAL], [AC_PREREQ(2.52)dnl
  ifelse([$1], [TRUE],  [AC_FATAL([$0: invalid condition: $1])],
 	[$1], [FALSE], [AC_FATAL([$0: invalid condition: $1])])dnl
 AC_SUBST([$1_TRUE])dnl
@@ -46,31 +18,9 @@ AC_CONFIG_COMMANDS_PRE(
   AC_MSG_ERROR([[conditional "$1" was never defined.
 Usually this means the macro was only invoked conditionally.]])
 fi])])
-
-# Copyright (C) 2006, 2008  Free Software Foundation, Inc.
-#
-# This file is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-# serial 2
-
-# _AM_SUBST_NOTMAKE(VARIABLE)
-# ---------------------------
-# Prevent Automake from outputting VARIABLE = @VARIABLE@ in Makefile.in.
-# This macro is traced by Automake.
-AC_DEFUN([_AM_SUBST_NOTMAKE])
-
-# AM_SUBST_NOTMAKE(VARIABLE)
-# ---------------------------
-# Public sister of _AM_SUBST_NOTMAKE.
-AC_DEFUN([AM_SUBST_NOTMAKE], [_AM_SUBST_NOTMAKE($@)])
-
-# Check for the extension used for executables on build platform.
-# This is necessary for cross-compiling where the build platform
-# may differ from the host platform.
-AC_DEFUN([AC_BUILD_EXEEXT],
-[
+m4trace:/usr/share/aclocal-1.11/substnot.m4:14: -1- AC_DEFUN([_AM_SUBST_NOTMAKE])
+m4trace:/usr/share/aclocal-1.11/substnot.m4:19: -1- AC_DEFUN([AM_SUBST_NOTMAKE], [_AM_SUBST_NOTMAKE($@)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/build_exeext.m4:4: -1- AC_DEFUN([AC_BUILD_EXEEXT], [
 AC_MSG_CHECKING([for executable suffix on build platform])
 AC_CACHE_VAL(ac_cv_build_exeext,
 [if test "$CYGWIN" = yes || test "$MINGW32" = yes; then
@@ -108,13 +58,7 @@ test x"${ac_cv_build_exeext}" != xblank && BUILD_EXEEXT=${ac_cv_build_exeext}
 AC_MSG_RESULT(${ac_cv_build_exeext})
 ac_build_exeext=$BUILD_EXEEXT
 AC_SUBST(BUILD_EXEEXT)])
-
-#
-# Determine if the printf() functions have the %a format character.
-# This is modified from:
-# http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_have_ext_slist.html
-AC_DEFUN([AC_C_PRINTF_A],
-[AC_CACHE_CHECK([if printf has the %a format character],[llvm_cv_c_printf_a],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/c_printf_a.m4:5: -1- AC_DEFUN([AC_C_PRINTF_A], [AC_CACHE_CHECK([if printf has the %a format character],[llvm_cv_c_printf_a],
 [AC_LANG_PUSH([C])
  AC_RUN_IFELSE([
   AC_LANG_PROGRAM([[
@@ -140,13 +84,7 @@ return (0);]])],
    AC_DEFINE([HAVE_PRINTF_A],[1],[Define to have the %a format string])
  fi
 ])
-
-#
-# Check for GNU Make.  This is originally from
-# http://www.gnu.org/software/ac-archive/htmldoc/check_gnu_make.html
-#
-AC_DEFUN([AC_CHECK_GNU_MAKE],
-[AC_CACHE_CHECK([for GNU make],[llvm_cv_gnu_make_command],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/check_gnu_make.m4:5: -1- AC_DEFUN([AC_CHECK_GNU_MAKE], [AC_CACHE_CHECK([for GNU make],[llvm_cv_gnu_make_command],
 dnl Search all the common names for GNU make
 [llvm_cv_gnu_make_command=''
  for a in "$MAKE" make gmake gnumake ; do
@@ -167,22 +105,11 @@ dnl '#' otherwise
  fi
  AC_SUBST(ifGNUmake)
 ])
-
-#
-# Configure a Makefile without clobbering it if it exists and is not out of
-# date.  This macro is unique to LLVM.
-#
-AC_DEFUN([AC_CONFIG_MAKEFILE],
-[AC_CONFIG_COMMANDS($1,
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/config_makefile.m4:5: -1- AC_DEFUN([AC_CONFIG_MAKEFILE], [AC_CONFIG_COMMANDS($1,
   [${llvm_src}/autoconf/mkinstalldirs `dirname $1`
    ${SHELL} ${llvm_src}/autoconf/install-sh -m 0644 -c ${srcdir}/$1 $1])
 ])
-
-#
-# Provide the arguments and other processing needed for an LLVM project
-#
-AC_DEFUN([LLVM_CONFIG_PROJECT],
-  [AC_ARG_WITH([llvmsrc],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/config_project.m4:4: -1- AC_DEFUN([LLVM_CONFIG_PROJECT], [AC_ARG_WITH([llvmsrc],
     AS_HELP_STRING([--with-llvmsrc],[Location of LLVM Source Code]),
     [llvm_src="$withval"],[llvm_src="]$1["])
   AC_SUBST(LLVM_SRC,$llvm_src)
@@ -192,15 +119,8 @@ AC_DEFUN([LLVM_CONFIG_PROJECT],
   AC_SUBST(LLVM_OBJ,$llvm_obj)
   AC_CONFIG_COMMANDS([setup],,[llvm_src="${LLVM_SRC}"])
 ])
-
-AC_DEFUN([CXX_FLAG_CHECK],
-  [AC_SUBST($1, `$CXX -Werror $2 -fsyntax-only -xc /dev/null 2>/dev/null && echo $2`)])
-
-#
-# This function determins if the the isinf function isavailable on this
-# platform.
-#
-AC_DEFUN([AC_FUNC_ISINF],[
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/cxx_flag_check.m4:1: -1- AC_DEFUN([CXX_FLAG_CHECK], [AC_SUBST($1, `$CXX -Werror $2 -fsyntax-only -xc /dev/null 2>/dev/null && echo $2`)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isinf.m4:5: -1- AC_DEFUN([AC_FUNC_ISINF], [
 AC_SINGLE_CXX_CHECK([ac_cv_func_isinf_in_math_h],   
                     [isinf], [<math.h>],
                     [float f; isinf(f);])
@@ -230,14 +150,7 @@ if test "$ac_cv_func_finite_in_ieeefp_h" = "yes" ; then
 fi
 
 ])
-
-
-
-#
-# This function determines if the isnan function is available on this
-# platform.
-#
-AC_DEFUN([AC_FUNC_ISNAN],[
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isnan.m4:5: -1- AC_DEFUN([AC_FUNC_ISNAN], [
 AC_SINGLE_CXX_CHECK([ac_cv_func_isnan_in_math_h],   
                     [isnan], [<math.h>],
                     [float f; isnan(f);])
@@ -260,12 +173,7 @@ if test "$ac_cv_func_std_isnan_in_cmath" = "yes" ; then
   AC_DEFINE([HAVE_STD_ISNAN_IN_CMATH],1,[Set to 1 if the std::isnan function is found in <cmath>])
 fi
 ])
-
-#
-# Check for the ability to mmap a file.  
-#
-AC_DEFUN([AC_FUNC_MMAP_FILE],
-[AC_CACHE_CHECK(for mmap of files,
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_mmap_file.m4:4: -1- AC_DEFUN([AC_FUNC_MMAP_FILE], [AC_CACHE_CHECK(for mmap of files,
 ac_cv_func_mmap_file,
 [ AC_LANG_PUSH([C])
   AC_RUN_IFELSE([
@@ -287,13 +195,7 @@ if test "$ac_cv_func_mmap_file" = yes; then
    AC_SUBST(MMAP_FILE,[yes])
 fi
 ])
-
-#
-# Check for anonymous mmap macros.  This is modified from
-# http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_have_ext_slist.html
-#
-AC_DEFUN([AC_HEADER_MMAP_ANONYMOUS],
-[AC_CACHE_CHECK(for MAP_ANONYMOUS vs. MAP_ANON,
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/header_mmap_anonymous.m4:5: -1- AC_DEFUN([AC_HEADER_MMAP_ANONYMOUS], [AC_CACHE_CHECK(for MAP_ANONYMOUS vs. MAP_ANON,
 ac_cv_header_mmap_anon,
 [ AC_LANG_PUSH([C])
   AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -309,12 +211,7 @@ if test "$ac_cv_header_mmap_anon" = yes; then
    AC_DEFINE([HAVE_MMAP_ANONYMOUS],[1],[Define if mmap() uses MAP_ANONYMOUS to map anonymous pages, or undefine if it uses MAP_ANON])
 fi
 ])
-
-#
-# This function determins if the the HUGE_VAL macro is compilable with the 
-# -pedantic switch or not. XCode < 2.4.1 doesn't get it right.
-#
-AC_DEFUN([AC_HUGE_VAL_CHECK],[
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/huge_val.m4:5: -1- AC_DEFUN([AC_HUGE_VAL_CHECK], [
   AC_CACHE_CHECK([for HUGE_VAL sanity], [ac_cv_huge_val_sanity],[
     AC_LANG_PUSH([C++])
     ac_save_CXXFLAGS=$CXXFLAGS
@@ -330,26 +227,7 @@ AC_DEFUN([AC_HUGE_VAL_CHECK],[
     ])
   AC_SUBST(HUGE_VAL_SANITY,$ac_cv_huge_val_sanity)
 ])
-
-# libtool.m4 - Configure libtool for the host system. -*-Autoconf-*-
-
-# serial 48 AC_PROG_LIBTOOL
-
-
-# AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)
-# -----------------------------------------------------------
-# If this macro is not defined by Autoconf, define it here.
-m4_ifdef([AC_PROVIDE_IFELSE],
-         [],
-         [m4_define([AC_PROVIDE_IFELSE],
-	         [m4_ifdef([AC_PROVIDE_$1],
-		           [$2], [$3])])])
-
-
-# AC_PROG_LIBTOOL
-# ---------------
-AC_DEFUN([AC_PROG_LIBTOOL],
-[AC_REQUIRE([_AC_PROG_LIBTOOL])dnl
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:25: -1- AC_DEFUN([AC_PROG_LIBTOOL], [AC_REQUIRE([_AC_PROG_LIBTOOL])dnl
 dnl If AC_PROG_CXX has already been expanded, run AC_LIBTOOL_CXX
 dnl immediately, otherwise, hook it in at the end of AC_PROG_CXX.
   AC_PROVIDE_IFELSE([AC_PROG_CXX],
@@ -362,8 +240,8 @@ dnl And a similar setup for Fortran 77 support
     [define([AC_PROG_F77], defn([AC_PROG_F77])[AC_LIBTOOL_F77
 ])])
 
-dnl Quote A][M_PROG_GCJ so that aclocal doesn't bring it in needlessly.
-dnl If either AC_PROG_GCJ or A][M_PROG_GCJ have already been expanded, run
+dnl Quote AM_PROG_GCJ so that aclocal doesn't bring it in needlessly.
+dnl If either AC_PROG_GCJ or AM_PROG_GCJ have already been expanded, run
 dnl AC_LIBTOOL_GCJ immediately, otherwise, hook it in at the end of both.
   AC_PROVIDE_IFELSE([AC_PROG_GCJ],
     [AC_LIBTOOL_GCJ],
@@ -378,13 +256,8 @@ dnl AC_LIBTOOL_GCJ immediately, otherwise, hook it in at the end of both.
        ifdef([LT_AC_PROG_GCJ],
 	     [define([LT_AC_PROG_GCJ],
 		defn([LT_AC_PROG_GCJ])[AC_LIBTOOL_GCJ])])])])
-])])# AC_PROG_LIBTOOL
-
-
-# _AC_PROG_LIBTOOL
-# ----------------
-AC_DEFUN([_AC_PROG_LIBTOOL],
-[AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
+])])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:60: -1- AC_DEFUN([_AC_PROG_LIBTOOL], [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
 AC_BEFORE([$0],[AC_LIBTOOL_CXX])dnl
 AC_BEFORE([$0],[AC_LIBTOOL_F77])dnl
 AC_BEFORE([$0],[AC_LIBTOOL_GCJ])dnl
@@ -398,13 +271,8 @@ AC_SUBST(LIBTOOL)dnl
 
 # Prevent multiple expansion
 define([AC_PROG_LIBTOOL], [])
-])# _AC_PROG_LIBTOOL
-
-
-# AC_LIBTOOL_SETUP
-# ----------------
-AC_DEFUN([AC_LIBTOOL_SETUP],
-[AC_PREREQ(2.60)dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:80: -1- AC_DEFUN([AC_LIBTOOL_SETUP], [AC_PREREQ(2.60)dnl
 AC_REQUIRE([AC_ENABLE_SHARED])dnl
 AC_REQUIRE([AC_ENABLE_STATIC])dnl
 AC_REQUIRE([AC_ENABLE_FAST_INSTALL])dnl
@@ -541,13 +409,8 @@ test -z "$pic_mode" && pic_mode=default
 tagname=
 AC_LIBTOOL_LANG_C_CONFIG
 _LT_AC_TAGCONFIG
-])# AC_LIBTOOL_SETUP
-
-
-# _LT_AC_SYS_COMPILER
-# -------------------
-AC_DEFUN([_LT_AC_SYS_COMPILER],
-[AC_REQUIRE([AC_PROG_CC])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:223: -1- AC_DEFUN([_LT_AC_SYS_COMPILER], [AC_REQUIRE([AC_PROG_CC])dnl
 
 # If no C compiler was specified, use CC.
 LTCC=${LTCC-"$CC"}
@@ -557,14 +420,8 @@ LTCFLAGS=${LTCFLAGS-"$CFLAGS"}
 
 # Allow CC to be a program name with arguments.
 compiler=$CC
-])# _LT_AC_SYS_COMPILER
-
-
-# _LT_CC_BASENAME(CC)
-# -------------------
-# Calculate cc_basename.  Skip known compiler wrappers and cross-prefix.
-AC_DEFUN([_LT_CC_BASENAME],
-[for cc_temp in $1""; do
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:240: -1- AC_DEFUN([_LT_CC_BASENAME], [for cc_temp in $1""; do
   case $cc_temp in
     compile | *[[\\/]]compile | ccache | *[[\\/]]ccache ) ;;
     distcc | *[[\\/]]distcc | purify | *[[\\/]]purify ) ;;
@@ -574,70 +431,33 @@ AC_DEFUN([_LT_CC_BASENAME],
 done
 cc_basename=`$echo "X$cc_temp" | $Xsed -e 's%.*/%%' -e "s%^$host_alias-%%"`
 ])
-
-
-# _LT_COMPILER_BOILERPLATE
-# ------------------------
-# Check for compiler boilerplate output or warnings with
-# the simple compiler test code.
-AC_DEFUN([_LT_COMPILER_BOILERPLATE],
-[ac_outfile=conftest.$ac_objext
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:257: -1- AC_DEFUN([_LT_COMPILER_BOILERPLATE], [ac_outfile=conftest.$ac_objext
 printf "$lt_simple_compile_test_code" >conftest.$ac_ext
 eval "$ac_compile" 2>&1 >/dev/null | $SED '/^$/d; /^ *+/d' >conftest.err
 _lt_compiler_boilerplate=`cat conftest.err`
 $rm conftest*
-])# _LT_COMPILER_BOILERPLATE
-
-
-# _LT_LINKER_BOILERPLATE
-# ----------------------
-# Check for linker boilerplate output or warnings with
-# the simple link test code.
-AC_DEFUN([_LT_LINKER_BOILERPLATE],
-[ac_outfile=conftest.$ac_objext
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:270: -1- AC_DEFUN([_LT_LINKER_BOILERPLATE], [ac_outfile=conftest.$ac_objext
 printf "$lt_simple_link_test_code" >conftest.$ac_ext
 eval "$ac_link" 2>&1 >/dev/null | $SED '/^$/d; /^ *+/d' >conftest.err
 _lt_linker_boilerplate=`cat conftest.err`
 $rm conftest*
-])# _LT_LINKER_BOILERPLATE
-
-
-# _LT_AC_SYS_LIBPATH_AIX
-# ----------------------
-# Links a minimal program and checks the executable
-# for the system default hardcoded library path. In most cases,
-# this is /usr/lib:/lib, but when the MPI compilers are used
-# the location of the communication and MPI libs are included too.
-# If we don't find anything, use the default library path according
-# to the aix ld manual.
-AC_DEFUN([_LT_AC_SYS_LIBPATH_AIX],
-[AC_LINK_IFELSE(AC_LANG_PROGRAM,[
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:287: -1- AC_DEFUN([_LT_AC_SYS_LIBPATH_AIX], [AC_LINK_IFELSE(AC_LANG_PROGRAM,[
 aix_libpath=`dump -H conftest$ac_exeext 2>/dev/null | $SED -n -e '/Import File Strings/,/^$/ { /^0/ { s/^0  *\(.*\)$/\1/; p; }
 }'`
 # Check for a 64-bit object if we didn't find anything.
 if test -z "$aix_libpath"; then aix_libpath=`dump -HX64 conftest$ac_exeext 2>/dev/null | $SED -n -e '/Import File Strings/,/^$/ { /^0/ { s/^0  *\(.*\)$/\1/; p; }
 }'`; fi],[])
 if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
-])# _LT_AC_SYS_LIBPATH_AIX
-
-
-# _LT_AC_SHELL_INIT(ARG)
-# ----------------------
-AC_DEFUN([_LT_AC_SHELL_INIT],
-[ifdef([AC_DIVERSION_NOTICE],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:300: -1- AC_DEFUN([_LT_AC_SHELL_INIT], [ifdef([AC_DIVERSION_NOTICE],
 	     [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
 	 [AC_DIVERT_PUSH(NOTICE)])
 $1
 AC_DIVERT_POP
-])# _LT_AC_SHELL_INIT
-
-
-# _LT_AC_PROG_ECHO_BACKSLASH
-# --------------------------
-# Add some code to the start of the generated configure script which
-# will find an echo command which doesn't interpret backslashes.
-AC_DEFUN([_LT_AC_PROG_ECHO_BACKSLASH],
-[_LT_AC_SHELL_INIT([
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:313: -1- AC_DEFUN([_LT_AC_PROG_ECHO_BACKSLASH], [_LT_AC_SHELL_INIT([
 # Check that we are running under the correct shell.
 SHELL=${CONFIG_SHELL-/bin/sh}
 
@@ -785,13 +605,8 @@ if test "X$ECHO" = "X$CONFIG_SHELL [$]0 --fallback-echo"; then
 fi
 
 AC_SUBST(ECHO)
-])])# _LT_AC_PROG_ECHO_BACKSLASH
-
-
-# _LT_AC_LOCK
-# -----------
-AC_DEFUN([_LT_AC_LOCK],
-[AC_ARG_ENABLE([libtool-lock],
+])])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:467: -1- AC_DEFUN([_LT_AC_LOCK], [AC_ARG_ENABLE([libtool-lock],
     [AS_HELP_STRING([--disable-libtool-lock],[avoid locking (might break parallel builds)])])
 test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 
@@ -928,15 +743,8 @@ esac
 
 need_locks="$enable_libtool_lock"
 
-])# _LT_AC_LOCK
-
-
-# AC_LIBTOOL_COMPILER_OPTION(MESSAGE, VARIABLE-NAME, FLAGS,
-#		[OUTPUT-FILE], [ACTION-SUCCESS], [ACTION-FAILURE])
-# ----------------------------------------------------------------
-# Check whether the given compiler option works
-AC_DEFUN([AC_LIBTOOL_COMPILER_OPTION],
-[AC_REQUIRE([LT_AC_PROG_SED])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:612: -1- AC_DEFUN([AC_LIBTOOL_COMPILER_OPTION], [AC_REQUIRE([LT_AC_PROG_SED])
 AC_CACHE_CHECK([$1], [$2],
   [$2=no
   ifelse([$4], , [ac_outfile=conftest.$ac_objext], [ac_outfile=$4])
@@ -973,15 +781,8 @@ if test x"[$]$2" = xyes; then
 else
     ifelse([$6], , :, [$6])
 fi
-])# AC_LIBTOOL_COMPILER_OPTION
-
-
-# AC_LIBTOOL_LINKER_OPTION(MESSAGE, VARIABLE-NAME, FLAGS,
-#                          [ACTION-SUCCESS], [ACTION-FAILURE])
-# ------------------------------------------------------------
-# Check whether the given compiler option works
-AC_DEFUN([AC_LIBTOOL_LINKER_OPTION],
-[AC_CACHE_CHECK([$1], [$2],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:657: -1- AC_DEFUN([AC_LIBTOOL_LINKER_OPTION], [AC_CACHE_CHECK([$1], [$2],
   [$2=no
    save_LDFLAGS="$LDFLAGS"
    LDFLAGS="$LDFLAGS $3"
@@ -1010,13 +811,8 @@ if test x"[$]$2" = xyes; then
 else
     ifelse([$5], , :, [$5])
 fi
-])# AC_LIBTOOL_LINKER_OPTION
-
-
-# AC_LIBTOOL_SYS_MAX_CMD_LEN
-# --------------------------
-AC_DEFUN([AC_LIBTOOL_SYS_MAX_CMD_LEN],
-[# find the maximum length of command line arguments
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:692: -1- AC_DEFUN([AC_LIBTOOL_SYS_MAX_CMD_LEN], [# find the maximum length of command line arguments
 AC_MSG_CHECKING([the maximum length of command line arguments])
 AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
   i=0
@@ -1125,21 +921,10 @@ if test -n $lt_cv_sys_max_cmd_len ; then
 else
   AC_MSG_RESULT(none)
 fi
-])# AC_LIBTOOL_SYS_MAX_CMD_LEN
-
-
-# _LT_AC_CHECK_DLFCN
-# ------------------
-AC_DEFUN([_LT_AC_CHECK_DLFCN],
-[AC_CHECK_HEADERS(dlfcn.h)dnl
-])# _LT_AC_CHECK_DLFCN
-
-
-# _LT_AC_TRY_DLOPEN_SELF (ACTION-IF-TRUE, ACTION-IF-TRUE-W-USCORE,
-#                           ACTION-IF-FALSE, ACTION-IF-CROSS-COMPILING)
-# ---------------------------------------------------------------------
-AC_DEFUN([_LT_AC_TRY_DLOPEN_SELF],
-[AC_REQUIRE([_LT_AC_CHECK_DLFCN])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:807: -1- AC_DEFUN([_LT_AC_CHECK_DLFCN], [AC_CHECK_HEADERS(dlfcn.h)dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:815: -1- AC_DEFUN([_LT_AC_TRY_DLOPEN_SELF], [AC_REQUIRE([_LT_AC_CHECK_DLFCN])dnl
 if test "$cross_compiling" = yes; then :
   [$4]
 else
@@ -1223,13 +1008,8 @@ EOF
   fi
 fi
 rm -fr conftest*
-])# _LT_AC_TRY_DLOPEN_SELF
-
-
-# AC_LIBTOOL_DLOPEN_SELF
-# ----------------------
-AC_DEFUN([AC_LIBTOOL_DLOPEN_SELF],
-[AC_REQUIRE([_LT_AC_CHECK_DLFCN])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:905: -1- AC_DEFUN([AC_LIBTOOL_DLOPEN_SELF], [AC_REQUIRE([_LT_AC_CHECK_DLFCN])dnl
 if test "x$enable_dlopen" != xyes; then
   enable_dlopen=unknown
   enable_dlopen_self=unknown
@@ -1336,14 +1116,8 @@ else
   *) enable_dlopen_self_static=unknown ;;
   esac
 fi
-])# AC_LIBTOOL_DLOPEN_SELF
-
-
-# AC_LIBTOOL_PROG_CC_C_O([TAGNAME])
-# ---------------------------------
-# Check to see if options -c and -o are simultaneously supported by compiler
-AC_DEFUN([AC_LIBTOOL_PROG_CC_C_O],
-[AC_REQUIRE([_LT_AC_SYS_COMPILER])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1019: -1- AC_DEFUN([AC_LIBTOOL_PROG_CC_C_O], [AC_REQUIRE([_LT_AC_SYS_COMPILER])dnl
 AC_CACHE_CHECK([if $compiler supports -c -o file.$ac_objext],
   [_LT_AC_TAGVAR(lt_cv_prog_compiler_c_o, $1)],
   [_LT_AC_TAGVAR(lt_cv_prog_compiler_c_o, $1)=no
@@ -1387,14 +1161,8 @@ AC_CACHE_CHECK([if $compiler supports -c -o file.$ac_objext],
    rmdir conftest
    $rm conftest*
 ])
-])# AC_LIBTOOL_PROG_CC_C_O
-
-
-# AC_LIBTOOL_SYS_HARD_LINK_LOCKS([TAGNAME])
-# -----------------------------------------
-# Check to see if we can do hard links to lock some files if needed
-AC_DEFUN([AC_LIBTOOL_SYS_HARD_LINK_LOCKS],
-[AC_REQUIRE([_LT_AC_LOCK])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1070: -1- AC_DEFUN([AC_LIBTOOL_SYS_HARD_LINK_LOCKS], [AC_REQUIRE([_LT_AC_LOCK])dnl
 
 hard_links="nottested"
 if test "$_LT_AC_TAGVAR(lt_cv_prog_compiler_c_o, $1)" = no && test "$need_locks" != no; then
@@ -1414,13 +1182,8 @@ if test "$_LT_AC_TAGVAR(lt_cv_prog_compiler_c_o, $1)" = no && test "$need_locks"
 else
   need_locks=no
 fi
-])# AC_LIBTOOL_SYS_HARD_LINK_LOCKS
-
-
-# AC_LIBTOOL_OBJDIR
-# -----------------
-AC_DEFUN([AC_LIBTOOL_OBJDIR],
-[AC_CACHE_CHECK([for objdir], [lt_cv_objdir],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1096: -1- AC_DEFUN([AC_LIBTOOL_OBJDIR], [AC_CACHE_CHECK([for objdir], [lt_cv_objdir],
 [rm -f .libs 2>/dev/null
 mkdir .libs 2>/dev/null
 if test -d .libs; then
@@ -1431,14 +1194,8 @@ else
 fi
 rmdir .libs 2>/dev/null])
 objdir=$lt_cv_objdir
-])# AC_LIBTOOL_OBJDIR
-
-
-# AC_LIBTOOL_PROG_LD_HARDCODE_LIBPATH([TAGNAME])
-# ----------------------------------------------
-# Check hardcoding attributes.
-AC_DEFUN([AC_LIBTOOL_PROG_LD_HARDCODE_LIBPATH],
-[AC_MSG_CHECKING([how to hardcode library paths into programs])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1114: -1- AC_DEFUN([AC_LIBTOOL_PROG_LD_HARDCODE_LIBPATH], [AC_MSG_CHECKING([how to hardcode library paths into programs])
 _LT_AC_TAGVAR(hardcode_action, $1)=
 if test -n "$_LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)" || \
    test -n "$_LT_AC_TAGVAR(runpath_var, $1)" || \
@@ -1472,13 +1229,8 @@ elif test "$shlibpath_overrides_runpath" = yes ||
   # Fast installation is not necessary
   enable_fast_install=needless
 fi
-])# AC_LIBTOOL_PROG_LD_HARDCODE_LIBPATH
-
-
-# AC_LIBTOOL_SYS_LIB_STRIP
-# ------------------------
-AC_DEFUN([AC_LIBTOOL_SYS_LIB_STRIP],
-[striplib=
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1154: -1- AC_DEFUN([AC_LIBTOOL_SYS_LIB_STRIP], [striplib=
 old_striplib=
 AC_MSG_CHECKING([whether stripping libraries is possible])
 if test -n "$STRIP" && $STRIP -V 2>&1 | grep "GNU strip" >/dev/null; then
@@ -1501,14 +1253,8 @@ fi
     ;;
   esac
 fi
-])# AC_LIBTOOL_SYS_LIB_STRIP
-
-
-# AC_LIBTOOL_SYS_DYNAMIC_LINKER
-# -----------------------------
-# PORTME Fill in your ld.so characteristics
-AC_DEFUN([AC_LIBTOOL_SYS_DYNAMIC_LINKER],
-[AC_MSG_CHECKING([dynamic linker characteristics])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1184: -1- AC_DEFUN([AC_LIBTOOL_SYS_DYNAMIC_LINKER], [AC_MSG_CHECKING([dynamic linker characteristics])
 library_names_spec=
 libname_spec='lib$name'
 soname_spec=
@@ -2102,13 +1848,8 @@ variables_saved_for_relink="PATH $shlibpath_var $runpath_var"
 if test "$GCC" = yes; then
   variables_saved_for_relink="$variables_saved_for_relink GCC_EXEC_PREFIX COMPILER_PATH LIBRARY_PATH"
 fi
-])# AC_LIBTOOL_SYS_DYNAMIC_LINKER
-
-
-# _LT_AC_TAGCONFIG
-# ----------------
-AC_DEFUN([_LT_AC_TAGCONFIG],
-[AC_ARG_WITH([tags],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1784: -1- AC_DEFUN([_LT_AC_TAGCONFIG], [AC_ARG_WITH([tags],
     [AS_HELP_STRING([--with-tags@<:@=TAGS@:>@],[include additional configurations @<:@automatic@:>@])],
     [tagnames="$withval"])
 
@@ -2205,31 +1946,12 @@ if test -f "$ltmain" && test -n "$tagnames"; then
     AC_MSG_ERROR([unable to update list of available tagged configurations.])
   fi
 fi
-])# _LT_AC_TAGCONFIG
-
-
-# AC_LIBTOOL_DLOPEN
-# -----------------
-# enable checks for dlopen support
-AC_DEFUN([AC_LIBTOOL_DLOPEN],
- [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])
-])# AC_LIBTOOL_DLOPEN
-
-
-# AC_LIBTOOL_WIN32_DLL
-# --------------------
-# declare package support for building win32 DLLs
-AC_DEFUN([AC_LIBTOOL_WIN32_DLL],
-[AC_BEFORE([$0], [AC_LIBTOOL_SETUP])
-])# AC_LIBTOOL_WIN32_DLL
-
-
-# AC_ENABLE_SHARED([DEFAULT])
-# ---------------------------
-# implement the --enable-shared flag
-# DEFAULT is either `yes' or `no'.  If omitted, it defaults to `yes'.
-AC_DEFUN([AC_ENABLE_SHARED],
-[define([enable_shared_default], ifelse($1, no, no, yes))dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1888: -1- AC_DEFUN([AC_LIBTOOL_DLOPEN], [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1896: -1- AC_DEFUN([AC_LIBTOOL_WIN32_DLL], [AC_BEFORE([$0], [AC_LIBTOOL_SETUP])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1905: -1- AC_DEFUN([AC_ENABLE_SHARED], [define([enable_shared_default], ifelse($1, no, no, yes))dnl
 AC_ARG_ENABLE([shared],
     AS_HELP_STRING([--enable-shared@<:@=PKGS@:>@],[build shared libraries @<:@default=enable_shared_default@:>@]),
     [p=${PACKAGE-default}
@@ -2250,24 +1972,11 @@ AC_ARG_ENABLE([shared],
       ;;
     esac],
     [enable_shared=]enable_shared_default)
-])# AC_ENABLE_SHARED
-
-
-# AC_DISABLE_SHARED
-# -----------------
-# set the default shared flag to --disable-shared
-AC_DEFUN([AC_DISABLE_SHARED],
-[AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1933: -1- AC_DEFUN([AC_DISABLE_SHARED], [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
 AC_ENABLE_SHARED(no)
-])# AC_DISABLE_SHARED
-
-
-# AC_ENABLE_STATIC([DEFAULT])
-# ---------------------------
-# implement the --enable-static flag
-# DEFAULT is either `yes' or `no'.  If omitted, it defaults to `yes'.
-AC_DEFUN([AC_ENABLE_STATIC],
-[define([enable_static_default], ifelse($1, no, no, yes))dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1943: -1- AC_DEFUN([AC_ENABLE_STATIC], [define([enable_static_default], ifelse($1, no, no, yes))dnl
 AC_ARG_ENABLE([static],
     AS_HELP_STRING([--enable-static@<:@=PKGS@:>@],[build static libraries @<:@default=enable_static_default@:>@]),
     [p=${PACKAGE-default}
@@ -2288,24 +1997,11 @@ AC_ARG_ENABLE([static],
       ;;
     esac],
     [enable_static=]enable_static_default)
-])# AC_ENABLE_STATIC
-
-
-# AC_DISABLE_STATIC
-# -----------------
-# set the default static flag to --disable-static
-AC_DEFUN([AC_DISABLE_STATIC],
-[AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1971: -1- AC_DEFUN([AC_DISABLE_STATIC], [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
 AC_ENABLE_STATIC(no)
-])# AC_DISABLE_STATIC
-
-
-# AC_ENABLE_FAST_INSTALL([DEFAULT])
-# ---------------------------------
-# implement the --enable-fast-install flag
-# DEFAULT is either `yes' or `no'.  If omitted, it defaults to `yes'.
-AC_DEFUN([AC_ENABLE_FAST_INSTALL],
-[define([enable_Fast_install_default], ifelse($1, no, no, yes))dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:1981: -1- AC_DEFUN([AC_ENABLE_FAST_INSTALL], [define([enable_Fast_install_default], ifelse($1, no, no, yes))dnl
 AC_ARG_ENABLE([fast-install],
     AS_HELP_STRING([--enable-fast-install@<:@=PKGS@:>@],[optimize for fast installation @<:@default=enable_Fast_install_default@:>@]),
     [p=${PACKAGE-default}
@@ -2326,48 +2022,14 @@ AC_ARG_ENABLE([fast-install],
       ;;
     esac],
     [enable_fast_install=]enable_Fast_install_default)
-])# AC_ENABLE_FAST_INSTALL
-
-
-# AC_DISABLE_FAST_INSTALL
-# -----------------------
-# set the default to --disable-fast-install
-AC_DEFUN([AC_DISABLE_FAST_INSTALL],
-[AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2009: -1- AC_DEFUN([AC_DISABLE_FAST_INSTALL], [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
 AC_ENABLE_FAST_INSTALL(no)
-])# AC_DISABLE_FAST_INSTALL
-
-
-# AC_LIBTOOL_PICMODE([MODE])
-# --------------------------
-# implement the --with-pic flag
-# MODE is either `yes' or `no'.  If omitted, it defaults to `both'.
-AC_DEFUN([AC_LIBTOOL_PICMODE],
-[AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2019: -1- AC_DEFUN([AC_LIBTOOL_PICMODE], [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
 pic_mode=ifelse($#,1,$1,default)
-])# AC_LIBTOOL_PICMODE
-
-
-# AC_PROG_EGREP
-# -------------
-# This is predefined starting with Autoconf 2.54, so this conditional
-# definition can be removed once we require Autoconf 2.54 or later.
-m4_ifndef([AC_PROG_EGREP], [AC_DEFUN([AC_PROG_EGREP],
-[AC_CACHE_CHECK([for egrep], [ac_cv_prog_egrep],
-   [if echo a | (grep -E '(a|b)') >/dev/null 2>&1
-    then ac_cv_prog_egrep='grep -E'
-    else ac_cv_prog_egrep='egrep'
-    fi])
- EGREP=$ac_cv_prog_egrep
- AC_SUBST([EGREP])
-])])
-
-
-# AC_PATH_TOOL_PREFIX
-# -------------------
-# find a file program which can recognise shared library
-AC_DEFUN([AC_PATH_TOOL_PREFIX],
-[AC_REQUIRE([AC_PROG_EGREP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2043: -1- AC_DEFUN([AC_PATH_TOOL_PREFIX], [AC_REQUIRE([AC_PROG_EGREP])dnl
 AC_MSG_CHECKING([for $1])
 AC_CACHE_VAL(lt_cv_path_MAGIC_CMD,
 [case $MAGIC_CMD in
@@ -2423,14 +2085,8 @@ if test -n "$MAGIC_CMD"; then
 else
   AC_MSG_RESULT(no)
 fi
-])# AC_PATH_TOOL_PREFIX
-
-
-# AC_PATH_MAGIC
-# -------------
-# find a file program which can recognise a shared library
-AC_DEFUN([AC_PATH_MAGIC],
-[AC_PATH_TOOL_PREFIX(${ac_tool_prefix}file, /usr/bin$PATH_SEPARATOR$PATH)
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2106: -1- AC_DEFUN([AC_PATH_MAGIC], [AC_PATH_TOOL_PREFIX(${ac_tool_prefix}file, /usr/bin$PATH_SEPARATOR$PATH)
 if test -z "$lt_cv_path_MAGIC_CMD"; then
   if test -n "$ac_tool_prefix"; then
     AC_PATH_TOOL_PREFIX(file, /usr/bin$PATH_SEPARATOR$PATH)
@@ -2438,14 +2094,8 @@ if test -z "$lt_cv_path_MAGIC_CMD"; then
     MAGIC_CMD=:
   fi
 fi
-])# AC_PATH_MAGIC
-
-
-# AC_PROG_LD
-# ----------
-# find the pathname to the GNU or non-GNU linker
-AC_DEFUN([AC_PROG_LD],
-[AC_ARG_WITH([gnu-ld],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2121: -1- AC_DEFUN([AC_PROG_LD], [AC_ARG_WITH([gnu-ld],
     [AS_HELP_STRING([--with-gnu-ld],[assume the C compiler uses GNU ld @<:@default=no@:>@])],
     [test "$withval" = no || with_gnu_ld=yes],
     [with_gnu_ld=no])
@@ -2522,13 +2172,8 @@ else
 fi
 test -z "$LD" && AC_MSG_ERROR([no acceptable ld found in \$PATH])
 AC_PROG_LD_GNU
-])# AC_PROG_LD
-
-
-# AC_PROG_LD_GNU
-# --------------
-AC_DEFUN([AC_PROG_LD_GNU],
-[AC_REQUIRE([AC_PROG_EGREP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2204: -1- AC_DEFUN([AC_PROG_LD_GNU], [AC_REQUIRE([AC_PROG_EGREP])dnl
 AC_CACHE_CHECK([if the linker ($LD) is GNU ld], lt_cv_prog_gnu_ld,
 [# I'd rather use --version here, but apparently some GNU lds only accept -v.
 case `$LD -v 2>&1 </dev/null` in
@@ -2540,15 +2185,8 @@ case `$LD -v 2>&1 </dev/null` in
   ;;
 esac])
 with_gnu_ld=$lt_cv_prog_gnu_ld
-])# AC_PROG_LD_GNU
-
-
-# AC_PROG_LD_RELOAD_FLAG
-# ----------------------
-# find reload flag for linker
-#   -- PORTME Some linkers may need a different reload flag.
-AC_DEFUN([AC_PROG_LD_RELOAD_FLAG],
-[AC_CACHE_CHECK([for $LD option to reload object files],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2224: -1- AC_DEFUN([AC_PROG_LD_RELOAD_FLAG], [AC_CACHE_CHECK([for $LD option to reload object files],
   lt_cv_ld_reload_flag,
   [lt_cv_ld_reload_flag='-r'])
 reload_flag=$lt_cv_ld_reload_flag
@@ -2566,15 +2204,8 @@ case $host_os in
     fi
     ;;
 esac
-])# AC_PROG_LD_RELOAD_FLAG
-
-
-# AC_DEPLIBS_CHECK_METHOD
-# -----------------------
-# how to check for library dependencies
-#  -- PORTME fill in with the dynamic library characteristics
-AC_DEFUN([AC_DEPLIBS_CHECK_METHOD],
-[AC_CACHE_CHECK([how to recognise dependent libraries],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2250: -1- AC_DEFUN([AC_DEPLIBS_CHECK_METHOD], [AC_CACHE_CHECK([how to recognise dependent libraries],
 lt_cv_deplibs_check_method,
 [lt_cv_file_magic_cmd='$MAGIC_CMD'
 lt_cv_file_magic_test_file=
@@ -2749,14 +2380,8 @@ esac
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
-])# AC_DEPLIBS_CHECK_METHOD
-
-
-# AC_PROG_NM
-# ----------
-# find the pathname to a BSD-compatible name lister
-AC_DEFUN([AC_PROG_NM],
-[AC_CACHE_CHECK([for BSD-compatible nm], lt_cv_path_NM,
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2432: -1- AC_DEFUN([AC_PROG_NM], [AC_CACHE_CHECK([for BSD-compatible nm], lt_cv_path_NM,
 [if test -n "$NM"; then
   # Let the user override the test.
   lt_cv_path_NM="$NM"
@@ -2801,14 +2426,8 @@ else
   test -z "$lt_cv_path_NM" && lt_cv_path_NM=nm
 fi])
 NM="$lt_cv_path_NM"
-])# AC_PROG_NM
-
-
-# AC_CHECK_LIBM
-# -------------
-# check for math library
-AC_DEFUN([AC_CHECK_LIBM],
-[AC_REQUIRE([AC_CANONICAL_HOST])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2484: -1- AC_DEFUN([AC_CHECK_LIBM], [AC_REQUIRE([AC_CANONICAL_HOST])dnl
 LIBM=
 case $host in
 *-*-beos* | *-*-cygwin* | *-*-pw32* | *-*-darwin*)
@@ -2822,22 +2441,8 @@ case $host in
   AC_CHECK_LIB(m, cos, LIBM="-lm")
   ;;
 esac
-])# AC_CHECK_LIBM
-
-
-# AC_LIBLTDL_CONVENIENCE([DIRECTORY])
-# -----------------------------------
-# sets LIBLTDL to the link flags for the libltdl convenience library and
-# LTDLINCL to the include flags for the libltdl header and adds
-# --enable-ltdl-convenience to the configure arguments.  Note that
-# AC_CONFIG_SUBDIRS is not called here.  If DIRECTORY is not provided,
-# it is assumed to be `libltdl'.  LIBLTDL will be prefixed with
-# '${top_builddir}/' and LTDLINCL will be prefixed with '${top_srcdir}/'
-# (note the single quotes!).  If your package is not flat and you're not
-# using automake, define top_builddir and top_srcdir appropriately in
-# the Makefiles.
-AC_DEFUN([AC_LIBLTDL_CONVENIENCE],
-[AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2513: -1- AC_DEFUN([AC_LIBLTDL_CONVENIENCE], [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   case $enable_ltdl_convenience in
   no) AC_MSG_ERROR([this package needs a convenience libltdl]) ;;
   "") enable_ltdl_convenience=yes
@@ -2847,23 +2452,8 @@ AC_DEFUN([AC_LIBLTDL_CONVENIENCE],
   LTDLINCL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
   # For backwards non-gettext consistent compatibility...
   INCLTDL="$LTDLINCL"
-])# AC_LIBLTDL_CONVENIENCE
-
-
-# AC_LIBLTDL_INSTALLABLE([DIRECTORY])
-# -----------------------------------
-# sets LIBLTDL to the link flags for the libltdl installable library and
-# LTDLINCL to the include flags for the libltdl header and adds
-# --enable-ltdl-install to the configure arguments.  Note that
-# AC_CONFIG_SUBDIRS is not called here.  If DIRECTORY is not provided,
-# and an installed libltdl is not found, it is assumed to be `libltdl'.
-# LIBLTDL will be prefixed with '${top_builddir}/'# and LTDLINCL with
-# '${top_srcdir}/' (note the single quotes!).  If your package is not
-# flat and you're not using automake, define top_builddir and top_srcdir
-# appropriately in the Makefiles.
-# In the future, this macro may have to be called after AC_PROG_LIBTOOL.
-AC_DEFUN([AC_LIBLTDL_INSTALLABLE],
-[AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2539: -1- AC_DEFUN([AC_LIBLTDL_INSTALLABLE], [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   AC_CHECK_LIB(ltdl, lt_dlinit,
   [test x"$enable_ltdl_install" != xyes && enable_ltdl_install=no],
   [if test x"$enable_ltdl_install" = xno; then
@@ -2883,91 +2473,41 @@ AC_DEFUN([AC_LIBLTDL_INSTALLABLE],
   fi
   # For backwards non-gettext consistent compatibility...
   INCLTDL="$LTDLINCL"
-])# AC_LIBLTDL_INSTALLABLE
-
-
-# AC_LIBTOOL_CXX
-# --------------
-# enable support for C++ libraries
-AC_DEFUN([AC_LIBTOOL_CXX],
-[AC_REQUIRE([_LT_AC_LANG_CXX])
-])# AC_LIBTOOL_CXX
-
-
-# _LT_AC_LANG_CXX
-# ---------------
-AC_DEFUN([_LT_AC_LANG_CXX],
-[AC_REQUIRE([AC_PROG_CXX])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2566: -1- AC_DEFUN([AC_LIBTOOL_CXX], [AC_REQUIRE([_LT_AC_LANG_CXX])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2573: -1- AC_DEFUN([_LT_AC_LANG_CXX], [AC_REQUIRE([AC_PROG_CXX])
 AC_REQUIRE([_LT_AC_PROG_CXXCPP])
 _LT_AC_SHELL_INIT([tagnames=${tagnames+${tagnames},}CXX])
-])# _LT_AC_LANG_CXX
-
-# _LT_AC_PROG_CXXCPP
-# ------------------
-AC_DEFUN([_LT_AC_PROG_CXXCPP],
-[
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2581: -1- AC_DEFUN([_LT_AC_PROG_CXXCPP], [
 AC_REQUIRE([AC_PROG_CXX])
 if test -n "$CXX" && ( test "X$CXX" != "Xno" &&
     ( (test "X$CXX" = "Xg++" && `g++ -v >/dev/null 2>&1` ) ||
     (test "X$CXX" != "Xg++"))) ; then
   AC_PROG_CXXCPP
 fi
-])# _LT_AC_PROG_CXXCPP
-
-# AC_LIBTOOL_F77
-# --------------
-# enable support for Fortran 77 libraries
-AC_DEFUN([AC_LIBTOOL_F77],
-[AC_REQUIRE([_LT_AC_LANG_F77])
-])# AC_LIBTOOL_F77
-
-
-# _LT_AC_LANG_F77
-# ---------------
-AC_DEFUN([_LT_AC_LANG_F77],
-[AC_REQUIRE([AC_PROG_F77])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2594: -1- AC_DEFUN([AC_LIBTOOL_F77], [AC_REQUIRE([_LT_AC_LANG_F77])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2601: -1- AC_DEFUN([_LT_AC_LANG_F77], [AC_REQUIRE([AC_PROG_F77])
 _LT_AC_SHELL_INIT([tagnames=${tagnames+${tagnames},}F77])
-])# _LT_AC_LANG_F77
-
-
-# AC_LIBTOOL_GCJ
-# --------------
-# enable support for GCJ libraries
-AC_DEFUN([AC_LIBTOOL_GCJ],
-[AC_REQUIRE([_LT_AC_LANG_GCJ])
-])# AC_LIBTOOL_GCJ
-
-
-# _LT_AC_LANG_GCJ
-# ---------------
-AC_DEFUN([_LT_AC_LANG_GCJ],
-[AC_PROVIDE_IFELSE([AC_PROG_GCJ],[],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2610: -1- AC_DEFUN([AC_LIBTOOL_GCJ], [AC_REQUIRE([_LT_AC_LANG_GCJ])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2617: -1- AC_DEFUN([_LT_AC_LANG_GCJ], [AC_PROVIDE_IFELSE([AC_PROG_GCJ],[],
   [AC_PROVIDE_IFELSE([A][M_PROG_GCJ],[],
     [AC_PROVIDE_IFELSE([LT_AC_PROG_GCJ],[],
       [ifdef([AC_PROG_GCJ],[AC_REQUIRE([AC_PROG_GCJ])],
 	 [ifdef([A][M_PROG_GCJ],[AC_REQUIRE([A][M_PROG_GCJ])],
 	   [AC_REQUIRE([A][C_PROG_GCJ_OR_A][M_PROG_GCJ])])])])])])
 _LT_AC_SHELL_INIT([tagnames=${tagnames+${tagnames},}GCJ])
-])# _LT_AC_LANG_GCJ
-
-
-# AC_LIBTOOL_RC
-# -------------
-# enable support for Windows resource files
-AC_DEFUN([AC_LIBTOOL_RC],
-[AC_REQUIRE([LT_AC_PROG_RC])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2631: -1- AC_DEFUN([AC_LIBTOOL_RC], [AC_REQUIRE([LT_AC_PROG_RC])
 _LT_AC_SHELL_INIT([tagnames=${tagnames+${tagnames},}RC])
-])# AC_LIBTOOL_RC
-
-
-# AC_LIBTOOL_LANG_C_CONFIG
-# ------------------------
-# Ensure that the configuration vars for the C compiler are
-# suitably defined.  Those variables are subsequently used by
-# AC_LIBTOOL_CONFIG to write the compiler configuration to `libtool'.
-AC_DEFUN([AC_LIBTOOL_LANG_C_CONFIG], [_LT_AC_LANG_C_CONFIG])
-AC_DEFUN([_LT_AC_LANG_C_CONFIG],
-[lt_save_CC="$CC"
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2642: -1- AC_DEFUN([AC_LIBTOOL_LANG_C_CONFIG], [_LT_AC_LANG_C_CONFIG])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2643: -1- AC_DEFUN([_LT_AC_LANG_C_CONFIG], [lt_save_CC="$CC"
 AC_LANG_PUSH(C)
 
 # Source file extension for C test sources.
@@ -2989,6 +2529,10 @@ _LT_AC_SYS_COMPILER
 _LT_COMPILER_BOILERPLATE
 _LT_LINKER_BOILERPLATE
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 AC_LIBTOOL_PROG_COMPILER_NO_RTTI($1)
 AC_LIBTOOL_PROG_COMPILER_PIC($1)
 AC_LIBTOOL_PROG_CC_C_O($1)
@@ -3034,17 +2578,9 @@ AC_LIBTOOL_CONFIG($1)
 
 AC_LANG_POP
 CC="$lt_save_CC"
-])# AC_LIBTOOL_LANG_C_CONFIG
-
-
-# AC_LIBTOOL_LANG_CXX_CONFIG
-# --------------------------
-# Ensure that the configuration vars for the C compiler are
-# suitably defined.  Those variables are subsequently used by
-# AC_LIBTOOL_CONFIG to write the compiler configuration to `libtool'.
-AC_DEFUN([AC_LIBTOOL_LANG_CXX_CONFIG], [_LT_AC_LANG_CXX_CONFIG(CXX)])
-AC_DEFUN([_LT_AC_LANG_CXX_CONFIG],
-[AC_LANG_PUSH(C++)
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2723: -1- AC_DEFUN([AC_LIBTOOL_LANG_CXX_CONFIG], [_LT_AC_LANG_CXX_CONFIG(CXX)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:2724: -1- AC_DEFUN([_LT_AC_LANG_CXX_CONFIG], [AC_LANG_PUSH(C++)
 AC_REQUIRE([AC_PROG_CXX])
 AC_REQUIRE([_LT_AC_PROG_CXXCPP])
 
@@ -4017,6 +3553,10 @@ test "$_LT_AC_TAGVAR(ld_shlibs, $1)" = no && can_build_shared=no
 _LT_AC_TAGVAR(GCC, $1)="$GXX"
 _LT_AC_TAGVAR(LD, $1)="$LD"
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 AC_LIBTOOL_POSTDEP_PREDEP($1)
 AC_LIBTOOL_PROG_COMPILER_PIC($1)
 AC_LIBTOOL_PROG_CC_C_O($1)
@@ -4038,15 +3578,8 @@ lt_cv_path_LDCXX=$lt_cv_path_LD
 lt_cv_path_LD=$lt_save_path_LD
 lt_cv_prog_gnu_ldcxx=$lt_cv_prog_gnu_ld
 lt_cv_prog_gnu_ld=$lt_save_with_gnu_ld
-])# AC_LIBTOOL_LANG_CXX_CONFIG
-
-# AC_LIBTOOL_POSTDEP_PREDEP([TAGNAME])
-# ------------------------------------
-# Figure out "hidden" library dependencies from verbose
-# compiler output when linking a shared library.
-# Parse the compiler output and extract the necessary
-# objects, libraries and library flags.
-AC_DEFUN([AC_LIBTOOL_POSTDEP_PREDEP],[
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:3731: -1- AC_DEFUN([AC_LIBTOOL_POSTDEP_PREDEP], [
 dnl we can't use the lt_simple_compile_test_code here,
 dnl because it contains code intended for an executable,
 dnl not a library.  It's possible we should let each
@@ -4198,16 +3731,9 @@ esac
 case " $_LT_AC_TAGVAR(postdeps, $1) " in
 *" -lc "*) _LT_AC_TAGVAR(archive_cmds_need_lc, $1)=no ;;
 esac
-])# AC_LIBTOOL_POSTDEP_PREDEP
-
-# AC_LIBTOOL_LANG_F77_CONFIG
-# --------------------------
-# Ensure that the configuration vars for the C compiler are
-# suitably defined.  Those variables are subsequently used by
-# AC_LIBTOOL_CONFIG to write the compiler configuration to `libtool'.
-AC_DEFUN([AC_LIBTOOL_LANG_F77_CONFIG], [_LT_AC_LANG_F77_CONFIG(F77)])
-AC_DEFUN([_LT_AC_LANG_F77_CONFIG],
-[AC_REQUIRE([AC_PROG_F77])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:3890: -1- AC_DEFUN([AC_LIBTOOL_LANG_F77_CONFIG], [_LT_AC_LANG_F77_CONFIG(F77)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:3891: -1- AC_DEFUN([_LT_AC_LANG_F77_CONFIG], [AC_REQUIRE([AC_PROG_F77])
 AC_LANG_PUSH(Fortran 77)
 
 _LT_AC_TAGVAR(archive_cmds_need_lc, $1)=no
@@ -4299,17 +3825,9 @@ AC_LIBTOOL_CONFIG($1)
 
 AC_LANG_POP
 CC="$lt_save_CC"
-])# AC_LIBTOOL_LANG_F77_CONFIG
-
-
-# AC_LIBTOOL_LANG_GCJ_CONFIG
-# --------------------------
-# Ensure that the configuration vars for the C compiler are
-# suitably defined.  Those variables are subsequently used by
-# AC_LIBTOOL_CONFIG to write the compiler configuration to `libtool'.
-AC_DEFUN([AC_LIBTOOL_LANG_GCJ_CONFIG], [_LT_AC_LANG_GCJ_CONFIG(GCJ)])
-AC_DEFUN([_LT_AC_LANG_GCJ_CONFIG],
-[AC_LANG_PUSH(C)
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:3992: -1- AC_DEFUN([AC_LIBTOOL_LANG_GCJ_CONFIG], [_LT_AC_LANG_GCJ_CONFIG(GCJ)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:3993: -1- AC_DEFUN([_LT_AC_LANG_GCJ_CONFIG], [AC_LANG_PUSH(C)
 
 # Source file extension for Java test sources.
 ac_ext=java
@@ -4343,6 +3861,10 @@ _LT_AC_TAGVAR(archive_cmds_need_lc, $1)=no
 
 _LT_AC_TAGVAR(old_archive_cmds, $1)=$old_archive_cmds
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 AC_LIBTOOL_PROG_COMPILER_NO_RTTI($1)
 AC_LIBTOOL_PROG_COMPILER_PIC($1)
 AC_LIBTOOL_PROG_CC_C_O($1)
@@ -4355,17 +3877,9 @@ AC_LIBTOOL_CONFIG($1)
 
 AC_LANG_POP([])
 CC="$lt_save_CC"
-])# AC_LIBTOOL_LANG_GCJ_CONFIG
-
-
-# AC_LIBTOOL_LANG_RC_CONFIG
-# -------------------------
-# Ensure that the configuration vars for the Windows resource compiler are
-# suitably defined.  Those variables are subsequently used by
-# AC_LIBTOOL_CONFIG to write the compiler configuration to `libtool'.
-AC_DEFUN([AC_LIBTOOL_LANG_RC_CONFIG], [_LT_AC_LANG_RC_CONFIG(RC)])
-AC_DEFUN([_LT_AC_LANG_RC_CONFIG],
-[AC_LANG_PUSH(C)
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:4052: -1- AC_DEFUN([AC_LIBTOOL_LANG_RC_CONFIG], [_LT_AC_LANG_RC_CONFIG(RC)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:4053: -1- AC_DEFUN([_LT_AC_LANG_RC_CONFIG], [AC_LANG_PUSH(C)
 
 # Source file extension for RC test sources.
 ac_ext=rc
@@ -4399,17 +3913,8 @@ AC_LIBTOOL_CONFIG($1)
 
 AC_LANG_POP([])
 CC="$lt_save_CC"
-])# AC_LIBTOOL_LANG_RC_CONFIG
-
-
-# AC_LIBTOOL_CONFIG([TAGNAME])
-# ----------------------------
-# If TAGNAME is not passed, then create an initial libtool script
-# with a default configuration from the untagged config vars.  Otherwise
-# add code to config.status for appending the configuration named by
-# TAGNAME from the matching tagged config vars.
-AC_DEFUN([AC_LIBTOOL_CONFIG],
-[# The else clause should only fire when bootstrapping the
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:4097: -1- AC_DEFUN([AC_LIBTOOL_CONFIG], [# The else clause should only fire when bootstrapping the
 # libtool distribution, otherwise you forgot to ship ltmain.sh
 # with your package, and you will get complaints that there are
 # no rules to generate ltmain.sh.
@@ -4893,13 +4398,8 @@ else
     test -f Makefile && make "$ltmain"
   fi
 fi
-])# AC_LIBTOOL_CONFIG
-
-
-# AC_LIBTOOL_PROG_COMPILER_NO_RTTI([TAGNAME])
-# -------------------------------------------
-AC_DEFUN([AC_LIBTOOL_PROG_COMPILER_NO_RTTI],
-[AC_REQUIRE([_LT_AC_SYS_COMPILER])dnl
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:4587: -1- AC_DEFUN([AC_LIBTOOL_PROG_COMPILER_NO_RTTI], [AC_REQUIRE([_LT_AC_SYS_COMPILER])dnl
 
 _LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)=
 
@@ -4911,13 +4411,8 @@ if test "$GCC" = yes; then
     [-fno-rtti -fno-exceptions], [],
     [_LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1)="$_LT_AC_TAGVAR(lt_prog_compiler_no_builtin_flag, $1) -fno-rtti -fno-exceptions"])
 fi
-])# AC_LIBTOOL_PROG_COMPILER_NO_RTTI
-
-
-# AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE
-# ---------------------------------
-AC_DEFUN([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE],
-[AC_REQUIRE([AC_CANONICAL_HOST])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:4605: -1- AC_DEFUN([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE], [AC_REQUIRE([AC_CANONICAL_HOST])
 AC_REQUIRE([AC_PROG_NM])
 AC_REQUIRE([AC_OBJEXT])
 # Check for command to grab the raw symbol name followed by C symbol from nm.
@@ -5113,13 +4608,8 @@ if test -z "$lt_cv_sys_global_symbol_pipe$lt_cv_sys_global_symbol_to_cdecl"; the
 else
   AC_MSG_RESULT(ok)
 fi
-]) # AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE
-
-
-# AC_LIBTOOL_PROG_COMPILER_PIC([TAGNAME])
-# ---------------------------------------
-AC_DEFUN([AC_LIBTOOL_PROG_COMPILER_PIC],
-[_LT_AC_TAGVAR(lt_prog_compiler_wl, $1)=
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:4807: -1- AC_DEFUN([AC_LIBTOOL_PROG_COMPILER_PIC], [_LT_AC_TAGVAR(lt_prog_compiler_wl, $1)=
 _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)=
 _LT_AC_TAGVAR(lt_prog_compiler_static, $1)=
 
@@ -5640,13 +5130,7 @@ AC_LIBTOOL_LINKER_OPTION([if $compiler static flag $lt_tmp_static_flag works],
   [],
   [_LT_AC_TAGVAR(lt_prog_compiler_static, $1)=])
 ])
-
-
-# AC_LIBTOOL_PROG_LD_SHLIBS([TAGNAME])
-# ------------------------------------
-# See if the linker supports building shared libraries.
-AC_DEFUN([AC_LIBTOOL_PROG_LD_SHLIBS],
-[AC_MSG_CHECKING([whether the $compiler linker ($LD) supports shared libraries])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:5334: -1- AC_DEFUN([AC_LIBTOOL_PROG_LD_SHLIBS], [AC_MSG_CHECKING([whether the $compiler linker ($LD) supports shared libraries])
 ifelse([$1],[CXX],[
   _LT_AC_TAGVAR(export_symbols_cmds, $1)='$NM $libobjs $convenience | $global_symbol_pipe | $SED '\''s/.* //'\'' | sort | uniq > $export_symbols'
   case $host_os in
@@ -6569,13 +6053,8 @@ x|xyes)
   fi
   ;;
 esac
-])# AC_LIBTOOL_PROG_LD_SHLIBS
-
-
-# _LT_AC_FILE_LTDLL_C
-# -------------------
-# Be careful that the start marker always follows a newline.
-AC_DEFUN([_LT_AC_FILE_LTDLL_C], [
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6264: -1- AC_DEFUN([_LT_AC_FILE_LTDLL_C], [
 # /* ltdll.c starts here */
 # #define WIN32_LEAN_AND_MEAN
 # #include <windows.h>
@@ -6609,46 +6088,22 @@ AC_DEFUN([_LT_AC_FILE_LTDLL_C], [
 #   return TRUE;
 # }
 # /* ltdll.c ends here */
-])# _LT_AC_FILE_LTDLL_C
-
-
-# _LT_AC_TAGVAR(VARNAME, [TAGNAME])
-# ---------------------------------
-AC_DEFUN([_LT_AC_TAGVAR], [ifelse([$2], [], [$1], [$1_$2])])
-
-
-# old names
-AC_DEFUN([AM_PROG_LIBTOOL],   [AC_PROG_LIBTOOL])
-AC_DEFUN([AM_ENABLE_SHARED],  [AC_ENABLE_SHARED($@)])
-AC_DEFUN([AM_ENABLE_STATIC],  [AC_ENABLE_STATIC($@)])
-AC_DEFUN([AM_DISABLE_SHARED], [AC_DISABLE_SHARED($@)])
-AC_DEFUN([AM_DISABLE_STATIC], [AC_DISABLE_STATIC($@)])
-AC_DEFUN([AM_PROG_LD],        [AC_PROG_LD])
-AC_DEFUN([AM_PROG_NM],        [AC_PROG_NM])
-
-# This is just to silence aclocal about the macro not being used
-ifelse([AC_DISABLE_FAST_INSTALL])
-
-AC_DEFUN([LT_AC_PROG_GCJ],
-[AC_CHECK_TOOL(GCJ, gcj, no)
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6303: -1- AC_DEFUN([_LT_AC_TAGVAR], [ifelse([$2], [], [$1], [$1_$2])])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6307: -1- AC_DEFUN([AM_PROG_LIBTOOL], [AC_PROG_LIBTOOL])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6308: -1- AC_DEFUN([AM_ENABLE_SHARED], [AC_ENABLE_SHARED($@)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6309: -1- AC_DEFUN([AM_ENABLE_STATIC], [AC_ENABLE_STATIC($@)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6310: -1- AC_DEFUN([AM_DISABLE_SHARED], [AC_DISABLE_SHARED($@)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6311: -1- AC_DEFUN([AM_DISABLE_STATIC], [AC_DISABLE_STATIC($@)])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6312: -1- AC_DEFUN([AM_PROG_LD], [AC_PROG_LD])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6313: -1- AC_DEFUN([AM_PROG_NM], [AC_PROG_NM])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6318: -1- AC_DEFUN([LT_AC_PROG_GCJ], [AC_CHECK_TOOL(GCJ, gcj, no)
   test "x${GCJFLAGS+set}" = xset || GCJFLAGS="-g -O2"
   AC_SUBST(GCJFLAGS)
 ])
-
-AC_DEFUN([LT_AC_PROG_RC],
-[AC_CHECK_TOOL(RC, windres, no)
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6324: -1- AC_DEFUN([LT_AC_PROG_RC], [AC_CHECK_TOOL(RC, windres, no)
 ])
-
-# NOTE: This macro has been submitted for inclusion into   #
-#  GNU Autoconf as AC_PROG_SED.  When it is available in   #
-#  a released version of Autoconf we should remove this    #
-#  macro and use it instead.                               #
-# LT_AC_PROG_SED
-# --------------
-# Check for a fully-functional sed program, that truncates
-# as few characters as possible.  Prefer GNU sed if found.
-AC_DEFUN([LT_AC_PROG_SED],
-[AC_MSG_CHECKING([for a sed that does not truncate output])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/libtool.m4:6338: -1- AC_DEFUN([LT_AC_PROG_SED], [AC_MSG_CHECKING([for a sed that does not truncate output])
 AC_CACHE_VAL(lt_cv_path_SED,
 [# Loop through the user's path and test for sed and gsed.
 # Then use that list of sed's as ones to test for truncation.
@@ -6699,14 +6154,7 @@ done
 SED=$lt_cv_path_SED
 AC_MSG_RESULT([$SED])
 ])
-
-#
-# Get the linker version string.
-#
-# This macro is specific to LLVM.
-#
-AC_DEFUN([AC_LINK_GET_VERSION],
-  [AC_CACHE_CHECK([for linker version],[llvm_cv_link_version],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/link_options.m4:6: -1- AC_DEFUN([AC_LINK_GET_VERSION], [AC_CACHE_CHECK([for linker version],[llvm_cv_link_version],
   [
    version_string="$(ld -v 2>&1 | head -1)"
 
@@ -6720,14 +6168,7 @@ AC_DEFUN([AC_LINK_GET_VERSION],
   AC_DEFINE_UNQUOTED([HOST_LINK_VERSION],"$llvm_cv_link_version",
                      [Linker version detected at compile time.])
 ])
-
-#
-# Determine if the system can handle the -R option being passed to the linker.
-#
-# This macro is specific to LLVM.
-#
-AC_DEFUN([AC_LINK_USE_R],
-[AC_CACHE_CHECK([for compiler -Wl,-R<path> option],[llvm_cv_link_use_r],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/link_options.m4:27: -1- AC_DEFUN([AC_LINK_USE_R], [AC_CACHE_CHECK([for compiler -Wl,-R<path> option],[llvm_cv_link_use_r],
 [ AC_LANG_PUSH([C])
   oldcflags="$CFLAGS"
   CFLAGS="$CFLAGS -Wl,-R."
@@ -6740,14 +6181,7 @@ if test "$llvm_cv_link_use_r" = yes ; then
   AC_DEFINE([HAVE_LINK_R],[1],[Define if you can use -Wl,-R. to pass -R. to the linker, in order to add the current directory to the dynamic linker search path.])
   fi
 ])
-
-#
-# Determine if the system can handle the -R option being passed to the linker.
-#
-# This macro is specific to LLVM.
-#
-AC_DEFUN([AC_LINK_EXPORT_DYNAMIC],
-[AC_CACHE_CHECK([for compiler -Wl,-export-dynamic option],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/link_options.m4:47: -1- AC_DEFUN([AC_LINK_EXPORT_DYNAMIC], [AC_CACHE_CHECK([for compiler -Wl,-export-dynamic option],
                 [llvm_cv_link_use_export_dynamic],
 [ AC_LANG_PUSH([C])
   oldcflags="$CFLAGS"
@@ -6761,15 +6195,7 @@ if test "$llvm_cv_link_use_export_dynamic" = yes ; then
   AC_DEFINE([HAVE_LINK_EXPORT_DYNAMIC],[1],[Define if you can use -Wl,-export-dynamic.])
   fi
 ])
-
-#
-# Determine if the system can handle the --version-script option being
-# passed to the linker.
-#
-# This macro is specific to LLVM.
-#
-AC_DEFUN([AC_LINK_VERSION_SCRIPT],
-[AC_CACHE_CHECK([for compiler -Wl,--version-script option],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/link_options.m4:69: -1- AC_DEFUN([AC_LINK_VERSION_SCRIPT], [AC_CACHE_CHECK([for compiler -Wl,--version-script option],
                 [llvm_cv_link_use_version_script],
 [ AC_LANG_PUSH([C])
   oldcflags="$CFLAGS"
@@ -6807,14 +6233,7 @@ if test "$llvm_cv_link_use_version_script" = yes ; then
   AC_SUBST(HAVE_LINK_VERSION_SCRIPT,1)
   fi
 ])
-
-
-#
-# Some Linux machines run a 64-bit kernel with a 32-bit userspace. 'uname -m'
-# shows these as x86_64. Ask the system 'gcc' what it thinks.
-#
-AC_DEFUN([AC_IS_LINUX_MIXED],
-[AC_CACHE_CHECK(for 32-bit userspace on 64-bit system,llvm_cv_linux_mixed,
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/linux_mixed_64_32.m4:5: -1- AC_DEFUN([AC_IS_LINUX_MIXED], [AC_CACHE_CHECK(for 32-bit userspace on 64-bit system,llvm_cv_linux_mixed,
 [ AC_LANG_PUSH([C])
   AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
       [[#ifndef __x86_64__
@@ -6826,17 +6245,7 @@ AC_DEFUN([AC_IS_LINUX_MIXED],
   AC_LANG_POP([C])
 ])
 ])
-
-
-# serial 7 AC_LIB_LTDL
-
-# AC_WITH_LTDL
-# ------------
-# Clients of libltdl can use this macro to allow the installer to
-# choose between a shipped copy of the ltdl sources or a preinstalled
-# version of the library.
-AC_DEFUN([AC_WITH_LTDL],
-[AC_REQUIRE([AC_LIB_LTDL])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:15: -1- AC_DEFUN([AC_WITH_LTDL], [AC_REQUIRE([AC_LIB_LTDL])
 AC_SUBST([LIBLTDL])
 AC_SUBST([INCLTDL])
 
@@ -6875,15 +6284,8 @@ AC_MSG_CHECKING([whether to use included libltdl])
 AC_MSG_RESULT([$with_included_ltdl])
 
 AC_CONFIG_SUBDIRS([libltdl])
-])# AC_WITH_LTDL
-
-
-# AC_LIB_LTDL
-# -----------
-# Perform all the checks necessary for compilation of the ltdl objects
-#  -- including compiler checks and header checks.
-AC_DEFUN([AC_LIB_LTDL],
-[AC_PREREQ(2.60)
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:62: -1- AC_DEFUN([AC_LIB_LTDL], [AC_PREREQ(2.60)
 AC_REQUIRE([AC_PROG_CC])
 AC_REQUIRE([AC_C_CONST])
 AC_REQUIRE([AC_HEADER_STDC])
@@ -6911,24 +6313,14 @@ AC_CHECK_FUNCS([strrchr rindex], [break])
 AC_CHECK_FUNCS([memcpy bcopy], [break])
 AC_CHECK_FUNCS([memmove strcmp])
 AC_CHECK_FUNCS([closedir opendir readdir])
-])# AC_LIB_LTDL
-
-
-# AC_LTDL_ENABLE_INSTALL
-# ----------------------
-AC_DEFUN([AC_LTDL_ENABLE_INSTALL],
-[AC_ARG_ENABLE([ltdl-install],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:96: -1- AC_DEFUN([AC_LTDL_ENABLE_INSTALL], [AC_ARG_ENABLE([ltdl-install],
     [AS_HELP_STRING([--enable-ltdl-install],[install libltdl])])
 
 AM_CONDITIONAL(INSTALL_LTDL, test x"${enable_ltdl_install-no}" != xno)
 AM_CONDITIONAL(CONVENIENCE_LTDL, test x"${enable_ltdl_convenience-no}" != xno)
-])# AC_LTDL_ENABLE_INSTALL
-
-
-# AC_LTDL_SYS_DLOPEN_DEPLIBS
-# --------------------------
-AC_DEFUN([AC_LTDL_SYS_DLOPEN_DEPLIBS],
-[AC_REQUIRE([AC_CANONICAL_HOST])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:107: -1- AC_DEFUN([AC_LTDL_SYS_DLOPEN_DEPLIBS], [AC_REQUIRE([AC_CANONICAL_HOST])
 AC_CACHE_CHECK([whether deplibs are loaded by dlopen],
   [libltdl_cv_sys_dlopen_deplibs],
   [# PORTME does your system automatically load deplibs for dlopen?
@@ -7010,13 +6402,8 @@ if test "$libltdl_cv_sys_dlopen_deplibs" != yes; then
  AC_DEFINE([LTDL_DLOPEN_DEPLIBS], [1],
     [Define if the OS needs help to load dependent libraries for dlopen().])
 fi
-])# AC_LTDL_SYS_DLOPEN_DEPLIBS
-
-
-# AC_LTDL_SHLIBEXT
-# ----------------
-AC_DEFUN([AC_LTDL_SHLIBEXT],
-[AC_REQUIRE([AC_LIBTOOL_SYS_DYNAMIC_LINKER])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:195: -1- AC_DEFUN([AC_LTDL_SHLIBEXT], [AC_REQUIRE([AC_LIBTOOL_SYS_DYNAMIC_LINKER])
 AC_CACHE_CHECK([which extension is used for loadable modules],
   [libltdl_cv_shlibext],
 [
@@ -7027,26 +6414,16 @@ if test -n "$libltdl_cv_shlibext"; then
   AC_DEFINE_UNQUOTED([LTDL_SHLIB_EXT], ["$libltdl_cv_shlibext"],
     [Define to the extension used for shared libraries, say, ".so".])
 fi
-])# AC_LTDL_SHLIBEXT
-
-
-# AC_LTDL_SHLIBPATH
-# -----------------
-AC_DEFUN([AC_LTDL_SHLIBPATH],
-[AC_REQUIRE([AC_LIBTOOL_SYS_DYNAMIC_LINKER])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:212: -1- AC_DEFUN([AC_LTDL_SHLIBPATH], [AC_REQUIRE([AC_LIBTOOL_SYS_DYNAMIC_LINKER])
 AC_CACHE_CHECK([which variable specifies run-time library path],
   [libltdl_cv_shlibpath_var], [libltdl_cv_shlibpath_var="$shlibpath_var"])
 if test -n "$libltdl_cv_shlibpath_var"; then
   AC_DEFINE_UNQUOTED([LTDL_SHLIBPATH_VAR], ["$libltdl_cv_shlibpath_var"],
     [Define to the name of the environment variable that determines the dynamic library search path.])
 fi
-])# AC_LTDL_SHLIBPATH
-
-
-# AC_LTDL_SYSSEARCHPATH
-# ---------------------
-AC_DEFUN([AC_LTDL_SYSSEARCHPATH],
-[AC_REQUIRE([AC_LIBTOOL_SYS_DYNAMIC_LINKER])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:225: -1- AC_DEFUN([AC_LTDL_SYSSEARCHPATH], [AC_REQUIRE([AC_LIBTOOL_SYS_DYNAMIC_LINKER])
 AC_CACHE_CHECK([for the default library search path],
   [libltdl_cv_sys_search_path],
   [libltdl_cv_sys_search_path="$sys_lib_dlsearch_path_spec"])
@@ -7062,13 +6439,8 @@ if test -n "$libltdl_cv_sys_search_path"; then
   AC_DEFINE_UNQUOTED([LTDL_SYSSEARCHPATH], ["$sys_search_path"],
     [Define to the system default library search path.])
 fi
-])# AC_LTDL_SYSSEARCHPATH
-
-
-# AC_LTDL_OBJDIR
-# --------------
-AC_DEFUN([AC_LTDL_OBJDIR],
-[AC_CACHE_CHECK([for objdir],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:247: -1- AC_DEFUN([AC_LTDL_OBJDIR], [AC_CACHE_CHECK([for objdir],
   [libltdl_cv_objdir],
   [libltdl_cv_objdir="$objdir"
   if test -n "$objdir"; then
@@ -7087,13 +6459,8 @@ AC_DEFUN([AC_LTDL_OBJDIR],
   ])
 AC_DEFINE_UNQUOTED([LTDL_OBJDIR], ["$libltdl_cv_objdir/"],
   [Define to the sub-directory in which libtool stores uninstalled libraries.])
-])# AC_LTDL_OBJDIR
-
-
-# AC_LTDL_DLPREOPEN
-# -----------------
-AC_DEFUN([AC_LTDL_DLPREOPEN],
-[AC_REQUIRE([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:272: -1- AC_DEFUN([AC_LTDL_DLPREOPEN], [AC_REQUIRE([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE])
 AC_CACHE_CHECK([whether libtool supports -dlopen/-dlpreopen],
   [libltdl_cv_preloaded_symbols],
   [if test -n "$lt_cv_sys_global_symbol_pipe"; then
@@ -7106,13 +6473,8 @@ if test x"$libltdl_cv_preloaded_symbols" = xyes; then
   AC_DEFINE([HAVE_PRELOADED_SYMBOLS], [1],
     [Define if libtool can extract symbol lists from object files.])
 fi
-])# AC_LTDL_DLPREOPEN
-
-
-# AC_LTDL_DLLIB
-# -------------
-AC_DEFUN([AC_LTDL_DLLIB],
-[LIBADD_DL=
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:291: -1- AC_DEFUN([AC_LTDL_DLLIB], [LIBADD_DL=
 AC_SUBST(LIBADD_DL)
 AC_LANG_PUSH([C])
 
@@ -7157,14 +6519,8 @@ then
   LIBS="$lt_save_LIBS"
 fi
 AC_LANG_POP
-])# AC_LTDL_DLLIB
-
-
-# AC_LTDL_SYMBOL_USCORE
-# ---------------------
-# does the compiler prefix global symbols with an underscore?
-AC_DEFUN([AC_LTDL_SYMBOL_USCORE],
-[AC_REQUIRE([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:343: -1- AC_DEFUN([AC_LTDL_SYMBOL_USCORE], [AC_REQUIRE([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE])
 AC_CACHE_CHECK([for _ prefix in compiled symbols],
   [ac_cv_sys_symbol_underscore],
   [ac_cv_sys_symbol_underscore=no
@@ -7195,13 +6551,8 @@ EOF
   fi
   rm -rf conftest*
   ])
-])# AC_LTDL_SYMBOL_USCORE
-
-
-# AC_LTDL_DLSYM_USCORE
-# --------------------
-AC_DEFUN([AC_LTDL_DLSYM_USCORE],
-[AC_REQUIRE([AC_LTDL_SYMBOL_USCORE])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:380: -1- AC_DEFUN([AC_LTDL_DLSYM_USCORE], [AC_REQUIRE([AC_LTDL_SYMBOL_USCORE])
 if test x"$ac_cv_sys_symbol_underscore" = xyes; then
   if test x"$libltdl_cv_func_dlopen" = xyes ||
      test x"$libltdl_cv_lib_dl_dlopen" = xyes ; then
@@ -7222,12 +6573,8 @@ if test x"$libltdl_cv_need_uscore" = xyes; then
   AC_DEFINE([NEED_USCORE], [1],
     [Define if dlsym() requires a leading underscore in symbol names.])
 fi
-])# AC_LTDL_DLSYM_USCORE
-
-# AC_LTDL_FUNC_ARGZ
-# -----------------
-AC_DEFUN([AC_LTDL_FUNC_ARGZ],
-[AC_CHECK_HEADERS([argz.h])
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/ltdl.m4:406: -1- AC_DEFUN([AC_LTDL_FUNC_ARGZ], [AC_CHECK_HEADERS([argz.h])
 
 AC_CHECK_TYPES([error_t],
   [],
@@ -7238,14 +6585,8 @@ AC_CHECK_TYPES([error_t],
 #endif])
 
 AC_CHECK_FUNCS([argz_append argz_create_sep argz_insert argz_next argz_stringify])
-])# AC_LTDL_FUNC_ARGZ
-
-#
-# When allocating RWX memory, check whether we need to use /dev/zero
-# as the file descriptor or not.
-#
-AC_DEFUN([AC_NEED_DEV_ZERO_FOR_MMAP],
-[AC_CACHE_CHECK([if /dev/zero is needed for mmap],
+])
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/need_dev_zero_for_mmap.m4:5: -1- AC_DEFUN([AC_NEED_DEV_ZERO_FOR_MMAP], [AC_CACHE_CHECK([if /dev/zero is needed for mmap],
 ac_cv_need_dev_zero_for_mmap,
 [if test "$llvm_cv_os_type" = "Interix" ; then
    ac_cv_need_dev_zero_for_mmap=yes
@@ -7257,12 +6598,7 @@ if test "$ac_cv_need_dev_zero_for_mmap" = yes; then
   AC_DEFINE([NEED_DEV_ZERO_FOR_MMAP],[1],
    [Define if /dev/zero should be used when mapping RWX memory, or undefine if its not necessary])
 fi])
-
-dnl This macro checks for tclsh which is required to run dejagnu. On some 
-dnl platforms (notably FreeBSD), tclsh is named tclshX.Y - this handles
-dnl that for us so we can get the latest installed tclsh version.
-dnl 
-AC_DEFUN([DJ_AC_PATH_TCLSH], [
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/path_tclsh.m4:5: -1- AC_DEFUN([DJ_AC_PATH_TCLSH], [
 no_itcl=true
 AC_MSG_CHECKING(for the tclsh program in tclinclude directory)
 AC_ARG_WITH(tclinclude,
@@ -7296,13 +6632,7 @@ else
   AC_SUBST(TCLSH)
 fi
 ])
-
-
-#
-# This function determins if the the srand48,drand48,lrand48 functions are
-# available on this platform.
-#
-AC_DEFUN([AC_FUNC_RAND48],[
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/rand48.m4:5: -1- AC_DEFUN([AC_FUNC_RAND48], [
 AC_SINGLE_CXX_CHECK([ac_cv_func_rand48],   
                     [srand48/lrand48/drand48], [<stdlib.h>],
                     [srand48(0);lrand48();drand48();])
@@ -7310,25 +6640,12 @@ if test "$ac_cv_func_rand48" = "yes" ; then
 AC_DEFINE([HAVE_RAND48],1,[Define to 1 if srand48/lrand48/drand48 exist in <stdlib.h>])
 fi
 ])
-
-dnl AC_SINGLE_CXX_CHECK(CACHEVAR, FUNCTION, HEADER, PROGRAM)
-dnl                     $1,       $2,       $3,     $4,     
-dnl 
-AC_DEFUN([AC_SINGLE_CXX_CHECK],
- [AC_CACHE_CHECK([for $2 in $3], [$1],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: -1- AC_DEFUN([AC_SINGLE_CXX_CHECK], [AC_CACHE_CHECK([for $2 in $3], [$1],
   [AC_LANG_PUSH([C++])
    AC_COMPILE_IFELSE(AC_LANG_PROGRAM([#include $3],[$4]),[$1=yes],[$1=no])
   AC_LANG_POP([C++])])
  ])
-
-
-#
-# Determine if the compiler accepts -fvisibility-inlines-hidden
-#
-# This macro is specific to LLVM.
-#
-AC_DEFUN([AC_CXX_USE_VISIBILITY_INLINES_HIDDEN],
-[AC_CACHE_CHECK([for compiler -fvisibility-inlines-hidden option],
+m4trace:/home/yabin/llvm-git/projects/mlang/autoconf/m4/visibility_inlines_hidden.m4:6: -1- AC_DEFUN([AC_CXX_USE_VISIBILITY_INLINES_HIDDEN], [AC_CACHE_CHECK([for compiler -fvisibility-inlines-hidden option],
                 [llvm_cv_cxx_visibility_inlines_hidden],
 [ AC_LANG_PUSH([C++])
   oldcxxflags="$CXXFLAGS"
@@ -7346,5 +6663,2352 @@ else
   AC_SUBST([ENABLE_VISIBILITY_INLINES_HIDDEN],[0])
 fi
 ])
+m4trace:acinclude.m4:26: -1- AC_DEFUN([MLANG_HOST_TYPE], [AC_CANONICAL_HOST
+if test -z "$host"; then
+  host=unknown
+fi
+canonical_host_type=$host
+if test "$host" = unknown; then
+  AC_MSG_WARN([configuring Octave for unknown system type
+])
+fi
+AC_SUBST(canonical_host_type)])
+m4trace:acinclude.m4:41: -1- AC_DEFUN([OCTAVE_SET_DEFAULT], [ifelse($#, 2, [: ${$1=$2}
+])dnl
+AC_MSG_RESULT([defining $1 to be $$1])
+AC_SUBST($1)])
+m4trace:acinclude.m4:49: -1- AC_DEFUN([OCTAVE_PROG_AR], [if test -z "$AR"; then
+  AR=ar
+fi
+AC_SUBST(AR)
 
-m4_include([acinclude.m4])
+if test -z "$ARFLAGS"; then
+  ARFLAGS="rc"
+fi
+AC_SUBST(ARFLAGS)
+])
+m4trace:acinclude.m4:63: -1- AC_DEFUN([OCTAVE_PLACEMENT_DELETE], [AC_CACHE_CHECK([whether <new> defines placement delete operator],
+octave_cv_placement_delete,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <new>]],
+[[operator delete((void *)0, (void *)0);]])],
+octave_cv_placement_delete=yes, octave_cv_placement_delete=no)])
+if test $octave_cv_placement_delete = yes; then
+AC_DEFINE(HAVE_PLACEMENT_DELETE,1,[Define if C++ supports operator delete(void *, void *)])
+fi
+AC_LANG_POP(C++)
+])
+m4trace:acinclude.m4:78: -1- AC_DEFUN([OCTAVE_DYNAMIC_AUTO_ARRAYS], [AC_CACHE_CHECK([whether C++ supports dynamic auto arrays],
+octave_cv_dynamic_auto_arrays,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
+[[void test(char *); int length(); char x[length()]; test(x);]])],
+octave_cv_dynamic_auto_arrays=yes, octave_cv_dynamic_auto_arrays=no)])
+if test $octave_cv_dynamic_auto_arrays = yes; then
+AC_DEFINE(HAVE_DYNAMIC_AUTO_ARRAYS,1,[Define if C++ supports dynamic auto arrays])
+fi
+AC_LANG_POP(C++)
+])
+m4trace:acinclude.m4:94: -1- AC_DEFUN([OCTAVE_CXX_COMPLEX_SETTERS], [AC_CACHE_CHECK([whether complex class can set components independently],
+octave_cv_cxx_complex_setters,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <complex>]],
+[[std::complex<double> x; x.real (1.0); x.imag (2.0);]])],
+octave_cv_cxx_complex_setters=yes, octave_cv_cxx_complex_setters=no)])
+if test $octave_cv_cxx_complex_setters = yes; then
+AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS,1,[Define if C++ complex class has void real (T) and void imag (T) methods])
+fi
+AC_LANG_POP(C++)
+])
+m4trace:acinclude.m4:110: -1- AC_DEFUN([OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS], [AC_CACHE_CHECK([whether complex class can reference components independently],
+octave_cv_cxx_complex_reference_accessors,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <complex>]],
+[[std::complex<double> x; x.real () = 1.0; x.imag () = 1.0;]])],
+octave_cv_cxx_complex_reference_accessors=yes, octave_cv_cxx_complex_reference_accessors=no)])
+if test $octave_cv_cxx_complex_reference_accessors = yes; then
+AC_DEFINE(HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS,1,[Define if C++ complex class has T& real (void) and T& imag (void) methods])
+fi
+AC_LANG_POP(C++)
+])
+m4trace:acinclude.m4:131: -1- AC_DEFUN([OCTAVE_SMART_PUTENV], [AC_MSG_CHECKING([whether putenv uses malloc])
+AC_CACHE_VAL(octave_cv_func_putenv_malloc,
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#define VAR	"YOW_VAR"
+#define STRING1 "GabbaGabbaHey"
+#define STRING2 "Yow!!"		/* should be shorter than STRING1 */
+extern char *getenv (); /* in case char* and int don't mix gracefully */
+main ()
+{
+  char *str1, *rstr1, *str2, *rstr2;
+  str1 = getenv (VAR);
+  if (str1)
+    exit (1);
+  str1 = malloc (strlen (VAR) + 1 + strlen (STRING1) + 1);
+  if (str1 == 0)
+    exit (2);
+  strcpy (str1, VAR);
+  strcat (str1, "=");
+  strcat (str1, STRING1);
+  if (putenv (str1) < 0)
+    exit (3);
+  rstr1 = getenv (VAR);
+  if (rstr1 == 0)
+    exit (4);
+  rstr1 -= strlen (VAR) + 1;
+  if (strncmp (rstr1, VAR, strlen (VAR)))
+    exit (5);
+  str2 = malloc (strlen (VAR) + 1 + strlen (STRING2) + 1);
+  if (str2 == 0 || str1 == str2)
+    exit (6);
+  strcpy (str2, VAR);
+  strcat (str2, "=");
+  strcat (str2, STRING2);
+  if (putenv (str2) < 0)
+    exit (7);
+  rstr2 = getenv (VAR);
+  if (rstr2 == 0)
+    exit (8);
+  rstr2 -= strlen (VAR) + 1;
+#if 0
+  printf ("rstr1=0x%x, rstr2=0x%x\n", rstr1, rstr2);
+  /*
+   * If string from first call was reused for the second call,
+   * you had better not do a free on the first string!
+   */
+  if (rstr1 == rstr2)
+          printf ("#define SMART_PUTENV\n");
+  else
+          printf ("#undef SMART_PUTENV\n");
+#endif
+  exit (rstr1 == rstr2 ? 0 : 1);
+}]])], octave_cv_func_putenv_malloc=yes, octave_cv_func_putenv_malloc=no,
+    octave_cv_func_putenv_malloc=no)])dnl
+AC_MSG_RESULT([$octave_cv_func_putenv_malloc])
+if test $octave_cv_func_putenv_malloc = yes; then
+  AC_DEFINE(SMART_PUTENV,1,[To quiet autoheader.])
+fi])
+m4trace:acinclude.m4:194: -1- AC_DEFUN([OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL], [
+  AC_REQUIRE([AC_PROG_CXX])
+  AC_MSG_CHECKING([for C++ support for new friend template declaration])
+  AC_CACHE_VAL(octave_cv_cxx_new_friend_template_decl, [
+    AC_LANG_PUSH(C++)
+    rm -f conftest.h
+    cat > conftest.h <<EOB
+       struct A {
+	 friend int operator== (const A&, const A&);
+	 A (int) { }
+       };
+
+       template <class T> int
+       operator== (const T&, const T&)
+       {
+	 return 0;
+       }
+EOB
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include "conftest.h"]],
+      [[A a (1);
+        return a == A(1);]])],
+      [octave_cv_cxx_new_friend_template_decl=no],
+      [octave_cv_cxx_new_friend_template_decl=yes])
+    AC_LANG_POP(C++)
+  ])
+  AC_MSG_RESULT([$octave_cv_cxx_new_friend_template_decl])
+  if test $octave_cv_cxx_new_friend_template_decl = yes; then
+    AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL,1,[Define if your compiler supports `<>' stuff for template friends.])
+  fi
+])
+m4trace:acinclude.m4:231: -1- AC_DEFUN([OCTAVE_CC_FLAG], [
+  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
+  AC_CACHE_VAL(octave_cv_cc_flag_$ac_safe, [
+    AC_LANG_PUSH(C)
+    XCFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $1"
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
+      eval "octave_cv_cc_flag_$ac_safe=yes",
+      eval "octave_cv_cc_flag_$ac_safe=no")
+    CFLAGS="$XCFLAGS"
+    AC_LANG_POP(C)
+  ])
+  if eval "test \"`echo '$octave_cv_cc_flag_'$ac_safe`\" = yes"; then
+    AC_MSG_RESULT(yes)
+    ifelse([$2], , [
+      CFLAGS="$CFLAGS $1"
+      AC_MSG_RESULT([adding $1 to CFLAGS])], [$2])
+  else
+    AC_MSG_RESULT(no)
+    ifelse([$3], , , [$3])
+  fi
+])
+m4trace:acinclude.m4:261: -1- AC_DEFUN([OCTAVE_CXX_FLAG], [
+  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  AC_MSG_CHECKING([whether ${CXX-g++} accepts $1])
+  AC_CACHE_VAL(octave_cv_cxx_flag_$ac_safe, [
+    AC_LANG_PUSH(C++)
+    XCXXFLAGS="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS $1"
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
+      eval "octave_cv_cxx_flag_$ac_safe=yes",
+      eval "octave_cv_cxx_flag_$ac_safe=no")
+    CXXFLAGS="$XCXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if eval "test \"`echo '$octave_cv_cxx_flag_'$ac_safe`\" = yes"; then
+    AC_MSG_RESULT(yes)
+    ifelse([$2], , [
+      CXXFLAGS="$CXXFLAGS $1"
+      AC_MSG_RESULT([adding $1 to CXXFLAGS])], [$2])
+  else
+    AC_MSG_RESULT(no)
+    ifelse([$3], , , [$3])
+  fi
+])
+m4trace:acinclude.m4:291: -1- AC_DEFUN([OCTAVE_F77_FLAG], [
+  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  AC_MSG_CHECKING([whether ${F77-g77} accepts $1])
+  AC_CACHE_VAL(octave_cv_f77_flag_$ac_safe, [
+    AC_LANG_PUSH(Fortran 77)
+    XFFLAGS="$FFLAGS"
+    FFLAGS="$FFLAGS $1"
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
+      eval "octave_cv_f77_flag_$ac_safe=yes",
+      eval "octave_cv_f77_flag_$ac_safe=no")
+    FFLAGS="$XFFLAGS"
+    AC_LANG_POP(Fortran 77)
+  ])
+  if eval "test \"`echo '$octave_cv_f77_flag_'$ac_safe`\" = yes"; then
+    AC_MSG_RESULT(yes)
+    ifelse([$2], , [
+      FFLAGS="$FFLAGS $1"
+      AC_MSG_RESULT([adding $1 to FFLAGS])], [$2])
+  else
+    AC_MSG_RESULT(no)
+    ifelse([$3], , , [$3])
+  fi
+])
+m4trace:acinclude.m4:317: -1- AC_DEFUN([OCTAVE_CHECK_FORTRAN_INTEGER_SIZE], [
+  octave_fintsize_save_FFLAGS="$FFLAGS"
+  FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
+  AC_LANG_PUSH(Fortran 77)
+  AC_CACHE_CHECK([whether $F77 generates correct size integers],
+                 [octave_cv_fortran_integer_size],
+[AC_COMPILE_IFELSE(
+[      subroutine foo(n, in, out)
+      integer n, in(n), out(n)
+      integer i
+      do 10 i = 1, n
+        out(i) = in(i)
+   10 continue
+      return
+      end],
+[mv conftest.$ac_objext fintsize.$ac_objext
+
+  octave_fintsize_save_LIBS="$LIBS"
+  LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
+  AC_LANG_PUSH(C)dnl
+  AC_RUN_IFELSE([AC_LANG_PROGRAM([[#include <assert.h>]], [[
+#ifdef USE_64_BIT_IDX_T
+#if IDX_TYPE_LONG
+  typedef long octave_idx_type;
+#else
+  typedef int octave_idx_type;
+#endif
+#else
+  typedef int octave_idx_type;
+#endif
+  octave_idx_type n = 2;
+  octave_idx_type in[2];
+  octave_idx_type out[2];
+  in[0] = 13;
+  in[0] = 42;
+  F77_FUNC(foo,FOO) (&n, &in, &out);
+  assert (in[0] == out[0] && in[1] == out[1]);
+]])],
+  [octave_cv_fortran_integer_size=yes],
+  [octave_cv_fortran_integer_size=no])
+  AC_LANG_POP(C)dnl
+  LIBS="$octave_fintsize_save_LIBS"
+rm -f conftest.$ac_objext fintsize.$ac_objext
+], [
+  rm -f conftest.$ac_objext
+  AC_MSG_FAILURE([cannot compile a simple Fortran program])
+  octave_cv_fortran_integer_size=no])])
+  AC_LANG_POP(Fortran 77)
+  FFLAGS="$octave_fintsize_save_FFLAGS"
+])
+m4trace:acinclude.m4:372: -1- AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
+  AC_ARG_WITH([$1-includedir],
+    [AS_HELP_STRING([--with-$1-includedir=DIR],
+      [look for $2 include files in DIR])],
+    [m4_toupper([$1])_CPPFLAGS="-I$withval"])
+  AC_SUBST(m4_toupper([$1])_CPPFLAGS)
+
+  AC_ARG_WITH([$1-libdir],
+    [AS_HELP_STRING([--with-$1-libdir=DIR],
+      [look for $2 libraries in DIR])],
+    [m4_toupper([$1])_LDFLAGS="-L$withval"])
+  AC_SUBST(m4_toupper([$1])_LDFLAGS)
+
+  AC_ARG_WITH([$1],
+    [m4_ifblank([$7],
+      [AS_HELP_STRING([--without-$1], [don't use $2 library])],
+      [AS_HELP_STRING([--without-$1], [$7])])],
+    with_$1=$withval, with_$1=yes)
+
+  m4_toupper([$1])_LIBS=
+  case $with_$1 in
+    no)
+      m4_toupper([$1])_LIBS=
+    ;;
+    yes | "")
+      m4_toupper([$1])_LIBS="-l$1"
+    ;;
+    -* | */* | *.a | *.so | *.so.* | *.o)
+      m4_toupper([$1])_LIBS="$with_$1"
+    ;;
+    *)
+      m4_toupper([$1])_LIBS="-l$with_$1"
+    ;;
+  esac
+
+  [TEXINFO_]m4_toupper([$1])=
+  warn_$1="$3"
+  if test -n "$m4_toupper([$1])_LIBS"; then
+    octave_check_library_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"
+    m4_ifnblank([$6], [AC_LANG_PUSH($6)])
+    octave_$1_check_for_lib=false
+    m4_ifblank([$4], [octave_$1_check_for_lib=true],
+               [AC_CHECK_HEADERS($4, [octave_$1_check_for_lib=true; break])])
+    if $octave_$1_check_for_lib; then
+      octave_check_library_save_LDFLAGS="$LDFLAGS"
+      LDFLAGS="$m4_toupper([$1])_LDFLAGS $LDFLAGS"
+      octave_check_library_save_LIBS="$LIBS"
+      LIBS="$m4_toupper([$1])_LIBS $LIBS"
+      octave_$1_ok=no
+      AC_MSG_CHECKING([for $5 in $m4_toupper([$1])_LIBS])
+      AC_LINK_IFELSE([AC_LANG_CALL([], [$5])],
+	[octave_$1_ok=yes])
+      AC_MSG_RESULT([$octave_$1_ok])
+      if test $octave_$1_ok = yes; then
+	m4_ifblank([$8], [
+	  warn_$1=
+	  AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
+            [Define if $2 is available.])
+	  [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
+      fi
+      LIBS="$octave_check_library_save_LIBS"
+      LDFLAGS="$octave_check_library_save_LDFLAGS"
+    fi
+    m4_ifnblank([$6], [AC_LANG_POP($6)])
+    CPPFLAGS="$octave_check_library_save_CPPFLAGS"
+  fi
+  AC_SUBST(m4_toupper([$1])_LIBS)
+  AC_SUBST([TEXINFO_]m4_toupper([$1]))
+  if test -n "$warn_$1"; then
+    AC_MSG_WARN([$warn_$1])
+    m4_toupper([$1])_LIBS=
+  fi
+])
+m4trace:acinclude.m4:449: -1- AC_DEFUN([OCTAVE_PROG_FLEX], [
+### For now, don't define LEXLIB to be -lfl -- we don't use anything in
+### it, and it might not be installed.
+###
+### Also make sure that we generate an interactive scanner if we are
+### using flex.
+  AC_PROG_LEX
+  case "$LEX" in
+    flex*)
+      LFLAGS="-I"
+      AC_MSG_RESULT([defining LFLAGS to be $LFLAGS])
+      LEXLIB=
+    ;;
+    *)
+      LEX='$(top_srcdir)/missing flex'
+      warn_flex="I didn't find flex, but it's only a problem if you need to reconstruct lex.cc"
+      AC_MSG_WARN([$warn_flex])
+    ;;
+  esac
+  AC_SUBST(LFLAGS)
+])
+m4trace:acinclude.m4:473: -1- AC_DEFUN([OCTAVE_PROG_BISON], [
+  AC_PROG_YACC
+  case "$YACC" in
+    bison*)
+    ;;
+    *)
+      YACC='$(top_srcdir)/missing bison'
+      warn_bison="I didn't find bison, but it's only a problem if you need to reconstruct parse.cc"
+      AC_MSG_WARN([$warn_bison])
+    ;;
+  esac
+])
+m4trace:acinclude.m4:488: -1- AC_DEFUN([OCTAVE_PROG_PAGER], [if test "$cross_compiling" = yes; then
+  DEFAULT_PAGER=less
+  AC_MSG_RESULT([assuming $DEFAULT_PAGER exists on $canonical_host_type host])
+  AC_SUBST(DEFAULT_PAGER)
+else
+  octave_possible_pagers="less more page pg"
+  case "$canonical_host_type" in
+    *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
+      octave_possible_pagers="$octave_possible_pagers more.com"
+    ;;
+  esac
+
+  AC_CHECK_PROGS(DEFAULT_PAGER, $octave_possible_pagers, [])
+  if test -z "$DEFAULT_PAGER"; then
+    warn_less="I couldn't find \`less', \`more', \`page', or \`pg'"
+    AC_MSG_WARN([$warn_less])
+  fi
+fi
+])
+m4trace:acinclude.m4:511: -1- AC_DEFUN([OCTAVE_PROG_GNUPLOT], [
+gp_names="gnuplot"
+gp_default="gnuplot"
+if test "$cross_compiling" = yes; then
+  GNUPLOT="$gp_default"
+  AC_MSG_RESULT([assuming $GNUPLOT exists on $canonical_host_type host])
+else
+  AC_CHECK_PROGS(GNUPLOT, [$gp_names])
+  if test -z "$GNUPLOT"; then
+    warn_gnuplot=yes
+
+    GNUPLOT="$gp_default"
+
+    AC_MSG_WARN([gnuplot not found.  It isn't necessary to have gnuplot])
+    AC_MSG_WARN([installed, but without native graphics or gnuplot])
+	 AC_MSG_WARN([you won't be able to use any of Octave's plotting commands.])
+  fi
+fi
+AC_SUBST(GNUPLOT)
+])
+m4trace:acinclude.m4:535: -1- AC_DEFUN([OCTAVE_PROG_GPERF], [
+  AC_CHECK_PROG(GPERF, gperf, gperf, [])
+  if test -z "$GPERF"; then
+    GPERF='$(top_srcdir)/missing gperf'
+    warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
+    AC_MSG_WARN([$warn_gperf])
+  fi
+  AC_SUBST(GPERF)
+])
+m4trace:acinclude.m4:548: -1- AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
+  case "$canonical_host_type" in
+    *-*-mingw* | *-*-msdosmsvc)
+      gs_names="gswin32c gs"
+    ;;
+    *)
+      gs_names="gs"
+    ;;
+  esac
+  AC_CHECK_PROGS(GHOSTSCRIPT, [$gs_names])
+  if test -z "$GHOSTSCRIPT"; then
+    GHOSTSCRIPT='$(top_srcdir)/missing gs'
+    warn_ghostscript="I didn't find ghostscript, but it's only a problem if you need to reconstruct figures for the manual"
+    AC_MSG_WARN([$warn_ghostscript])
+  fi
+  AC_SUBST(GHOSTSCRIPT)
+])
+m4trace:acinclude.m4:569: -1- AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
+  AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
+  if test -z "$TEXI2DVI"; then
+    TEXI2DVI='$(top_srcdir)/missing texi2dvi'
+    warn_texi2dvi="I didn't find texi2dvi, but it's only a problem if you need to reconstruct the DVI version of the manual"
+    AC_MSG_WARN([$warn_texi2dvi])
+  fi
+  AC_SUBST(TEXI2DVI)
+])
+m4trace:acinclude.m4:582: -1- AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
+  AC_REQUIRE([OCTAVE_PROG_TEXI2DVI])
+  AC_CHECK_PROG(TEXI2PDF, texi2pdf, texi2pdf, [])
+  if test -z "$TEXI2PDF"; then
+    missing=true;
+    if test -n "$TEXI2DVI"; then
+      TEXI2PDF="$TEXI2DVI --pdf"
+      missing=false;
+    fi
+  else
+    missing=false;
+  fi
+  if $missing; then
+    TEXI2PDF='$(top_srcdir)/missing texi2pdf'
+    warn_texi2pdf="I didn't find texi2pdf, but it's only a problem if you need to reconstruct the PDF version of the manual"
+    AC_MSG_WARN([$warn_texi2pdf])
+  fi
+  AC_SUBST(TEXI2PDF)
+])
+m4trace:acinclude.m4:606: -1- AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
+  AC_REQUIRE([AC_PROG_CXX])
+  AC_MSG_CHECKING([if C++ library is ISO compliant])
+  AC_CACHE_VAL(octave_cv_cxx_iso_compliant_library, [
+    AC_LANG_PUSH(C++)
+    rm -f conftest.h
+### Omitting cwctype for now, since it is broken with gcc-3.0.x and
+### possibly other versions...
+    for inc in algorithm bitset cassert cctype cerrno cfloat ciso646 \
+	climits clocale cmath complex csetjmp csignal cstdarg cstddef \
+	cstdio cstdlib cstring ctime cwchar deque exception \
+	fstream functional iomanip ios iosfwd iostream istream iterator \
+	limits list locale map memory new numeric ostream queue set \
+	sstream stack stdexcept streambuf string strstream typeinfo \
+	utility valarray vector; do
+      echo "#include <$inc>" >> conftest.h
+    done
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include "conftest.h"]],
+      [[std::bitset<50> flags;
+        flags.set();
+        int digits = std::numeric_limits<unsigned long>::digits;
+        digits = 0;]])],
+      [octave_cv_cxx_iso_compliant_library=yes],
+      [octave_cv_cxx_iso_compliant_library=no])
+    AC_LANG_POP(C++)
+  ])
+  AC_MSG_RESULT([$octave_cv_cxx_iso_compliant_library])
+  if test $octave_cv_cxx_iso_compliant_library = yes; then
+    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1, [Define if your C++ runtime library is ISO compliant.])
+  fi
+])
+m4trace:acinclude.m4:642: -1- AC_DEFUN([OCTAVE_ENABLE_READLINE], [
+  USE_READLINE=true
+  READLINE_LIBS=
+  AC_ARG_ENABLE(readline,
+    [  --enable-readline       use readline library (default is yes)],
+    [if test "$enableval" = no; then
+       USE_READLINE=false
+       warn_readline="command editing and history features require GNU Readline"
+     fi])
+  if $USE_READLINE; then
+    save_LIBS="$LIBS"
+    LIBS="$TERM_LIBS"
+    AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout, [
+      READLINE_LIBS="-lreadline"
+      AC_DEFINE(USE_READLINE, 1, [Define to use the readline library.])
+    ], [
+      AC_MSG_WARN([I need GNU Readline 4.2 or later])
+      AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
+    ])
+    LIBS="$save_LIBS"
+  fi
+  AC_SUBST(READLINE_LIBS)
+])
+m4trace:acinclude.m4:670: -1- AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST], [
+  AC_REQUIRE([AC_PROG_CXX])
+  AC_LANG_PUSH(C++)
+  AC_CACHE_CHECK([for broken C++ reinterpret_cast],
+    octave_cv_cxx_broken_reinterpret_cast, [
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <cmath>]], [[
+      typedef double (*fptr) (double);
+      fptr psin = sin;
+      void *vptr = reinterpret_cast<void *> (psin);
+      psin = reinterpret_cast<fptr> (vptr);]])],
+      octave_cv_cxx_broken_reinterpret_cast=no,
+      octave_cv_cxx_broken_reinterpret_cast=yes)])
+  if test $octave_cv_cxx_broken_reinterpret_cast = yes ; then
+    AC_DEFINE(CXX_BROKEN_REINTERPRET_CAST, 1, [Define if C++ reinterpret_cast fails for function pointers.])
+fi
+  AC_LANG_POP(C++)])
+m4trace:acinclude.m4:693: -1- AC_DEFUN([OCTAVE_PROG_FIND], [AC_CHECK_PROGS(FIND, gfind find, )])
+m4trace:acinclude.m4:701: -1- AC_DEFUN([OCTAVE_PROG_SED], [AC_MSG_CHECKING([for a usable sed])
+if test -z "$SED"; then
+  AC_CACHE_VAL(ac_cv_path_sed, [
+  # Loop through the user's path and test for sed and gsed.
+  # Then use that list of sed's as ones to test for truncation.
+  _AS_PATH_WALK([$PATH],
+    [for ac_prog in sed gsed; do
+      for ac_exec_ext in '' $ac_executable_extensions; do
+	if AS_EXECUTABLE_P(["$as_dir/$ac_prog$ac_exec_ext"]); then
+	  _sed_list="$_sed_list $as_dir/$ac_prog$ac_exec_ext"
+	fi
+      done
+    done
+    ])
+    AS_TMPDIR(sed)
+    _max=0
+    _count=0
+    # Add /usr/xpg4/bin/sed as it is typically found on Solaris
+    # along with /bin/sed that truncates output.
+    for _sed in $_sed_list /usr/xpg4/bin/sed; do
+      test ! -f ${_sed} && break
+      cat /dev/null > "$tmp/sed.in"
+      _count=0
+      echo $ECHO_N "0123456789$ECHO_C" >"$tmp/sed.in"
+      # Check for GNU sed and select it if it is found.
+      if "${_sed}" --version 2>&1 < /dev/null | egrep '(GNU)' > /dev/null; then
+	octave_cv_path_sed=${_sed}
+	break;
+      fi
+      # Reject if RE alternation is not handled.
+      if test "`echo 'this and that' | ${_sed} -n 's/\(this\|that\).*$/\1/p'`" != "this"; then
+        continue;
+      fi
+      while true; do
+	cat "$tmp/sed.in" "$tmp/sed.in" >"$tmp/sed.tmp"
+	mv "$tmp/sed.tmp" "$tmp/sed.in"
+	cp "$tmp/sed.in" "$tmp/sed.nl"
+	echo >>"$tmp/sed.nl"
+	${_sed} -e 's/a$//' < "$tmp/sed.nl" >"$tmp/sed.out" || break
+	cmp -s "$tmp/sed.out" "$tmp/sed.nl" || break
+	# 10000 chars as input seems more than enough
+	test $_count -gt 10 && break
+	_count=`expr $_count + 1`
+	if test $_count -gt $_max; then
+	  _max=$_count
+	  octave_cv_path_sed=$_sed
+	fi
+      done
+    done
+    rm -rf "$tmp"
+  ])
+  SED=$octave_cv_path_sed
+  if test -z "$SED"; then
+    AC_MSG_ERROR([no usable version of sed found])
+  fi
+fi
+AC_SUBST(SED)
+AC_MSG_RESULT([$SED])
+])
+m4trace:acinclude.m4:765: -1- AC_DEFUN([OCTAVE_PROG_PERL], [AC_CHECK_PROG(PERL, perl, perl, [])
+  AC_SUBST(PERL)
+])
+m4trace:acinclude.m4:773: -1- AC_DEFUN([OCTAVE_PROG_PYTHON], [AC_CHECK_PROG(PYTHON, python, python, [])
+  AC_SUBST(PYTHON)
+])
+m4trace:acinclude.m4:781: -1- AC_DEFUN([OCTAVE_PROG_DESKTOP_FILE_INSTALL], [AC_CHECK_PROG(DESKTOP_FILE_INSTALL, desktop-file-install, desktop-file-install, [])
+  AC_SUBST(DESKTOP_FILE_INSTALL)
+])
+m4trace:acinclude.m4:788: -1- AC_DEFUN([OCTAVE_IEEE754_DATA_FORMAT], [AC_MSG_CHECKING([for IEEE 754 data format])
+AC_CACHE_VAL(octave_cv_ieee754_data_format,
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
+int
+main (void) 
+{
+  typedef union { unsigned char c[8]; double d; } ieeebytes;
+   
+  ieeebytes l = {0x1c, 0xbc, 0x6e, 0xf2, 0x54, 0x8b, 0x11, 0x43};
+  ieeebytes b = {0x43, 0x11, 0x8b, 0x54, 0xf2, 0x6e, 0xbc, 0x1c};
+
+  return l.d != 1234567891234567.0 && b.d != 1234567891234567.0;
+}]])],
+  octave_cv_ieee754_data_format=yes,
+  octave_cv_ieee754_data_format=no,
+  octave_cv_ieee754_data_format=no)])
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$octave_cv_ieee754_data_format assumed for cross compilation])
+else
+  AC_MSG_RESULT([$octave_cv_ieee754_data_format])
+fi
+if test "$octave_cv_ieee754_data_format" = yes; then
+  AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1, [Define if your system uses IEEE 754 data format.])
+else
+  ## If the format is unknown, then you will probably not have a
+  ## useful system, so we will abort here.  Anyone wishing to
+  ## experiment with building Octave on a system without IEEE
+  ## floating point should be capable of removing this check and
+  ## the one in the octave_ieee_init function in liboctave/lo-ieee.cc.
+  AC_MSG_ERROR([IEEE 754 data format required for building Octave])
+fi
+])
+m4trace:acinclude.m4:828: -1- AC_DEFUN([OCTAVE_UMFPACK_SEPERATE_SPLIT], [AC_MSG_CHECKING([for UMFPACK seperate complex matrix and rhs split])
+AC_CACHE_VAL(octave_cv_umfpack_seperate_split,
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <stdlib.h>
+#if defined (HAVE_UFSPARSE_UMFPACK_h)
+#include <ufsparse/umfpack.h>
+#elif defined (HAVE_UMFPACK_UMFPACK_H)
+#include <umfpack/umfpack.h>
+#elif defined (HAVE_UMFPACK_H)
+#include <umfpack.h>
+#endif
+int n = 5;
+int Ap[] = {0, 2, 5, 9, 10, 12};
+int Ai[]  = {0, 1, 0, 2, 4, 1, 2, 3, 4, 2, 1, 4};
+double Ax[] = {2., 0., 3., 0., 3., 0., -1., 0., 4., 0., 4., 0., 
+	      -3., 0., 1., 0., 2., 0., 2., 0., 6., 0., 1., 0.};
+double br[] = {8., 45., -3., 3., 19.};
+double bi[] = {0., 0., 0., 0., 0.};
+int main (void)
+{
+  double *null = (double *) NULL ;
+  double *x = (double *)malloc (2 * n * sizeof(double));
+  int i ;
+  void *Symbolic, *Numeric ;
+  (void) umfpack_zi_symbolic (n, n, Ap, Ai, Ax, null, &Symbolic, null, null) ;
+  (void) umfpack_zi_numeric (Ap, Ai, Ax, null, Symbolic, &Numeric, null, null) ;
+  umfpack_zi_free_symbolic (&Symbolic) ;
+  (void) umfpack_zi_solve (0, Ap, Ai, Ax, null, x, null, br, bi, 
+		Numeric, null, null) ;
+  umfpack_zi_free_numeric (&Numeric) ;
+  for (i = 0; i < n; i++, x+=2) 
+    if (fabs(*x - i - 1.) > 1.e-13)
+      return (1);
+  return (0) ;
+}
+]])],
+  octave_cv_umfpack_seperate_split=yes,
+  octave_cv_umfpack_seperate_split=no,
+  octave_cv_umfpack_seperate_split=no)])
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$octave_cv_umfpack_seperate_split assumed for cross compilation])
+else
+  AC_MSG_RESULT([$octave_cv_umfpack_seperate_split])
+fi
+if test "$octave_cv_umfpack_seperate_split" = yes; then
+  AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
+fi
+])
+m4trace:acinclude.m4:882: -1- AC_DEFUN([OCTAVE_HDF5_DLL], [
+  AC_CACHE_CHECK([if _HDF5USEDLL_ needs to be defined],octave_cv_hdf5_dll, [
+    AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE; return x],
+      octave_cv_hdf5_dll=no, [
+      save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
+      save_LIBS="$LIBS"
+      LIBS="$HDF5_LIBS $LIBS"
+      AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE; return x],
+        octave_cv_hdf5_dll=yes,
+	octave_cv_hdf5_dll=no)
+      CFLAGS="$save_CFLAGS"
+      LIBS="$save_LIBS"])])
+  if test "$octave_cv_hdf5_dll" = yes; then
+    AC_DEFINE(_HDF5USEDLL_, 1, [Define if using HDF5 dll (Win32)])
+  fi])
+m4trace:acinclude.m4:901: -1- AC_DEFUN([OCTAVE_HDF5_HAS_ENFORCED_16_API], [
+  AC_CACHE_CHECK([whether HDF5 library has enforced version 1.6 API],
+    octave_cv_hdf5_has_enforced_16_api, [
+    AC_TRY_LINK([
+#include <hdf5.h>
+], [
+  H5Eset_auto (0, 0);], [
+      octave_cv_hdf5_has_enforced_16_api=yes], [
+      octave_cv_hdf5_has_enforced_16_api=no])])
+  if test "$octave_cv_hdf5_has_enforced_16_api" != "yes"; then
+    AC_DEFINE(HAVE_HDF5_18, 1, [Define if >=HDF5-1.8 is available.])
+  fi
+])
+m4trace:acinclude.m4:917: -1- AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION], [AC_CACHE_CHECK([for qh_version in $QHULL_LIBS],
+    octave_cv_lib_qhull_version,  [
+      AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <qhull/qhull_a.h>
+]], [[
+const char *tmp = qh_version;
+]])], [octave_cv_lib_qhull_version=yes], [octave_cv_lib_qhull_version=no])])
+  if test "$octave_cv_lib_qhull_version" = no; then
+    AC_DEFINE(NEED_QHULL_VERSION, 1,
+      [Define if the QHull library needs a qh_version variable defined.])
+  fi
+])
+m4trace:acinclude.m4:933: -1- AC_DEFUN([OCTAVE_CHECK_QHULL_OK], [AC_CACHE_CHECK([whether the qhull library works],
+    octave_cv_lib_qhull_ok, [
+      AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <qhull/qhull.h>
+#ifdef NEED_QHULL_VERSION
+char *qh_version = "version";
+#endif
+]], [[
+int dim = 2;
+int n = 4;
+coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
+boolT ismalloc = 0;
+return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr); 
+]])], [octave_cv_lib_qhull_ok=yes], [octave_cv_lib_qhull_ok=no])])
+  if test "$octave_cv_lib_qhull_ok" = "yes"; then
+    $1
+  else
+    $2
+  fi
+])
+m4trace:acinclude.m4:958: -1- AC_DEFUN([OCTAVE_OPENGL], [
+OPENGL_LIBS=
+
+### On MacOSX systems the OpenGL framework can be used
+OCTAVE_HAVE_FRAMEWORK(OpenGL, [
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h> ], [GLint par; glGetIntegerv (GL_VIEWPORT, &par);],
+  [have_framework_opengl="yes"], [have_framework_opengl="no"])
+
+if test $have_framework_opengl = "yes"; then
+  AC_DEFINE(HAVE_FRAMEWORK_OPENGL, 1, [Define if framework OPENGL is available.])
+  OPENGL_LIBS="-Wl,-framework -Wl,OpenGL"
+  AC_MSG_NOTICE([adding -Wl,-framework -Wl,OpenGL to OPENGL_LIBS])
+  OCTAVE_GLUTESSCALLBACK_THREEDOTS
+else
+  case $canonical_host_type in
+    *-*-mingw32* | *-*-msdosmsvc)
+      AC_CHECK_HEADERS(windows.h)
+    ;;
+  esac
+  have_opengl_incs=no
+  AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [
+    AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h], [
+      have_opengl_incs=yes; break], [], [
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+    ])
+    break
+    ], [], [
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+    ])
+
+  if test "$have_opengl_incs" = "yes"; then
+    case $canonical_host_type in
+      *-*-mingw32* | *-*-msdosmsvc)
+        save_LIBS="$LIBS"
+        LIBS="$LIBS -lopengl32"
+        AC_MSG_CHECKING([for glEnable in -lopengl32])
+        AC_TRY_LINK([
+#if HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+], [glEnable(GL_SMOOTH);], OPENGL_LIBS="-lopengl32 -lglu32")
+        LIBS="$save_LIBS"
+        if test "x$OPENGL_LIBS" != "x"; then
+          AC_MSG_RESULT(yes)
+        else
+          AC_MSG_RESULT(no)
+        fi
+        ;;
+      *)
+        save_LDFLAGS="$LDFLAGS"
+        LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
+        AC_CHECK_LIB(GL, glEnable, OPENGL_LIBS="-L/usr/X11R6/lib -lGL -lGLU")
+        LDFLAGS="$save_LDFLAGS"
+        ;;
+    esac
+  fi
+fi
+AC_SUBST(OPENGL_LIBS)
+])
+m4trace:acinclude.m4:1031: -1- AC_DEFUN([OCTAVE_GLUTESSCALLBACK_THREEDOTS], [AC_CACHE_CHECK([whether gluTessCallback is called with "(...)"],
+octave_cv_glutesscallback_threedots,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#ifdef HAVE_GL_GLU_H
+#include <GL/glu.h>
+#elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
+#include <OpenGL/glu.h>
+#endif]],
+[[GLvoid (*func)(...); gluTessCallback(0, 0, func);]])],
+octave_cv_glutesscallback_threedots="yes", octave_cv_glutesscallback_threedots="no")])
+AC_LANG_POP(C++)
+if test $octave_cv_glutesscallback_threedots = "yes"; then
+  AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1, 
+    [Define if gluTessCallback is called with (...)])
+fi
+])
+m4trace:acinclude.m4:1054: -1- AC_DEFUN([OCTAVE_CHECK_OPENMP], [AC_MSG_CHECKING([for support of OpenMP])
+XCFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS $1"
+AC_CACHE_VAL(octave_cv_check_openmp,[
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <omp.h>
+#include <stdio.h>
+]], [[
+int main(int argc, char* argv[])
+{
+  _Pragma("omp parallel")  
+  printf("Hello, world.\n");
+  return 0;
+}
+]])],octave_cv_openmp=yes, octave_cv_openmmp=no, octave_cv_openmp=no)])
+AC_MSG_RESULT($octave_cv_openmp)
+if test "$octave_cv_openmp" = yes; then
+  AC_DEFINE(HAVE_OPENMP,1,[Define if compiler supports OpenMP])
+  CXXFLAGS="$CXXFLAGS $1"
+else
+  CFLAGS="$XCFLAGS"
+fi
+])
+m4trace:acinclude.m4:1103: -1- AC_DEFUN([AC_CHECK_FT2], [dnl Get the cflags and libraries from the freetype-config script
+   dnl
+   AC_ARG_WITH([ft-prefix],
+     dnl don't quote AS_HELP_STRING!
+     AS_HELP_STRING([--with-ft-prefix=PREFIX],
+                    [Prefix where FreeType is installed (optional)]),
+     [ft_config_prefix="$withval"],
+     [ft_config_prefix=""])
+  
+   AC_ARG_WITH([ft-exec-prefix],
+     dnl don't quote AS_HELP_STRING!
+     AS_HELP_STRING([--with-ft-exec-prefix=PREFIX],
+                    [Exec prefix where FreeType is installed (optional)]),
+     [ft_config_exec_prefix="$withval"],
+     [ft_config_exec_prefix=""])
+
+   AC_ARG_ENABLE([freetypetest],
+     dnl don't quote AS_HELP_STRING!
+     AS_HELP_STRING([--disable-freetypetest],
+                    [Do not try to compile and run a test FreeType program]),
+     [],
+     [enable_fttest=yes])
+
+   if test x$ft_config_exec_prefix != x ; then
+     ft_config_args="$ft_config_args --exec-prefix=$ft_config_exec_prefix"
+     if test x${FT2_CONFIG+set} != xset ; then
+       FT2_CONFIG=$ft_config_exec_prefix/bin/freetype-config
+     fi
+   fi
+
+   if test x$ft_config_prefix != x ; then
+     ft_config_args="$ft_config_args --prefix=$ft_config_prefix"
+     if test x${FT2_CONFIG+set} != xset ; then
+       FT2_CONFIG=$ft_config_prefix/bin/freetype-config
+     fi
+   fi
+
+   AC_PATH_PROG([FT2_CONFIG], [freetype-config], [no])
+
+   min_ft_version=m4_if([$1], [], [7.0.1], [$1])
+   AC_MSG_CHECKING([for FreeType -- version >= $min_ft_version])
+   no_ft=""
+   if test "$FT2_CONFIG" = "no" ; then
+     no_ft=yes
+   else
+     FT2_CFLAGS=`$FT2_CONFIG $ft_config_args --cflags`
+     FT2_LIBS=`$FT2_CONFIG $ft_config_args --libs`
+     ft_config_major_version=`$FT2_CONFIG $ft_config_args --version | \
+       sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+     ft_config_minor_version=`$FT2_CONFIG $ft_config_args --version | \
+       sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+     ft_config_micro_version=`$FT2_CONFIG $ft_config_args --version | \
+       sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+     ft_min_major_version=`echo $min_ft_version | \
+       sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+     ft_min_minor_version=`echo $min_ft_version | \
+       sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+     ft_min_micro_version=`echo $min_ft_version | \
+       sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+     if test x$enable_fttest = xyes ; then
+       ft_config_is_lt=""
+       if test $ft_config_major_version -lt $ft_min_major_version ; then
+         ft_config_is_lt=yes
+       else
+         if test $ft_config_major_version -eq $ft_min_major_version ; then
+           if test $ft_config_minor_version -lt $ft_min_minor_version ; then
+             ft_config_is_lt=yes
+           else
+            if test $ft_config_minor_version -eq $ft_min_minor_version ; then
+               if test $ft_config_micro_version -lt $ft_min_micro_version ; then
+                 ft_config_is_lt=yes
+               fi
+             fi
+           fi
+         fi
+       fi
+       if test x$ft_config_is_lt = xyes ; then
+         no_ft=yes
+       else
+         ac_save_CFLAGS="$CFLAGS"
+         ac_save_LIBS="$LIBS"
+         CFLAGS="$CFLAGS $FT2_CFLAGS"
+         LIBS="$FT2_LIBS $LIBS"
+
+         dnl
+         dnl Sanity checks for the results of freetype-config to some extent.
+         dnl
+         AC_RUN_IFELSE([
+             AC_LANG_SOURCE([[
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <stdio.h>
+#include <stdlib.h>
+
+int
+main()
+{
+  FT_Library library;
+  FT_Error  error;
+
+  error = FT_Init_FreeType(&library);
+
+  if (error)
+    return 1;
+  else
+  {
+    FT_Done_FreeType(library);
+    return 0;
+  }
+}
+
+             ]])
+           ],
+           [],
+           [no_ft=yes],
+           [echo $ECHO_N "cross compiling; assuming OK... $ECHO_C"])
+
+         CFLAGS="$ac_save_CFLAGS"
+         LIBS="$ac_save_LIBS"
+       fi             dnl test $ft_config_version -lt $ft_min_version
+     fi               dnl test x$enable_fttest = xyes
+   fi                 dnl test "$FT2_CONFIG" = "no"
+
+   if test x$no_ft = x ; then
+     AC_MSG_RESULT([yes])
+     m4_if([$2], [], [:], [$2])
+   else
+     AC_MSG_RESULT([no])
+     if test "$FT2_CONFIG" = "no" ; then
+       AC_MSG_WARN([
+
+  The freetype-config script installed by FreeType 2 could not be found.
+  If FreeType 2 was installed in PREFIX, make sure PREFIX/bin is in
+  your path, or set the FT2_CONFIG environment variable to the
+  full path to freetype-config.
+       ])
+     else
+       if test x$ft_config_is_lt = xyes ; then
+         AC_MSG_WARN([
+
+  Your installed version of the FreeType 2 library is too old.
+  If you have different versions of FreeType 2, make sure that
+  correct values for --with-ft-prefix or --with-ft-exec-prefix
+  are used, or set the FT2_CONFIG environment variable to the
+  full path to freetype-config.
+         ])
+       else
+         AC_MSG_WARN([
+
+  The FreeType test program failed to run.  If your system uses
+  shared libraries and they are installed outside the normal
+  system library path, make sure the variable LD_LIBRARY_PATH
+  (or whatever is appropiate for your system) is correctly set.
+         ])
+       fi
+     fi
+
+     FT2_CFLAGS=""
+     FT2_LIBS=""
+     m4_if([$3], [], [:], [$3])
+   fi
+
+   AC_SUBST([FT2_CFLAGS])
+   AC_SUBST([FT2_LIBS])])
+m4trace:acinclude.m4:1276: -1- AC_DEFUN([OCTAVE_CMATH_FUNC], [
+AC_MSG_CHECKING([for std::$1 in <cmath>])
+AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <cmath>
+void take_func (bool (*func) (double x));
+void take_func (int (*func) (double x));
+void take_func (double (*func) (double x));
+]],
+[[
+take_func(std::$1);
+]])],
+[AC_MSG_RESULT([yes])
+ AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1),1,[Define if <cmath> provides $1])],
+[AC_MSG_RESULT([no])])
+AC_MSG_CHECKING([for std::$1 (float variant) in <cmath>])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <cmath>
+void take_func (bool (*func) (float x));
+void take_func (int (*func) (float x));
+void take_func (float (*func) (float x));
+]],
+[[
+take_func(std::$1);
+]])],
+[AC_MSG_RESULT([yes])
+ AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1)F,1,[Define if <cmath> provides float variant of $1])],
+[AC_MSG_RESULT([no])])
+AC_LANG_POP(C++)
+])
+m4trace:acinclude.m4:1320: -1- AC_DEFUN([OCTAVE_FAST_INT_OPS], [
+AC_MSG_CHECKING([whether fast integer arithmetics is usable])
+AC_LANG_PUSH(C++)
+AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+#include <limits>
+template<class UT, class ST>
+static bool 
+do_test (UT, ST)
+{
+  volatile ST s = std::numeric_limits<ST>::min () / 3;
+  volatile UT u = static_cast<UT> (s);
+  if (*(reinterpret_cast<volatile ST *> (&u)) != s) return true;
+  
+  u = 0; u = ~u;
+  if (*(reinterpret_cast<volatile ST *> (&u)) != -1) return true;
+  
+  ST sx, sy;
+  sx = std::numeric_limits<ST>::max () / 2 + 1;
+  sy = std::numeric_limits<ST>::max () / 2 + 2;
+  if (static_cast<ST> (static_cast<UT> (sx) + static_cast<UT> (sy))
+      != std::numeric_limits<ST>::min () + 1) return true;
+  if (static_cast<ST> (static_cast<UT> (sx) - static_cast<UT> (sy))
+      != -1) return true;
+  
+  if ((sx & sy) != (static_cast<UT> (sx) & static_cast<UT> (sy)))
+    return true;
+  if ((sx | sy) != (static_cast<UT> (sx) | static_cast<UT> (sy)))
+    return true;
+  if ((sx ^ sy) != (static_cast<UT> (sx) ^ static_cast<UT> (sy)))
+    return true;
+  if ((-1 >> 1) != -1) return true;
+  return false;
+}
+
+#define DO_TEST(T) \
+if (do_test (static_cast<unsigned T> (0), static_cast<signed T> (0))) \
+  return sizeof (T);
+]],[[
+  DO_TEST(char)
+  DO_TEST(short)
+  DO_TEST(int)
+  DO_TEST(long)
+#if (defined(HAVE_LONG_LONG_INT) && defined(HAVE_UNSIGNED_LONG_LONG_INT))
+  DO_TEST(long long)
+#endif
+]])],
+[AC_MSG_RESULT([yes])
+ AC_DEFINE(HAVE_FAST_INT_OPS,1,[Define if signed integers use two's complement])],
+[AC_MSG_RESULT([no])])
+AC_LANG_POP(C++)])
+m4trace:acinclude.m4:1379: -1- AC_DEFUN([OCTAVE_HAVE_FRAMEWORK], [
+  AC_MSG_CHECKING([whether ${LD-ld} accepts -framework $1])
+  AC_CACHE_VAL(octave_cv_framework_$1, [
+    XLDFLAGS="$LDFLAGS"
+    LDFLAGS="$LDFLAGS -framework $1"
+    AC_LANG_PUSH(C++)
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([$2], [$3])],
+      eval "octave_cv_framework_$1=yes",
+      eval "octave_cv_framework_$1=no")
+    AC_LANG_POP(C++)
+    LDFLAGS="$XLDFLAGS"
+  ])
+  if test "$octave_cv_framework_$1" = "yes"; then
+    AC_MSG_RESULT(yes)
+    AC_ARG_WITH(framework-m4_tolower($1),
+      [AS_HELP_STRING([--without-framework-m4_tolower($1)], 
+        [don't use framework $1])],
+         with_have_framework=$withval, with_have_framework="yes")
+    if test "$with_have_framework" = "yes"; then
+      [$4]
+    else
+      AC_MSG_NOTICE([framework rejected by --without-framework-m4_tolower($1)])
+      [$5]
+    fi
+  else
+    AC_MSG_RESULT(no)
+    [$5]
+  fi
+])
+m4trace:acinclude.m4:1437: -1- AC_DEFUN([PKG_PROG_PKG_CONFIG], [m4_pattern_forbid([^_?PKG_[A-Z_]+$])
+m4_pattern_allow([^PKG_CONFIG(_PATH)?$])
+AC_ARG_VAR([PKG_CONFIG], [path to pkg-config utility])dnl
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	AC_PATH_TOOL([PKG_CONFIG], [pkg-config])
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=m4_default([$1], [0.9.0])
+	AC_MSG_CHECKING([pkg-config is at least version $_pkg_min_version])
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_RESULT([no])
+		PKG_CONFIG=""
+	fi
+		
+fi[]dnl
+])
+m4trace:acinclude.m4:1467: -1- AC_DEFUN([PKG_CHECK_EXISTS], [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+if test -n "$PKG_CONFIG" && \
+    AC_RUN_LOG([$PKG_CONFIG --exists --print-errors "$1"]); then
+  m4_ifval([$2], [$2], [:])
+m4_ifvaln([$3], [else
+  $3])dnl
+fi])
+m4trace:acinclude.m4:1495: -1- AC_DEFUN([_PKG_SHORT_ERRORS_SUPPORTED], [AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi[]dnl
+])
+m4trace:acinclude.m4:1515: -1- AC_DEFUN([PKG_CHECK_MODULES], [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+AC_ARG_VAR([$1][_CFLAGS], [C compiler flags for $1, overriding pkg-config])dnl
+AC_ARG_VAR([$1][_LIBS], [linker flags for $1, overriding pkg-config])dnl
+
+pkg_failed=no
+AC_MSG_CHECKING([for $1])
+
+_PKG_CONFIG([$1][_CFLAGS], [cflags], [$2])
+_PKG_CONFIG([$1][_LIBS], [libs], [$2])
+
+m4_define([_PKG_TEXT], [Alternatively, you may set the environment variables $1[]_CFLAGS
+and $1[]_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.])
+
+if test $pkg_failed = yes; then
+        _PKG_SHORT_ERRORS_SUPPORTED
+        if test $_pkg_short_errors_supported = yes; then
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "$2"`
+        else 
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$2"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$$1[]_PKG_ERRORS" >&AS_MESSAGE_LOG_FD
+
+	ifelse([$4], , [AC_MSG_ERROR(dnl
+[Package requirements ($2) were not met:
+
+$$1_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+_PKG_TEXT
+])],
+		[AC_MSG_RESULT([no])
+                $4])
+elif test $pkg_failed = untried; then
+	ifelse([$4], , [AC_MSG_FAILURE(dnl
+[The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+_PKG_TEXT
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.])],
+		[$4])
+else
+	$1[]_CFLAGS=$pkg_cv_[]$1[]_CFLAGS
+	$1[]_LIBS=$pkg_cv_[]$1[]_LIBS
+        AC_MSG_RESULT([yes])
+	ifelse([$3], , :, [$3])
+fi[]dnl
+])
+m4trace:acinclude.m4:1574: -1- m4_include([m4/ax_pthread.m4])
+m4trace:m4/ax_pthread.m4:80: -1- AU_DEFUN([ACX_PTHREAD], [m4_if($#, 0, [AX_PTHREAD], [AX_PTHREAD($@)])])
+m4trace:m4/ax_pthread.m4:80: -1- AC_DEFUN([ACX_PTHREAD], [AC_DIAGNOSE([obsolete], [The macro `ACX_PTHREAD' is obsolete.
+You should run autoupdate.])dnl
+m4_if($#, 0, [AX_PTHREAD], [AX_PTHREAD($@)])])
+m4trace:m4/ax_pthread.m4:81: -1- AC_DEFUN([AX_PTHREAD], [
+AC_REQUIRE([AC_CANONICAL_HOST])
+AC_LANG_SAVE
+AC_LANG_C
+ax_pthread_ok=no
+
+# We used to check for pthread.h first, but this fails if pthread.h
+# requires special compiler flags (e.g. on True64 or Sequent).
+# It gets checked for in the link test anyway.
+
+# First of all, check if the user has set any of the PTHREAD_LIBS,
+# etcetera environment variables, and if threads linking works using
+# them:
+if test x"$PTHREAD_LIBS$PTHREAD_CFLAGS" != x; then
+        save_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        save_LIBS="$LIBS"
+        LIBS="$PTHREAD_LIBS $LIBS"
+        AC_MSG_CHECKING([for pthread_join in LIBS=$PTHREAD_LIBS with CFLAGS=$PTHREAD_CFLAGS])
+        AC_TRY_LINK_FUNC(pthread_join, ax_pthread_ok=yes)
+        AC_MSG_RESULT($ax_pthread_ok)
+        if test x"$ax_pthread_ok" = xno; then
+                PTHREAD_LIBS=""
+                PTHREAD_CFLAGS=""
+        fi
+        LIBS="$save_LIBS"
+        CFLAGS="$save_CFLAGS"
+fi
+
+# We must check for the threads library under a number of different
+# names; the ordering is very important because some systems
+# (e.g. DEC) have both -lpthread and -lpthreads, where one of the
+# libraries is broken (non-POSIX).
+
+# Create a list of thread flags to try.  Items starting with a "-" are
+# C compiler flags, and other items are library names, except for "none"
+# which indicates that we try without any flags at all, and "pthread-config"
+# which is a program returning the flags for the Pth emulation library.
+
+ax_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt pthread-config"
+
+# The ordering *is* (sometimes) important.  Some notes on the
+# individual items follow:
+
+# pthreads: AIX (must check this before -lpthread)
+# none: in case threads are in libc; should be tried before -Kthread and
+#       other compiler flags to prevent continual compiler warnings
+# -Kthread: Sequent (threads in libc, but -Kthread needed for pthread.h)
+# -kthread: FreeBSD kernel threads (preferred to -pthread since SMP-able)
+# lthread: LinuxThreads port on FreeBSD (also preferred to -pthread)
+# -pthread: Linux/gcc (kernel threads), BSD/gcc (userland threads)
+# -pthreads: Solaris/gcc
+# -mthreads: Mingw32/gcc, Lynx/gcc
+# -mt: Sun Workshop C (may only link SunOS threads [-lthread], but it
+#      doesn't hurt to check since this sometimes defines pthreads too;
+#      also defines -D_REENTRANT)
+#      ... -mt is also the pthreads flag for HP/aCC
+# pthread: Linux, etcetera
+# --thread-safe: KAI C++
+# pthread-config: use pthread-config program (for GNU Pth library)
+
+case "${host_cpu}-${host_os}" in
+        *solaris*)
+
+        # On Solaris (at least, for some versions), libc contains stubbed
+        # (non-functional) versions of the pthreads routines, so link-based
+        # tests will erroneously succeed.  (We need to link with -pthreads/-mt/
+        # -lpthread.)  (The stubs are missing pthread_cleanup_push, or rather
+        # a function called by this macro, so we could check for that, but
+        # who knows whether they'll stub that too in a future libc.)  So,
+        # we'll just look for -pthreads and -lpthread first:
+
+        ax_pthread_flags="-pthreads pthread -mt -pthread $ax_pthread_flags"
+        ;;
+
+	*-darwin*)
+	ax_pthread_flags="-pthread $ax_pthread_flags"
+	;;
+esac
+
+if test x"$ax_pthread_ok" = xno; then
+for flag in $ax_pthread_flags; do
+
+        case $flag in
+                none)
+                AC_MSG_CHECKING([whether pthreads work without any flags])
+                ;;
+
+                -*)
+                AC_MSG_CHECKING([whether pthreads work with $flag])
+                PTHREAD_CFLAGS="$flag"
+                ;;
+
+		pthread-config)
+		AC_CHECK_PROG(ax_pthread_config, pthread-config, yes, no)
+		if test x"$ax_pthread_config" = xno; then continue; fi
+		PTHREAD_CFLAGS="`pthread-config --cflags`"
+		PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
+		;;
+
+                *)
+                AC_MSG_CHECKING([for the pthreads library -l$flag])
+                PTHREAD_LIBS="-l$flag"
+                ;;
+        esac
+
+        save_LIBS="$LIBS"
+        save_CFLAGS="$CFLAGS"
+        LIBS="$PTHREAD_LIBS $LIBS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+
+        # Check for various functions.  We must include pthread.h,
+        # since some functions may be macros.  (On the Sequent, we
+        # need a special flag -Kthread to make this header compile.)
+        # We check for pthread_join because it is in -lpthread on IRIX
+        # while pthread_create is in libc.  We check for pthread_attr_init
+        # due to DEC craziness with -lpthreads.  We check for
+        # pthread_cleanup_push because it is one of the few pthread
+        # functions on Solaris that doesn't have a non-functional libc stub.
+        # We try pthread_create on general principles.
+        AC_TRY_LINK([#include <pthread.h>
+	             static void routine(void* a) {a=0;}
+	             static void* start_routine(void* a) {return a;}],
+                    [pthread_t th; pthread_attr_t attr;
+                     pthread_create(&th,0,start_routine,0);
+                     pthread_join(th, 0);
+                     pthread_attr_init(&attr);
+                     pthread_cleanup_push(routine, 0);
+                     pthread_cleanup_pop(0); ],
+                    [ax_pthread_ok=yes])
+
+        LIBS="$save_LIBS"
+        CFLAGS="$save_CFLAGS"
+
+        AC_MSG_RESULT($ax_pthread_ok)
+        if test "x$ax_pthread_ok" = xyes; then
+                break;
+        fi
+
+        PTHREAD_LIBS=""
+        PTHREAD_CFLAGS=""
+done
+fi
+
+# Various other checks:
+if test "x$ax_pthread_ok" = xyes; then
+        save_LIBS="$LIBS"
+        LIBS="$PTHREAD_LIBS $LIBS"
+        save_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+
+        # Detect AIX lossage: JOINABLE attribute is called UNDETACHED.
+	AC_MSG_CHECKING([for joinable pthread attribute])
+	attr_name=unknown
+	for attr in PTHREAD_CREATE_JOINABLE PTHREAD_CREATE_UNDETACHED; do
+	    AC_TRY_LINK([#include <pthread.h>], [int attr=$attr; return attr;],
+                        [attr_name=$attr; break])
+	done
+        AC_MSG_RESULT($attr_name)
+        if test "$attr_name" != PTHREAD_CREATE_JOINABLE; then
+            AC_DEFINE_UNQUOTED(PTHREAD_CREATE_JOINABLE, $attr_name,
+                               [Define to necessary symbol if this constant
+                                uses a non-standard name on your system.])
+        fi
+
+        AC_MSG_CHECKING([if more special flags are required for pthreads])
+        flag=no
+        case "${host_cpu}-${host_os}" in
+            *-aix* | *-freebsd* | *-darwin*) flag="-D_THREAD_SAFE";;
+            *solaris* | *-osf* | *-hpux*) flag="-D_REENTRANT";;
+        esac
+        AC_MSG_RESULT(${flag})
+        if test "x$flag" != xno; then
+            PTHREAD_CFLAGS="$flag $PTHREAD_CFLAGS"
+        fi
+
+        LIBS="$save_LIBS"
+        CFLAGS="$save_CFLAGS"
+
+        # More AIX lossage: must compile with xlc_r or cc_r
+	if test x"$GCC" != xyes; then
+          AC_CHECK_PROGS(PTHREAD_CC, xlc_r cc_r, ${CC})
+        else
+          PTHREAD_CC=$CC
+	fi
+else
+        PTHREAD_CC="$CC"
+fi
+
+AC_SUBST(PTHREAD_LIBS)
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_CC)
+
+# Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
+if test x"$ax_pthread_ok" = xyes; then
+        ifelse([$1],,AC_DEFINE(HAVE_PTHREAD,1,[Define if you have POSIX threads libraries and header files.]),[$1])
+        :
+else
+        ax_pthread_ok=no
+        $2
+fi
+AC_LANG_RESTORE
+])
+m4trace:acinclude.m4:1575: -1- m4_include([m4/ax_blas.m4])
+m4trace:m4/ax_blas.m4:68: -1- AU_DEFUN([ACX_BLAS], [m4_if($#, 0, [AX_BLAS], [AX_BLAS($@)])])
+m4trace:m4/ax_blas.m4:68: -1- AC_DEFUN([ACX_BLAS], [AC_DIAGNOSE([obsolete], [The macro `ACX_BLAS' is obsolete.
+You should run autoupdate.])dnl
+m4_if($#, 0, [AX_BLAS], [AX_BLAS($@)])])
+m4trace:m4/ax_blas.m4:69: -1- AC_DEFUN([AX_BLAS], [
+AC_PREREQ(2.50)
+AC_REQUIRE([AC_F77_LIBRARY_LDFLAGS])
+ax_blas_ok=no
+
+AC_ARG_WITH(blas,
+	[AS_HELP_STRING([--with-blas=<lib>], [use BLAS library <lib>])])
+case $with_blas in
+	yes | "") ;;
+	no) ax_blas_ok=disable ;;
+	-* | */* | *.a | *.so | *.so.* | *.o) BLAS_LIBS="$with_blas" ;;
+	*) BLAS_LIBS="-l$with_blas" ;;
+esac
+
+# Get fortran linker names of BLAS functions to check for.
+AC_F77_FUNC(sgemm)
+AC_F77_FUNC(dgemm)
+
+ax_blas_save_LIBS="$LIBS"
+LIBS="$LIBS $FLIBS"
+
+# First, check BLAS_LIBS environment variable
+if test $ax_blas_ok = no; then
+if test "x$BLAS_LIBS" != x; then
+	save_LIBS="$LIBS"; LIBS="$BLAS_LIBS $LIBS"
+	AC_MSG_CHECKING([for $sgemm in $BLAS_LIBS])
+	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes], [BLAS_LIBS=""])
+	AC_MSG_RESULT($ax_blas_ok)
+	LIBS="$save_LIBS"
+fi
+fi
+
+# BLAS linked to by default?  (happens on some supercomputers)
+if test $ax_blas_ok = no; then
+	save_LIBS="$LIBS"; LIBS="$LIBS"
+	AC_MSG_CHECKING([if $sgemm is being linked in already])
+	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes])
+	AC_MSG_RESULT($ax_blas_ok)
+	LIBS="$save_LIBS"
+fi
+
+# BLAS in ATLAS library? (http://math-atlas.sourceforge.net/)
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(atlas, ATL_xerbla,
+		[AC_CHECK_LIB(f77blas, $sgemm,
+		[AC_CHECK_LIB(cblas, cblas_dgemm,
+			[ax_blas_ok=yes
+			 BLAS_LIBS="-lcblas -lf77blas -latlas"],
+			[], [-lf77blas -latlas])],
+			[], [-latlas])])
+fi
+
+# BLAS in PhiPACK libraries? (requires generic BLAS lib, too)
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(blas, $sgemm,
+		[AC_CHECK_LIB(dgemm, $dgemm,
+		[AC_CHECK_LIB(sgemm, $sgemm,
+			[ax_blas_ok=yes; BLAS_LIBS="-lsgemm -ldgemm -lblas"],
+			[], [-lblas])],
+			[], [-lblas])])
+fi
+
+# BLAS in Intel MKL library?
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(mkl, $sgemm, [ax_blas_ok=yes;BLAS_LIBS="-lmkl"])
+fi
+
+# BLAS in Apple vecLib library?
+if test $ax_blas_ok = no; then
+	save_LIBS="$LIBS"; LIBS="-framework vecLib $LIBS"
+	AC_MSG_CHECKING([for $sgemm in -framework vecLib])
+	AC_TRY_LINK_FUNC($sgemm, [ax_blas_ok=yes;BLAS_LIBS="-framework vecLib"])
+	AC_MSG_RESULT($ax_blas_ok)
+	LIBS="$save_LIBS"
+fi
+
+# BLAS in Alpha CXML library?
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(cxml, $sgemm, [ax_blas_ok=yes;BLAS_LIBS="-lcxml"])
+fi
+
+# BLAS in Alpha DXML library? (now called CXML, see above)
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(dxml, $sgemm, [ax_blas_ok=yes;BLAS_LIBS="-ldxml"])
+fi
+
+# BLAS in Sun Performance library?
+if test $ax_blas_ok = no; then
+	if test "x$GCC" != xyes; then # only works with Sun CC
+		AC_CHECK_LIB(sunmath, acosp,
+			[AC_CHECK_LIB(sunperf, $sgemm,
+				[BLAS_LIBS="-xlic_lib=sunperf -lsunmath"
+                                 ax_blas_ok=yes],[],[-lsunmath])])
+	fi
+fi
+
+# BLAS in SCSL library?  (SGI/Cray Scientific Library)
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(scs, $sgemm, [ax_blas_ok=yes; BLAS_LIBS="-lscs"])
+fi
+
+# BLAS in SGIMATH library?
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(complib.sgimath, $sgemm,
+		     [ax_blas_ok=yes; BLAS_LIBS="-lcomplib.sgimath"])
+fi
+
+# BLAS in IBM ESSL library? (requires generic BLAS lib, too)
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(blas, $sgemm,
+		[AC_CHECK_LIB(essl, $sgemm,
+			[ax_blas_ok=yes; BLAS_LIBS="-lessl -lblas"],
+			[], [-lblas $FLIBS])])
+fi
+
+# Generic BLAS library?
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(blas, $sgemm, [ax_blas_ok=yes; BLAS_LIBS="-lblas"])
+fi
+
+AC_SUBST(BLAS_LIBS)
+
+LIBS="$ax_blas_save_LIBS"
+
+# Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
+if test x"$ax_blas_ok" = xyes; then
+        ifelse([$1],,AC_DEFINE(HAVE_BLAS,1,[Define if you have a BLAS library.]),[$1])
+        :
+else
+        ax_blas_ok=no
+        $2
+fi
+])
+m4trace:acinclude.m4:1576: -1- m4_include([m4/ax_blas_f77_func.m4])
+m4trace:m4/ax_blas_f77_func.m4:57: -1- AU_DEFUN([ACX_BLAS_F77_FUNC], [m4_if($#, 0, [AX_BLAS_F77_FUNC], [AX_BLAS_F77_FUNC($@)])])
+m4trace:m4/ax_blas_f77_func.m4:57: -1- AC_DEFUN([ACX_BLAS_F77_FUNC], [AC_DIAGNOSE([obsolete], [The macro `ACX_BLAS_F77_FUNC' is obsolete.
+You should run autoupdate.])dnl
+m4_if($#, 0, [AX_BLAS_F77_FUNC], [AX_BLAS_F77_FUNC($@)])])
+m4trace:m4/ax_blas_f77_func.m4:58: -1- AC_DEFUN([AX_BLAS_F77_FUNC], [
+AC_PREREQ(2.50)
+AC_REQUIRE([AX_BLAS])
+
+# F77 call-compatibility checks
+if test "$cross_compiling" = yes ; then
+	ifelse($3, ,$1,$3)
+elif test x"$ax_blas_ok" = xyes; then
+	save_ax_blas_f77_func_LIBS="$LIBS"
+	LIBS="$BLAS_LIBS $LIBS"
+	AC_LANG_PUSH(Fortran 77)
+# LSAME check (LOGICAL return values)
+	AC_MSG_CHECKING([whether LSAME is called correctly from Fortran])
+	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      logical lsame,w
+      external lsame
+      character c1,c2
+      c1 = 'A'
+      c2 = 'B'
+      w = lsame(c1,c2)
+      if (w) stop 1
+      w = lsame(c1,c1)
+      if (.not. w) stop 1
+      ]]),[ax_blas_lsame_fcall_ok=yes],
+	[ax_blas_lsame_fcall_ok=no])
+	AC_MSG_RESULT([$ax_blas_lsame_fcall_ok])
+# ISAMAX check (INTEGER return values)
+	AC_MSG_CHECKING([whether ISAMAX is called correctly from Fortran])
+	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      integer isamax,i
+      external isamax
+      real a(2)
+      a(1) = 1e0
+      a(2) = -2e0
+      i = isamax(2,a,1)
+      if (i.ne.2) stop 1
+      ]]),[ax_blas_isamax_fcall_ok=yes],
+	[ax_blas_isamax_fcall_ok=no])
+	AC_MSG_RESULT([$ax_blas_isamax_fcall_ok])
+# SDOT check (REAL return values)
+	AC_MSG_CHECKING([whether SDOT is called correctly from Fortran])
+	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      real sdot,a(1),b(1),w
+      external sdot
+      a(1) = 1e0
+      b(1) = 2e0
+      w = sdot(1,a,1,b,1)
+      if (w .ne. a(1)*b(1)) stop 1
+      ]]),[ax_blas_sdot_fcall_ok=yes],
+	[ax_blas_sdot_fcall_ok=no])
+	AC_MSG_RESULT([$ax_blas_sdot_fcall_ok])
+# DDOT check (DOUBLE return values)
+	AC_MSG_CHECKING([whether DDOT is called correctly from Fortran])
+	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      double precision ddot,a(1),b(1),w
+      external ddot
+      a(1) = 1d0
+      b(1) = 2d0
+      w = ddot(1,a,1,b,1)
+      if (w .ne. a(1)*b(1)) stop 1
+      ]]),[ax_blas_ddot_fcall_ok=yes],
+	[ax_blas_ddot_fcall_ok=no])
+	AC_MSG_RESULT([$ax_blas_ddot_fcall_ok])
+# CDOTU check (COMPLEX return values)
+	AC_MSG_CHECKING([whether CDOTU is called correctly from Fortran])
+	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      complex cdotu,a(1),b(1),w
+      external cdotu
+      a(1) = cmplx(1e0,1e0)
+      b(1) = cmplx(1e0,2e0)
+      w = cdotu(1,a,1,b,1)
+      if (w .ne. a(1)*b(1)) stop 1
+      ]]),[ax_blas_cdotu_fcall_ok=yes],
+	[ax_blas_cdotu_fcall_ok=no])
+	AC_MSG_RESULT([$ax_blas_cdotu_fcall_ok])
+# ZDOTU check (DOUBLE COMPLEX return values)
+	AC_MSG_CHECKING([whether ZDOTU is called correctly from Fortran])
+	AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      double complex zdotu,a(1),b(1),w
+      external zdotu
+      a(1) = dcmplx(1d0,1d0)
+      b(1) = dcmplx(1d0,2d0)
+      w = zdotu(1,a,1,b,1)
+      if (w .ne. a(1)*b(1)) stop 1
+      ]]),[ax_blas_zdotu_fcall_ok=yes],
+	[ax_blas_zdotu_fcall_ok=no])
+	AC_MSG_RESULT([$ax_blas_zdotu_fcall_ok])
+# Check for correct integer size
+# FIXME: this may fail with things like -ftrapping-math.
+        AC_MSG_CHECKING([whether the integer size is correct])
+        AC_RUN_IFELSE(AC_LANG_PROGRAM(,[[
+      integer n,nn(3)
+      real s,a(1),b(1),sdot
+      a(1) = 1.0
+      b(1) = 1.0
+c Generate -2**33 + 1, if possible
+      n = 2
+      n = -4 * (n ** 30)
+      n = n + 1
+      if (n >= 0) goto 1
+c This means we're on 64-bit integers. Check whether the BLAS is, too.
+      s = sdot(n,a,1,b,1)
+      if (s .ne. 0.0) stop 1
+    1 continue
+c We may be on 32-bit integers, and the BLAS on 64 bits. This is almost bound
+c to have already failed, but just in case, we'll check.
+      nn(1) = -1
+      nn(2) = 1
+      nn(3) = -1
+      s = sdot(nn(2),a,1,b,1)
+      if (s .ne. 1.0) stop 1
+       ]]),[ax_blas_integer_size_ok=yes],
+	[ax_blas_integer_size_ok=no])
+	AC_MSG_RESULT([$ax_blas_integer_size_ok])
+
+	AC_LANG_POP(Fortran 77)
+
+# if any of the tests failed, reject the BLAS library
+	if test $ax_blas_lsame_fcall_ok = yes \
+		-a $ax_blas_sdot_fcall_ok = yes \
+		-a $ax_blas_ddot_fcall_ok = yes \
+		-a $ax_blas_cdotu_fcall_ok = yes \
+		-a $ax_blas_zdotu_fcall_ok = yes \
+		-a $ax_blas_integer_size_ok = yes; then
+		ax_blas_f77_func_ok=yes;
+		$1
+	else
+		ax_blas_f77_func_ok=no;
+		$2
+	fi
+	LIBS="$save_ax_blas_f77_func_LIBS"
+fi
+
+])
+m4trace:m4/ax_blas_f77_func.m4:193: -1- AC_DEFUN([AX_BLAS_WITH_F77_FUNC], [
+AC_PREREQ(2.50)
+AX_BLAS([# disable special action], [])
+if test x$ax_blas_ok = xyes ; then
+	AX_BLAS_F77_FUNC(
+	[ifelse([$1],,AC_DEFINE(HAVE_BLAS,1,[Define if you have a BLAS library.]),[$1])],
+	[ax_blas_ok=no; BLAS_LIBS=])
+fi
+if test x$ax_blas_ok = xno ; then
+	$2
+fi
+])
+m4trace:acinclude.m4:1577: -1- m4_include([m4/ax_lapack.m4])
+m4trace:m4/ax_lapack.m4:69: -1- AU_DEFUN([ACX_LAPACK], [m4_if($#, 0, [AX_LAPACK], [AX_LAPACK($@)])])
+m4trace:m4/ax_lapack.m4:69: -1- AC_DEFUN([ACX_LAPACK], [AC_DIAGNOSE([obsolete], [The macro `ACX_LAPACK' is obsolete.
+You should run autoupdate.])dnl
+m4_if($#, 0, [AX_LAPACK], [AX_LAPACK($@)])])
+m4trace:m4/ax_lapack.m4:70: -1- AC_DEFUN([AX_LAPACK], [
+AC_REQUIRE([AX_BLAS])
+ax_lapack_ok=no
+
+AC_ARG_WITH(lapack,
+        [AS_HELP_STRING([--with-lapack=<lib>], [use LAPACK library <lib>])])
+case $with_lapack in
+        yes | "") ;;
+        no) ax_lapack_ok=disable ;;
+        -* | */* | *.a | *.so | *.so.* | *.o) LAPACK_LIBS="$with_lapack" ;;
+        *) LAPACK_LIBS="-l$with_lapack" ;;
+esac
+
+# Get fortran linker name of LAPACK function to check for.
+AC_F77_FUNC(cheev)
+
+# We cannot use LAPACK if BLAS is not found
+if test "x$ax_blas_ok" != xyes; then
+        ax_lapack_ok=noblas
+        LAPACK_LIBS=""
+fi
+
+# First, check LAPACK_LIBS environment variable
+if test "x$LAPACK_LIBS" != x; then
+        save_LIBS="$LIBS"; LIBS="$LAPACK_LIBS $BLAS_LIBS $LIBS $FLIBS"
+        AC_MSG_CHECKING([for $cheev in $LAPACK_LIBS])
+        AC_TRY_LINK_FUNC($cheev, [ax_lapack_ok=yes], [LAPACK_LIBS=""])
+        AC_MSG_RESULT($ax_lapack_ok)
+        LIBS="$save_LIBS"
+        if test $ax_lapack_ok = no; then
+                LAPACK_LIBS=""
+        fi
+fi
+
+# LAPACK linked to by default?  (is sometimes included in BLAS lib)
+if test $ax_lapack_ok = no; then
+        save_LIBS="$LIBS"; LIBS="$LIBS $BLAS_LIBS $FLIBS"
+        AC_CHECK_FUNC($cheev, [ax_lapack_ok=yes])
+        LIBS="$save_LIBS"
+fi
+
+# Generic LAPACK library?
+for lapack in lapack lapack_rs6k; do
+        if test $ax_lapack_ok = no; then
+                save_LIBS="$LIBS"; LIBS="$BLAS_LIBS $LIBS"
+                AC_CHECK_LIB($lapack, $cheev,
+                    [ax_lapack_ok=yes; LAPACK_LIBS="-l$lapack"], [], [$FLIBS])
+                LIBS="$save_LIBS"
+        fi
+done
+
+AC_SUBST(LAPACK_LIBS)
+
+# Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
+if test x"$ax_lapack_ok" = xyes; then
+        ifelse([$1],,AC_DEFINE(HAVE_LAPACK,1,[Define if you have LAPACK library.]),[$1])
+        :
+else
+        ax_lapack_ok=no
+        $2
+fi
+])
+m4trace:configure.ac:4: -1- m4_pattern_forbid([^_?A[CHUM]_])
+m4trace:configure.ac:4: -1- m4_pattern_forbid([_AC_])
+m4trace:configure.ac:4: -1- m4_pattern_forbid([^LIBOBJS$], [do not use LIBOBJS directly, use AC_LIBOBJ (see section `AC_LIBOBJ vs LIBOBJS'])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^AS_FLAGS$])
+m4trace:configure.ac:4: -1- m4_pattern_forbid([^_?m4_])
+m4trace:configure.ac:4: -1- m4_pattern_forbid([^dnl$])
+m4trace:configure.ac:4: -1- m4_pattern_forbid([^_?AS_])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^SHELL$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PATH_SEPARATOR$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_NAME$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_TARNAME$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_VERSION$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_STRING$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_BUGREPORT$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_URL$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^exec_prefix$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^prefix$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^program_transform_name$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^bindir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^sbindir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^libexecdir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^datarootdir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^datadir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^sysconfdir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^sharedstatedir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^localstatedir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^includedir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^oldincludedir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^docdir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^infodir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^htmldir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^dvidir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^pdfdir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^psdir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^libdir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^localedir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^mandir$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_NAME$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_TARNAME$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_VERSION$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_STRING$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_BUGREPORT$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^PACKAGE_URL$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^DEFS$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^ECHO_C$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^ECHO_N$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^ECHO_T$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^LIBS$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^build_alias$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^host_alias$])
+m4trace:configure.ac:4: -1- m4_pattern_allow([^target_alias$])
+m4trace:configure.ac:16: -1- LLVM_CONFIG_PROJECT([$LLVM_ABS_SRC_ROOT], [$LLVM_ABS_OBJ_ROOT])
+m4trace:configure.ac:16: -1- m4_pattern_allow([^LLVM_SRC$])
+m4trace:configure.ac:16: -1- m4_pattern_allow([^LLVM_OBJ$])
+m4trace:configure.ac:37: -1- m4_pattern_allow([^LLVM_VERSION$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^CC$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^CFLAGS$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^LDFLAGS$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^LIBS$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^CPPFLAGS$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^CC$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^ac_ct_CC$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^EXEEXT$])
+m4trace:configure.ac:56: -1- m4_pattern_allow([^OBJEXT$])
+m4trace:configure.ac:57: -1- m4_pattern_allow([^CXX$])
+m4trace:configure.ac:57: -1- m4_pattern_allow([^CXXFLAGS$])
+m4trace:configure.ac:57: -1- m4_pattern_allow([^LDFLAGS$])
+m4trace:configure.ac:57: -1- m4_pattern_allow([^LIBS$])
+m4trace:configure.ac:57: -1- m4_pattern_allow([^CPPFLAGS$])
+m4trace:configure.ac:57: -1- m4_pattern_allow([^CXX$])
+m4trace:configure.ac:57: -1- m4_pattern_allow([^ac_ct_CXX$])
+m4trace:configure.ac:58: -1- m4_pattern_allow([^CPP$])
+m4trace:configure.ac:58: -1- m4_pattern_allow([^CPPFLAGS$])
+m4trace:configure.ac:58: -1- m4_pattern_allow([^CPP$])
+m4trace:configure.ac:79: -1- m4_pattern_allow([^ENABLE_POLLY$])
+m4trace:configure.ac:80: -1- m4_pattern_allow([^ENABLE_POLLY$])
+m4trace:configure.ac:81: -1- m4_pattern_allow([^ENABLE_POLLY$])
+m4trace:configure.ac:89: -1- m4_pattern_allow([^LLVM_HAS_POLLY$])
+m4trace:configure.ac:90: -1- m4_pattern_allow([^subdirs$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^build$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^build_cpu$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^build_vendor$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^build_os$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^host$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^host_cpu$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^host_vendor$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^host_os$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^target$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^target_cpu$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^target_vendor$])
+m4trace:configure.ac:103: -1- m4_pattern_allow([^target_os$])
+m4trace:configure.ac:273: -1- m4_pattern_allow([^OS$])
+m4trace:configure.ac:274: -1- m4_pattern_allow([^HOST_OS$])
+m4trace:configure.ac:275: -1- m4_pattern_allow([^TARGET_OS$])
+m4trace:configure.ac:278: -1- m4_pattern_allow([^LINKALL$])
+m4trace:configure.ac:279: -1- m4_pattern_allow([^NOLINKALL$])
+m4trace:configure.ac:286: -1- m4_pattern_allow([^LLVM_ON_UNIX$])
+m4trace:configure.ac:287: -1- m4_pattern_allow([^LLVM_ON_UNIX$])
+m4trace:configure.ac:288: -1- m4_pattern_allow([^LLVM_ON_WIN32$])
+m4trace:configure.ac:291: -1- m4_pattern_allow([^LLVM_ON_WIN32$])
+m4trace:configure.ac:292: -1- m4_pattern_allow([^LLVM_ON_UNIX$])
+m4trace:configure.ac:293: -1- m4_pattern_allow([^LLVM_ON_WIN32$])
+m4trace:configure.ac:328: -1- m4_pattern_allow([^ARCH$])
+m4trace:configure.ac:331: -2- m4_pattern_allow([^ENDIAN$])
+m4trace:configure.ac:331: -2- m4_pattern_allow([^ENDIAN$])
+m4trace:configure.ac:331: -1- AC_PROG_EGREP
+m4trace:configure.ac:331: -1- m4_pattern_allow([^GREP$])
+m4trace:configure.ac:331: -1- m4_pattern_allow([^EGREP$])
+m4trace:configure.ac:331: -1- m4_pattern_allow([^STDC_HEADERS$])
+m4trace:configure.ac:331: -1- m4_pattern_allow([^AC_APPLE_UNIVERSAL_BUILD$])
+m4trace:configure.ac:335: -1- m4_pattern_allow([^LLVM_CROSS_COMPILING$])
+m4trace:configure.ac:336: -1- AC_BUILD_EXEEXT
+m4trace:configure.ac:336: -1- m4_pattern_allow([^BUILD_CC$])
+m4trace:configure.ac:336: -1- m4_pattern_allow([^BUILD_CC$])
+m4trace:configure.ac:336: -1- m4_pattern_allow([^BUILD_CC$])
+m4trace:configure.ac:336: -1- m4_pattern_allow([^BUILD_EXEEXT$])
+m4trace:configure.ac:338: -1- m4_pattern_allow([^BUILD_CXX$])
+m4trace:configure.ac:340: -1- m4_pattern_allow([^BUILD_CXX$])
+m4trace:configure.ac:342: -1- m4_pattern_allow([^BUILD_CXX$])
+m4trace:configure.ac:346: -1- m4_pattern_allow([^LLVM_CROSS_COMPILING$])
+m4trace:configure.ac:358: -1- m4_pattern_allow([^CVSBUILD$])
+m4trace:configure.ac:376: -1- m4_pattern_allow([^ENABLE_LIBCPP$])
+m4trace:configure.ac:377: -1- m4_pattern_allow([^ENABLE_LIBCPP$])
+m4trace:configure.ac:378: -1- m4_pattern_allow([^ENABLE_LIBCPP$])
+m4trace:configure.ac:386: -1- m4_pattern_allow([^ENABLE_OPTIMIZED$])
+m4trace:configure.ac:388: -1- m4_pattern_allow([^ENABLE_OPTIMIZED$])
+m4trace:configure.ac:395: -1- m4_pattern_allow([^ENABLE_PROFILING$])
+m4trace:configure.ac:397: -1- m4_pattern_allow([^ENABLE_PROFILING$])
+m4trace:configure.ac:404: -1- m4_pattern_allow([^DISABLE_ASSERTIONS$])
+m4trace:configure.ac:406: -1- m4_pattern_allow([^DISABLE_ASSERTIONS$])
+m4trace:configure.ac:413: -1- m4_pattern_allow([^ENABLE_EXPENSIVE_CHECKS$])
+m4trace:configure.ac:414: -1- m4_pattern_allow([^EXPENSIVE_CHECKS$])
+m4trace:configure.ac:416: -1- m4_pattern_allow([^ENABLE_EXPENSIVE_CHECKS$])
+m4trace:configure.ac:417: -1- m4_pattern_allow([^EXPENSIVE_CHECKS$])
+m4trace:configure.ac:424: -1- m4_pattern_allow([^DEBUG_RUNTIME$])
+m4trace:configure.ac:426: -1- m4_pattern_allow([^DEBUG_RUNTIME$])
+m4trace:configure.ac:434: -1- m4_pattern_allow([^DEBUG_SYMBOLS$])
+m4trace:configure.ac:436: -1- m4_pattern_allow([^DEBUG_SYMBOLS$])
+m4trace:configure.ac:446: -1- m4_pattern_allow([^JIT$])
+m4trace:configure.ac:449: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:450: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:451: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:452: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:453: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:454: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:455: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:456: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:457: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:458: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:459: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:460: -1- m4_pattern_allow([^TARGET_HAS_JIT$])
+m4trace:configure.ac:470: -1- m4_pattern_allow([^ENABLE_DOCS$])
+m4trace:configure.ac:471: -1- m4_pattern_allow([^ENABLE_DOCS$])
+m4trace:configure.ac:472: -1- m4_pattern_allow([^ENABLE_DOCS$])
+m4trace:configure.ac:482: -1- m4_pattern_allow([^ENABLE_DOXYGEN$])
+m4trace:configure.ac:483: -1- m4_pattern_allow([^ENABLE_DOXYGEN$])
+m4trace:configure.ac:484: -1- m4_pattern_allow([^ENABLE_DOXYGEN$])
+m4trace:configure.ac:494: -1- m4_pattern_allow([^ENABLE_THREADS$])
+m4trace:configure.ac:495: -1- m4_pattern_allow([^ENABLE_THREADS$])
+m4trace:configure.ac:496: -1- m4_pattern_allow([^ENABLE_THREADS$])
+m4trace:configure.ac:499: -1- m4_pattern_allow([^ENABLE_THREADS$])
+m4trace:configure.ac:507: -1- m4_pattern_allow([^ENABLE_PTHREADS$])
+m4trace:configure.ac:508: -1- m4_pattern_allow([^ENABLE_PTHREADS$])
+m4trace:configure.ac:509: -1- m4_pattern_allow([^ENABLE_PTHREADS$])
+m4trace:configure.ac:519: -1- m4_pattern_allow([^ENABLE_PIC$])
+m4trace:configure.ac:520: -1- m4_pattern_allow([^ENABLE_PIC$])
+m4trace:configure.ac:521: -1- m4_pattern_allow([^ENABLE_PIC$])
+m4trace:configure.ac:524: -1- m4_pattern_allow([^ENABLE_PIC$])
+m4trace:configure.ac:533: -1- m4_pattern_allow([^ENABLE_SHARED$])
+m4trace:configure.ac:534: -1- m4_pattern_allow([^ENABLE_SHARED$])
+m4trace:configure.ac:535: -1- m4_pattern_allow([^ENABLE_SHARED$])
+m4trace:configure.ac:545: -1- m4_pattern_allow([^ENABLE_EMBED_STDCXX$])
+m4trace:configure.ac:546: -1- m4_pattern_allow([^ENABLE_EMBED_STDCXX$])
+m4trace:configure.ac:547: -1- m4_pattern_allow([^ENABLE_EMBED_STDCXX$])
+m4trace:configure.ac:557: -1- m4_pattern_allow([^ENABLE_TIMESTAMPS$])
+m4trace:configure.ac:558: -1- m4_pattern_allow([^ENABLE_TIMESTAMPS$])
+m4trace:configure.ac:559: -1- m4_pattern_allow([^ENABLE_TIMESTAMPS$])
+m4trace:configure.ac:562: -1- m4_pattern_allow([^ENABLE_TIMESTAMPS$])
+m4trace:configure.ac:612: -1- m4_pattern_allow([^TARGETS_TO_BUILD$])
+m4trace:configure.ac:618: -1- m4_pattern_allow([^LLVM_NATIVE_ARCH$])
+m4trace:configure.ac:630: -1- m4_pattern_allow([^LLVM_NATIVE_TARGET$])
+m4trace:configure.ac:632: -1- m4_pattern_allow([^LLVM_NATIVE_TARGETINFO$])
+m4trace:configure.ac:634: -1- m4_pattern_allow([^LLVM_NATIVE_TARGETMC$])
+m4trace:configure.ac:636: -1- m4_pattern_allow([^LLVM_NATIVE_ASMPRINTER$])
+m4trace:configure.ac:639: -1- m4_pattern_allow([^LLVM_NATIVE_ASMPARSER$])
+m4trace:configure.ac:643: -1- m4_pattern_allow([^LLVM_NATIVE_DISASSEMBLER$])
+m4trace:configure.ac:667: -1- m4_pattern_allow([^LLVM_ENUM_TARGETS$])
+m4trace:configure.ac:668: -1- m4_pattern_allow([^LLVM_ENUM_ASM_PRINTERS$])
+m4trace:configure.ac:669: -1- m4_pattern_allow([^LLVM_ENUM_ASM_PARSERS$])
+m4trace:configure.ac:670: -1- m4_pattern_allow([^LLVM_ENUM_DISASSEMBLERS$])
+m4trace:configure.ac:687: -1- m4_pattern_allow([^OPTIMIZE_OPTION$])
+m4trace:configure.ac:699: -1- m4_pattern_allow([^EXTRA_OPTIONS$])
+m4trace:configure.ac:710: -1- m4_pattern_allow([^EXTRA_LD_OPTIONS$])
+m4trace:configure.ac:748: -1- m4_pattern_allow([^CLANG_RESOURCE_DIR$])
+m4trace:configure.ac:755: -1- m4_pattern_allow([^C_INCLUDE_DIRS$])
+m4trace:configure.ac:765: -1- m4_pattern_allow([^GCC_INSTALL_PREFIX$])
+m4trace:configure.ac:779: -1- m4_pattern_allow([^BINUTILS_INCDIR$])
+m4trace:configure.ac:791: -1- m4_pattern_allow([^BUG_REPORT_URL$])
+m4trace:configure.ac:810: -1- AC_PROG_NM
+m4trace:configure.ac:811: -1- m4_pattern_allow([^NM$])
+m4trace:configure.ac:814: -1- AC_CHECK_GNU_MAKE
+m4trace:configure.ac:814: -1- m4_pattern_allow([^ifGNUmake$])
+m4trace:configure.ac:815: -1- m4_pattern_allow([^LN_S$])
+m4trace:configure.ac:816: -1- m4_pattern_allow([^CMP$])
+m4trace:configure.ac:817: -1- m4_pattern_allow([^CP$])
+m4trace:configure.ac:818: -1- m4_pattern_allow([^DATE$])
+m4trace:configure.ac:819: -1- m4_pattern_allow([^FIND$])
+m4trace:configure.ac:820: -1- m4_pattern_allow([^GREP$])
+m4trace:configure.ac:821: -1- m4_pattern_allow([^MKDIR$])
+m4trace:configure.ac:822: -1- m4_pattern_allow([^MV$])
+m4trace:configure.ac:823: -1- m4_pattern_allow([^RANLIB$])
+m4trace:configure.ac:824: -1- m4_pattern_allow([^AR$])
+m4trace:configure.ac:825: -1- m4_pattern_allow([^RM$])
+m4trace:configure.ac:826: -1- m4_pattern_allow([^SED$])
+m4trace:configure.ac:827: -1- m4_pattern_allow([^TAR$])
+m4trace:configure.ac:828: -1- m4_pattern_allow([^BINPWD$])
+m4trace:configure.ac:831: -1- m4_pattern_allow([^GRAPHVIZ$])
+m4trace:configure.ac:833: -1- m4_pattern_allow([^HAVE_GRAPHVIZ$])
+m4trace:configure.ac:838: -1- m4_pattern_allow([^LLVM_PATH_GRAPHVIZ$])
+m4trace:configure.ac:841: -1- m4_pattern_allow([^DOT$])
+m4trace:configure.ac:843: -1- m4_pattern_allow([^HAVE_DOT$])
+m4trace:configure.ac:848: -1- m4_pattern_allow([^LLVM_PATH_DOT$])
+m4trace:configure.ac:851: -1- m4_pattern_allow([^FDP$])
+m4trace:configure.ac:853: -1- m4_pattern_allow([^HAVE_FDP$])
+m4trace:configure.ac:858: -1- m4_pattern_allow([^LLVM_PATH_FDP$])
+m4trace:configure.ac:861: -1- m4_pattern_allow([^NEATO$])
+m4trace:configure.ac:863: -1- m4_pattern_allow([^HAVE_NEATO$])
+m4trace:configure.ac:868: -1- m4_pattern_allow([^LLVM_PATH_NEATO$])
+m4trace:configure.ac:871: -1- m4_pattern_allow([^TWOPI$])
+m4trace:configure.ac:873: -1- m4_pattern_allow([^HAVE_TWOPI$])
+m4trace:configure.ac:878: -1- m4_pattern_allow([^LLVM_PATH_TWOPI$])
+m4trace:configure.ac:881: -1- m4_pattern_allow([^CIRCO$])
+m4trace:configure.ac:883: -1- m4_pattern_allow([^HAVE_CIRCO$])
+m4trace:configure.ac:888: -1- m4_pattern_allow([^LLVM_PATH_CIRCO$])
+m4trace:configure.ac:891: -1- m4_pattern_allow([^GV$])
+m4trace:configure.ac:893: -1- m4_pattern_allow([^HAVE_GV$])
+m4trace:configure.ac:898: -1- m4_pattern_allow([^LLVM_PATH_GV$])
+m4trace:configure.ac:901: -1- m4_pattern_allow([^DOTTY$])
+m4trace:configure.ac:903: -1- m4_pattern_allow([^HAVE_DOTTY$])
+m4trace:configure.ac:908: -1- m4_pattern_allow([^LLVM_PATH_DOTTY$])
+m4trace:configure.ac:911: -1- m4_pattern_allow([^XDOT_PY$])
+m4trace:configure.ac:913: -1- m4_pattern_allow([^HAVE_XDOT_PY$])
+m4trace:configure.ac:918: -1- m4_pattern_allow([^LLVM_PATH_XDOT_PY$])
+m4trace:configure.ac:923: -1- m4_pattern_allow([^INSTALL_PROGRAM$])
+m4trace:configure.ac:923: -1- m4_pattern_allow([^INSTALL_SCRIPT$])
+m4trace:configure.ac:923: -1- m4_pattern_allow([^INSTALL_DATA$])
+m4trace:configure.ac:936: -1- m4_pattern_allow([^BZIP2$])
+m4trace:configure.ac:937: -1- m4_pattern_allow([^CAT$])
+m4trace:configure.ac:938: -1- m4_pattern_allow([^DOXYGEN$])
+m4trace:configure.ac:939: -1- m4_pattern_allow([^GROFF$])
+m4trace:configure.ac:940: -1- m4_pattern_allow([^GZIPBIN$])
+m4trace:configure.ac:941: -1- m4_pattern_allow([^POD2HTML$])
+m4trace:configure.ac:942: -1- m4_pattern_allow([^POD2MAN$])
+m4trace:configure.ac:943: -1- m4_pattern_allow([^PDFROFF$])
+m4trace:configure.ac:944: -1- m4_pattern_allow([^RUNTEST$])
+m4trace:configure.ac:945: -1- DJ_AC_PATH_TCLSH
+m4trace:configure.ac:945: -1- m4_pattern_allow([^TCLSH$])
+m4trace:configure.ac:945: -1- m4_pattern_allow([^TCLSH$])
+m4trace:configure.ac:946: -1- m4_pattern_allow([^ZIP$])
+m4trace:configure.ac:947: -1- m4_pattern_allow([^OCAMLC$])
+m4trace:configure.ac:948: -1- m4_pattern_allow([^OCAMLOPT$])
+m4trace:configure.ac:949: -1- m4_pattern_allow([^OCAMLDEP$])
+m4trace:configure.ac:950: -1- m4_pattern_allow([^OCAMLDOC$])
+m4trace:configure.ac:951: -1- m4_pattern_allow([^GAS$])
+m4trace:configure.ac:954: -1- AC_LINK_GET_VERSION
+m4trace:configure.ac:954: -1- m4_pattern_allow([^HOST_LINK_VERSION$])
+m4trace:configure.ac:957: -1- AC_LINK_USE_R
+m4trace:configure.ac:957: -1- m4_pattern_allow([^HAVE_LINK_R$])
+m4trace:configure.ac:960: -1- AC_LINK_EXPORT_DYNAMIC
+m4trace:configure.ac:960: -1- m4_pattern_allow([^HAVE_LINK_EXPORT_DYNAMIC$])
+m4trace:configure.ac:963: -1- AC_LINK_VERSION_SCRIPT
+m4trace:configure.ac:963: -1- m4_pattern_allow([^HAVE_LINK_VERSION_SCRIPT$])
+m4trace:configure.ac:968: -1- AC_LIBTOOL_DLOPEN
+m4trace:configure.ac:969: -1- AC_LIB_LTDL
+m4trace:configure.ac:969: -1- m4_pattern_allow([^const$])
+m4trace:configure.ac:969: -1- _LT_AC_CHECK_DLFCN
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_DLFCN_H$])
+m4trace:configure.ac:969: -1- AC_LTDL_ENABLE_INSTALL
+m4trace:configure.ac:969: -1- AM_CONDITIONAL([INSTALL_LTDL], [test x"${enable_ltdl_install-no}" != xno])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^INSTALL_LTDL_TRUE$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^INSTALL_LTDL_FALSE$])
+m4trace:configure.ac:969: -1- _AM_SUBST_NOTMAKE([INSTALL_LTDL_TRUE])
+m4trace:configure.ac:969: -1- _AM_SUBST_NOTMAKE([INSTALL_LTDL_FALSE])
+m4trace:configure.ac:969: -1- AM_CONDITIONAL([CONVENIENCE_LTDL], [test x"${enable_ltdl_convenience-no}" != xno])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^CONVENIENCE_LTDL_TRUE$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^CONVENIENCE_LTDL_FALSE$])
+m4trace:configure.ac:969: -1- _AM_SUBST_NOTMAKE([CONVENIENCE_LTDL_TRUE])
+m4trace:configure.ac:969: -1- _AM_SUBST_NOTMAKE([CONVENIENCE_LTDL_FALSE])
+m4trace:configure.ac:969: -1- AC_LTDL_SHLIBEXT
+m4trace:configure.ac:969: -1- AC_LIBTOOL_SYS_DYNAMIC_LINKER
+m4trace:configure.ac:969: -1- m4_pattern_allow([^LTDL_SHLIB_EXT$])
+m4trace:configure.ac:969: -1- AC_LTDL_SHLIBPATH
+m4trace:configure.ac:969: -1- m4_pattern_allow([^LTDL_SHLIBPATH_VAR$])
+m4trace:configure.ac:969: -1- AC_LTDL_SYSSEARCHPATH
+m4trace:configure.ac:969: -1- m4_pattern_allow([^LTDL_SYSSEARCHPATH$])
+m4trace:configure.ac:969: -1- AC_LTDL_OBJDIR
+m4trace:configure.ac:969: -1- m4_pattern_allow([^LTDL_OBJDIR$])
+m4trace:configure.ac:969: -1- AC_LTDL_DLPREOPEN
+m4trace:configure.ac:969: -1- AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE
+m4trace:configure.ac:969: -1- _LT_AC_TAGVAR([lt_prog_compiler_no_builtin_flag], [])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_PRELOADED_SYMBOLS$])
+m4trace:configure.ac:969: -1- AC_LTDL_DLLIB
+m4trace:configure.ac:969: -1- m4_pattern_allow([^LIBADD_DL$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_SHL_LOAD$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_SHL_LOAD$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_LIBDL$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_LIBDL$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_LIBDL$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_DLD$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_DYLD$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_DLERROR$])
+m4trace:configure.ac:969: -1- AC_LTDL_SYMBOL_USCORE
+m4trace:configure.ac:969: -1- AC_LTDL_DLSYM_USCORE
+m4trace:configure.ac:969: -1- _LT_AC_TRY_DLOPEN_SELF([libltdl_cv_need_uscore=no], [libltdl_cv_need_uscore=yes], [], [libltdl_cv_need_uscore=cross])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^NEED_USCORE$])
+m4trace:configure.ac:969: -1- AC_LTDL_SYS_DLOPEN_DEPLIBS
+m4trace:configure.ac:969: -1- m4_pattern_allow([^LTDL_DLOPEN_DEPLIBS$])
+m4trace:configure.ac:969: -1- AC_LTDL_FUNC_ARGZ
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_ARGZ_H$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^HAVE_ERROR_T$])
+m4trace:configure.ac:969: -1- m4_pattern_allow([^error_t$])
+m4trace:configure.ac:1003: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+configure.ac:1003: the top level])
+m4trace:configure.ac:1020: -1- CXX_FLAG_CHECK([NO_VARIADIC_MACROS], [-Wno-variadic-macros])
+m4trace:configure.ac:1020: -1- m4_pattern_allow([^NO_VARIADIC_MACROS$])
+m4trace:configure.ac:1021: -1- CXX_FLAG_CHECK([NO_MISSING_FIELD_INITIALIZERS], [-Wno-missing-field-initializers])
+m4trace:configure.ac:1021: -1- m4_pattern_allow([^NO_MISSING_FIELD_INITIALIZERS$])
+m4trace:configure.ac:1022: -1- CXX_FLAG_CHECK([COVERED_SWITCH_DEFAULT], [-Wcovered-switch-default])
+m4trace:configure.ac:1022: -1- m4_pattern_allow([^COVERED_SWITCH_DEFAULT$])
+m4trace:configure.ac:1031: -1- m4_pattern_allow([^HAVE_LIBM$])
+m4trace:configure.ac:1033: -1- m4_pattern_allow([^HAVE_LIBIMAGEHLP$])
+m4trace:configure.ac:1034: -1- m4_pattern_allow([^HAVE_LIBPSAPI$])
+m4trace:configure.ac:1038: -2- m4_pattern_allow([^HAVE_DLOPEN$])
+m4trace:configure.ac:1044: -2- m4_pattern_allow([^HAVE_FFI_CALL$])
+m4trace:configure.ac:1050: -2- m4_pattern_allow([^HAVE_MALLINFO$])
+m4trace:configure.ac:1056: -1- m4_pattern_allow([^HAVE_LIBPTHREAD$])
+m4trace:configure.ac:1058: -2- m4_pattern_allow([^HAVE_PTHREAD_MUTEX_LOCK$])
+m4trace:configure.ac:1061: -2- m4_pattern_allow([^HAVE_PTHREAD_RWLOCK_INIT$])
+m4trace:configure.ac:1064: -2- m4_pattern_allow([^HAVE_PTHREAD_GETSPECIFIC$])
+m4trace:configure.ac:1083: -2- m4_pattern_allow([^USE_UDIS86$])
+m4trace:configure.ac:1069: -1- m4_pattern_allow([^USE_UDIS86$])
+m4trace:configure.ac:1069: -1- m4_pattern_allow([^HAVE_LIBUDIS86$])
+m4trace:configure.ac:1084: -1- m4_pattern_allow([^USE_UDIS86$])
+m4trace:configure.ac:1088: -1- m4_pattern_allow([^USE_OPROFILE$])
+m4trace:configure.ac:1088: -1- m4_pattern_allow([^USE_OPROFILE$])
+m4trace:configure.ac:1088: -1- m4_pattern_allow([^USE_OPROFILE$])
+m4trace:configure.ac:1120: -1- m4_pattern_allow([^USE_OPROFILE$])
+m4trace:configure.ac:1134: -1- AC_HEADER_MMAP_ANONYMOUS
+m4trace:configure.ac:1134: -1- m4_pattern_allow([^HAVE_MMAP_ANONYMOUS$])
+m4trace:configure.ac:1135: -1- m4_pattern_allow([^STAT_MACROS_BROKEN$])
+m4trace:configure.ac:1136: -1- m4_pattern_allow([^HAVE_SYS_WAIT_H$])
+m4trace:configure.ac:1137: -1- m4_pattern_allow([^TIME_WITH_SYS_TIME$])
+m4trace:configure.ac:1144: -1- m4_pattern_allow([^HAVE_VALGRIND_VALGRIND_H$])
+m4trace:configure.ac:1145: -1- m4_pattern_allow([^HAVE_FENV_H$])
+m4trace:configure.ac:1148: -2- m4_pattern_allow([^HAVE_PTHREAD$])
+m4trace:configure.ac:1149: -2- m4_pattern_allow([^HAVE_PTHREAD$])
+m4trace:configure.ac:1147: -1- m4_pattern_allow([^HAVE_PTHREAD_H$])
+m4trace:configure.ac:1151: -1- m4_pattern_allow([^HAVE_PTHREAD$])
+m4trace:configure.ac:1160: -1- m4_pattern_allow([^HAVE_CRASHREPORTERCLIENT_H$])
+m4trace:configure.ac:1173: -2- m4_pattern_allow([^HAVE_CRASHREPORTER_INFO$])
+m4trace:configure.ac:1175: -2- m4_pattern_allow([^HAVE_CRASHREPORTER_INFO$])
+m4trace:configure.ac:1164: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2662: _AC_LINK_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2679: AC_LINK_IFELSE is expanded from...
+configure.ac:1164: the top level])
+m4trace:configure.ac:1184: -1- AC_HUGE_VAL_CHECK
+m4trace:configure.ac:1184: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2730: _AC_RUN_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2749: AC_RUN_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/huge_val.m4:5: AC_HUGE_VAL_CHECK is expanded from...
+configure.ac:1184: the top level])
+m4trace:configure.ac:1184: -1- m4_pattern_allow([^HUGE_VAL_SANITY$])
+m4trace:configure.ac:1185: -1- m4_pattern_allow([^pid_t$])
+m4trace:configure.ac:1186: -1- m4_pattern_allow([^size_t$])
+m4trace:configure.ac:1187: -1- m4_pattern_allow([^RETSIGTYPE$])
+m4trace:configure.ac:1188: -1- m4_pattern_allow([^TM_IN_SYS_TIME$])
+m4trace:configure.ac:1189: -1- m4_pattern_allow([^HAVE_INT64_T$])
+m4trace:configure.ac:1191: -2- m4_pattern_allow([^HAVE_U_INT64_T$])
+m4trace:configure.ac:1190: -1- m4_pattern_allow([^HAVE_UINT64_T$])
+m4trace:configure.ac:1208: -1- AC_C_PRINTF_A
+m4trace:configure.ac:1208: -1- m4_pattern_allow([^HAVE_PRINTF_A$])
+m4trace:configure.ac:1209: -1- AC_FUNC_RAND48
+m4trace:configure.ac:1209: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_rand48], [srand48/lrand48/drand48], [<stdlib.h>], [srand48(0);lrand48();drand48();])
+m4trace:configure.ac:1209: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/rand48.m4:5: AC_FUNC_RAND48 is expanded from...
+configure.ac:1209: the top level])
+m4trace:configure.ac:1209: -1- m4_pattern_allow([^HAVE_RAND48$])
+m4trace:configure.ac:1212: -1- m4_pattern_allow([^HAVE_DECL_STRERROR_S$])
+m4trace:configure.ac:1216: -2- m4_pattern_allow([^HAVE__ALLOCA$])
+m4trace:configure.ac:1217: -2- m4_pattern_allow([^HAVE___ALLOCA$])
+m4trace:configure.ac:1218: -2- m4_pattern_allow([^HAVE___CHKSTK$])
+m4trace:configure.ac:1219: -2- m4_pattern_allow([^HAVE____CHKSTK$])
+m4trace:configure.ac:1221: -2- m4_pattern_allow([^HAVE___ASHLDI3$])
+m4trace:configure.ac:1222: -2- m4_pattern_allow([^HAVE___ASHRDI3$])
+m4trace:configure.ac:1223: -2- m4_pattern_allow([^HAVE___DIVDI3$])
+m4trace:configure.ac:1224: -2- m4_pattern_allow([^HAVE___FIXDFDI$])
+m4trace:configure.ac:1225: -2- m4_pattern_allow([^HAVE___FIXSFDI$])
+m4trace:configure.ac:1226: -2- m4_pattern_allow([^HAVE___FLOATDIDF$])
+m4trace:configure.ac:1227: -2- m4_pattern_allow([^HAVE___LSHRDI3$])
+m4trace:configure.ac:1228: -2- m4_pattern_allow([^HAVE___MODDI3$])
+m4trace:configure.ac:1229: -2- m4_pattern_allow([^HAVE___UDIVDI3$])
+m4trace:configure.ac:1230: -2- m4_pattern_allow([^HAVE___UMODDI3$])
+m4trace:configure.ac:1232: -2- m4_pattern_allow([^HAVE___MAIN$])
+m4trace:configure.ac:1233: -2- m4_pattern_allow([^HAVE___CMPDI2$])
+m4trace:configure.ac:1239: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+configure.ac:1239: the top level])
+m4trace:configure.ac:1251: -1- m4_pattern_allow([^WIN32_ELMCB_PCSTR$])
+m4trace:configure.ac:1256: -1- AC_FUNC_ISNAN
+m4trace:configure.ac:1256: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_isnan_in_math_h], [isnan], [<math.h>], [float f; isnan(f);])
+m4trace:configure.ac:1256: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isnan.m4:5: AC_FUNC_ISNAN is expanded from...
+configure.ac:1256: the top level])
+m4trace:configure.ac:1256: -1- m4_pattern_allow([^HAVE_ISNAN_IN_MATH_H$])
+m4trace:configure.ac:1256: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_isnan_in_cmath], [isnan], [<cmath>], [float f; isnan(f);])
+m4trace:configure.ac:1256: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isnan.m4:5: AC_FUNC_ISNAN is expanded from...
+configure.ac:1256: the top level])
+m4trace:configure.ac:1256: -1- m4_pattern_allow([^HAVE_ISNAN_IN_CMATH$])
+m4trace:configure.ac:1256: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_std_isnan_in_cmath], [std::isnan], [<cmath>], [float f; std::isnan(f);])
+m4trace:configure.ac:1256: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isnan.m4:5: AC_FUNC_ISNAN is expanded from...
+configure.ac:1256: the top level])
+m4trace:configure.ac:1256: -1- m4_pattern_allow([^HAVE_STD_ISNAN_IN_CMATH$])
+m4trace:configure.ac:1257: -1- AC_FUNC_ISINF
+m4trace:configure.ac:1257: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_isinf_in_math_h], [isinf], [<math.h>], [float f; isinf(f);])
+m4trace:configure.ac:1257: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isinf.m4:5: AC_FUNC_ISINF is expanded from...
+configure.ac:1257: the top level])
+m4trace:configure.ac:1257: -1- m4_pattern_allow([^HAVE_ISINF_IN_MATH_H$])
+m4trace:configure.ac:1257: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_isinf_in_cmath], [isinf], [<cmath>], [float f; isinf(f);])
+m4trace:configure.ac:1257: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isinf.m4:5: AC_FUNC_ISINF is expanded from...
+configure.ac:1257: the top level])
+m4trace:configure.ac:1257: -1- m4_pattern_allow([^HAVE_ISINF_IN_CMATH$])
+m4trace:configure.ac:1257: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_std_isinf_in_cmath], [std::isinf], [<cmath>], [float f; std::isinf(f);])
+m4trace:configure.ac:1257: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isinf.m4:5: AC_FUNC_ISINF is expanded from...
+configure.ac:1257: the top level])
+m4trace:configure.ac:1257: -1- m4_pattern_allow([^HAVE_STD_ISINF_IN_CMATH$])
+m4trace:configure.ac:1257: -1- AC_SINGLE_CXX_CHECK([ac_cv_func_finite_in_ieeefp_h], [finite], [<ieeefp.h>], [float f; finite(f);])
+m4trace:configure.ac:1257: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2591: _AC_COMPILE_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2607: AC_COMPILE_IFELSE is expanded from...
+../../lib/m4sugar/m4sh.m4:606: AS_IF is expanded from...
+../../lib/autoconf/general.m4:2032: AC_CACHE_VAL is expanded from...
+../../lib/autoconf/general.m4:2053: AC_CACHE_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/single_cxx_check.m4:4: AC_SINGLE_CXX_CHECK is expanded from...
+/home/yabin/llvm-git/projects/mlang/autoconf/m4/func_isinf.m4:5: AC_FUNC_ISINF is expanded from...
+configure.ac:1257: the top level])
+m4trace:configure.ac:1257: -1- m4_pattern_allow([^HAVE_FINITE_IN_IEEEFP_H$])
+m4trace:configure.ac:1263: -1- AC_DEFUN([_AC_Header_stdlib_h], [m4_divert_text([INIT_PREPARE], [AS_VAR_APPEND([ac_header_list], [" stdlib.h"])])
+_AC_HEADERS_EXPANSION])
+m4trace:configure.ac:1263: -1- AC_DEFUN([_AC_Header_unistd_h], [m4_divert_text([INIT_PREPARE], [AS_VAR_APPEND([ac_header_list], [" unistd.h"])])
+_AC_HEADERS_EXPANSION])
+m4trace:configure.ac:1263: -1- AC_DEFUN([_AC_Header_sys_param_h], [m4_divert_text([INIT_PREPARE], [AS_VAR_APPEND([ac_header_list], [" sys/param.h"])])
+_AC_HEADERS_EXPANSION])
+m4trace:configure.ac:1263: -1- m4_pattern_allow([^HAVE_GETPAGESIZE$])
+m4trace:configure.ac:1263: -1- m4_pattern_allow([^HAVE_MMAP$])
+m4trace:configure.ac:1264: -1- AC_FUNC_MMAP_FILE
+m4trace:configure.ac:1264: -1- m4_pattern_allow([^HAVE_MMAP_FILE$])
+m4trace:configure.ac:1264: -1- m4_pattern_allow([^MMAP_FILE$])
+m4trace:configure.ac:1265: -1- AC_NEED_DEV_ZERO_FOR_MMAP
+m4trace:configure.ac:1265: -1- m4_pattern_allow([^NEED_DEV_ZERO_FOR_MMAP$])
+m4trace:configure.ac:1295: -2- m4_pattern_allow([^LLVM_HAS_ATOMICS$])
+m4trace:configure.ac:1297: -2- m4_pattern_allow([^LLVM_HAS_ATOMICS$])
+m4trace:configure.ac:1282: -1- _m4_warn([syntax], [AC_LANG_CONFTEST: no AC_LANG_SOURCE call detected in body], [../../lib/autoconf/lang.m4:194: AC_LANG_CONFTEST is expanded from...
+../../lib/autoconf/general.m4:2662: _AC_LINK_IFELSE is expanded from...
+../../lib/autoconf/general.m4:2679: AC_LINK_IFELSE is expanded from...
+configure.ac:1282: the top level])
+m4trace:configure.ac:1309: -1- AC_IS_LINUX_MIXED
+m4trace:configure.ac:1317: -1- m4_pattern_allow([^HAVE___DSO_HANDLE$])
+m4trace:configure.ac:1321: -1- m4_pattern_allow([^SHLIBEXT$])
+m4trace:configure.ac:1325: -1- m4_pattern_allow([^SHLIBPATH_VAR$])
+m4trace:configure.ac:1343: -1- m4_pattern_allow([^LLVM_PREFIX$])
+m4trace:configure.ac:1344: -1- m4_pattern_allow([^LLVM_BINDIR$])
+m4trace:configure.ac:1345: -1- m4_pattern_allow([^LLVM_LIBDIR$])
+m4trace:configure.ac:1346: -1- m4_pattern_allow([^LLVM_DATADIR$])
+m4trace:configure.ac:1347: -1- m4_pattern_allow([^LLVM_DOCSDIR$])
+m4trace:configure.ac:1348: -1- m4_pattern_allow([^LLVM_ETCDIR$])
+m4trace:configure.ac:1349: -1- m4_pattern_allow([^LLVM_INCLUDEDIR$])
+m4trace:configure.ac:1350: -1- m4_pattern_allow([^LLVM_INFODIR$])
+m4trace:configure.ac:1351: -1- m4_pattern_allow([^LLVM_MANDIR$])
+m4trace:configure.ac:1352: -1- m4_pattern_allow([^LLVM_CONFIGTIME$])
+m4trace:configure.ac:1356: -1- m4_pattern_allow([^LLVM_PREFIX$])
+m4trace:configure.ac:1358: -1- m4_pattern_allow([^LLVM_BINDIR$])
+m4trace:configure.ac:1360: -1- m4_pattern_allow([^LLVM_LIBDIR$])
+m4trace:configure.ac:1362: -1- m4_pattern_allow([^LLVM_DATADIR$])
+m4trace:configure.ac:1364: -1- m4_pattern_allow([^LLVM_DOCSDIR$])
+m4trace:configure.ac:1366: -1- m4_pattern_allow([^LLVM_ETCDIR$])
+m4trace:configure.ac:1368: -1- m4_pattern_allow([^LLVM_INCLUDEDIR$])
+m4trace:configure.ac:1370: -1- m4_pattern_allow([^LLVM_INFODIR$])
+m4trace:configure.ac:1372: -1- m4_pattern_allow([^LLVM_MANDIR$])
+m4trace:configure.ac:1374: -1- m4_pattern_allow([^LLVM_CONFIGTIME$])
+m4trace:configure.ac:1376: -1- m4_pattern_allow([^LLVM_DEFAULT_TARGET_TRIPLE$])
+m4trace:configure.ac:1386: -1- m4_pattern_allow([^BINDINGS_TO_BUILD$])
+m4trace:configure.ac:1390: -1- m4_pattern_allow([^ALL_BINDINGS$])
+m4trace:configure.ac:1410: -1- m4_pattern_allow([^OCAML_LIBDIR$])
+m4trace:configure.ac:1416: -1- m4_pattern_allow([^OCAML_LIBDIR$])
+m4trace:configure.ac:1419: -1- m4_pattern_allow([^OCAML_LIBDIR$])
+m4trace:configure.ac:1430: -1- AC_CXX_USE_VISIBILITY_INLINES_HIDDEN
+m4trace:configure.ac:1430: -1- m4_pattern_allow([^ENABLE_VISIBILITY_INLINES_HIDDEN$])
+m4trace:configure.ac:1430: -1- m4_pattern_allow([^ENABLE_VISIBILITY_INLINES_HIDDEN$])
+m4trace:configure.ac:1438: -1- m4_pattern_allow([^RPATH$])
+m4trace:configure.ac:1446: -1- m4_pattern_allow([^RDYNAMIC$])
+m4trace:configure.ac:1464: -1- AC_CONFIG_MAKEFILE([Makefile])
+m4trace:configure.ac:1465: -1- AC_CONFIG_MAKEFILE([lib/Makefile])
+m4trace:configure.ac:1466: -1- AC_CONFIG_MAKEFILE([lib/AST/Makefile])
+m4trace:configure.ac:1467: -1- AC_CONFIG_MAKEFILE([tools/Makefile])
+m4trace:configure.ac:1468: -1- AC_CONFIG_MAKEFILE([tools/driver/Makefile])
+m4trace:configure.ac:1471: -1- m4_pattern_allow([^LIB@&t@OBJS$])
+m4trace:configure.ac:1471: -1- m4_pattern_allow([^LTLIBOBJS$])
+m4trace:configure.ac:1471: -1- _m4_warn([obsolete], [AC_C_BIGENDIAN should be used with AC_CONFIG_HEADERS], [])

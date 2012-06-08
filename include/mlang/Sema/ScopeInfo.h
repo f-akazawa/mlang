@@ -30,9 +30,9 @@ namespace sema {
 class FunctionScopeInfo {
 public:
 
-	/// \brief Whether this scope information structure defined information for
-	/// a block.
-	bool IsBlockInfo;
+  /// \brief Whether this scope information structure defined information for
+  /// a block.
+  bool IsBlockInfo;
 
 	/// \brief Whether this function contains a VLA, @try, try, C++
 	/// initializer, or anything else that can't be jumped past.
@@ -78,16 +78,16 @@ public:
 				&& HasBranchIntoScope);
 	}
 
-	FunctionScopeInfo(Diagnostic &Diag) :
-		IsBlockInfo(false), HasBranchProtectedScope(false), HasBranchIntoScope(
-				false), HasIndirectGoto(false), ErrorTrap(Diag) {
-	}
+  FunctionScopeInfo(DiagnosticsEngine &Diag) :
+    IsBlockInfo(false), HasBranchProtectedScope(false), HasBranchIntoScope(
+      false), HasIndirectGoto(false), ErrorTrap(Diag) {
+  }
 
-	virtual ~FunctionScopeInfo();
+  virtual ~FunctionScopeInfo();
 
-	/// \brief Clear out the information in this function scope, making it
-	/// suitable for reuse.
-	void Clear();
+  /// \brief Clear out the information in this function scope, making it
+  /// suitable for reuse.
+  void Clear();
 
 	static bool classof(const FunctionScopeInfo *FSI) {
 		return true;
@@ -113,20 +113,21 @@ public:
 	/// Its return type may be BuiltinType::Dependent.
 	Type FunctionType;
 
-	BlockScopeInfo(Diagnostic &Diag, Scope *BlockScope, ScriptDefn *Block) :
-		FunctionScopeInfo(Diag), hasBlockDeclRefExprs(false), TheDefn(Block),
-				TheScope(BlockScope) {
-		IsBlockInfo = true;
-	}
+  BlockScopeInfo(DiagnosticsEngine &Diag, Scope *BlockScope,
+                 ScriptDefn *Block) :
+    FunctionScopeInfo(Diag), hasBlockDeclRefExprs(false), TheDefn(Block),
+    TheScope(BlockScope) {
+      IsBlockInfo = true;
+  }
 
-	virtual ~BlockScopeInfo();
+  virtual ~BlockScopeInfo();
 
-	static bool classof(const FunctionScopeInfo *FSI) {
-		return FSI->IsBlockInfo;
-	}
-	static bool classof(const BlockScopeInfo *BSI) {
-		return true;
-	}
+  static bool classof(const FunctionScopeInfo *FSI) {
+    return FSI->IsBlockInfo;
+  }
+  static bool classof(const BlockScopeInfo *BSI) {
+    return true;
+  }
 };
 
 } // end of namespace sema

@@ -18,27 +18,26 @@
 namespace mlang {
 /// ColonExpr: we use this to represent a vector.
 class ColonExpr: public Expr {
-	Stmt* SubExprs[3];
-	SourceLocation firstLoc, secondLoc; // first and second colon location
-	bool magic_end;
-	bool magic_colon;
-	bool BinaryOp;
+  Stmt* SubExprs[3];
+  SourceLocation firstLoc, secondLoc; // first and second colon location
+  bool magic_end;
+  bool magic_colon;
+  bool BinaryOp;
 
 public:
-	/// Construct a single ':' expression, denote a whole column or row
-	/// of an array, e.g. A(:,1:5)
-	ColonExpr(Type Ty, SourceLocation Loc) :
-		Expr(ColonExprClass, Ty, VK_RValue),
-		firstLoc(Loc), secondLoc(Loc) {
-		for(int i=0; i<3; ++i) {
-			SubExprs[i] = NULL;
-		}
-		BinaryOp = false;
-		magic_colon = true;
-	}
+  /// Construct a single ':' expression, denote a whole column or row
+  /// of an array, e.g. A(:,1:5)
+  ColonExpr(Type Ty, SourceLocation Loc) : Expr(ColonExprClass, Ty, VK_RValue),
+    firstLoc(Loc), secondLoc(Loc) {
+    for(int i=0; i<3; ++i) {
+      SubExprs[i] = NULL;
+    }
+    BinaryOp = false;
+    magic_colon = true;
+  }
 
-	/// Construct a colon expression, which denotes a sequence of numbers
-	/// if inc == NULL and firstloc == secondloc, it means it is a binary
+  /// Construct a colon expression, which denotes a sequence of numbers
+  /// if inc == NULL and firstloc == secondloc, it means it is a binary
 	/// operator
 	ColonExpr(ASTContext &ctx, Expr* base, Expr* inc, Expr* limit, Type Ty,
 			SourceLocation firstloc, SourceLocation secondloc) :
@@ -103,10 +102,10 @@ public:
 		magic_end = true;
 	}
 
-	unsigned getRange() const {
-		assert(SubExprs[0] != NULL && SubExprs[2] != NULL);
-
-	}
+  unsigned getRange() const {
+    assert(SubExprs[0] != NULL && SubExprs[2] != NULL);
+    return 0;
+  }
 
 	SourceLocation get1stConlonLoc() {
 		return firstLoc;

@@ -125,7 +125,7 @@ namespace mlang {
     /// \brief An ID number that refers to a set of ClassBaseSpecifiers in an
     /// AST file.
     typedef uint32_t ClassBaseSpecifiersID;
-    
+
     /// \brief Describes the various kinds of blocks that occur within
     /// an AST file.
     enum BlockIDs {
@@ -266,14 +266,14 @@ namespace mlang {
       /// \brief Record code for the file ID of the original file used to 
       /// generate the AST file.
       ORIGINAL_FILE_ID = 20,
-      
+
       /// \brief Record code for the version control branch and revision
       /// information of the compiler used to build this AST file.
       VERSION_CONTROL_BRANCH_REVISION = 21,
-      
+
       /// \brief Record code for the array of unused file scoped decls.
       UNUSED_FILESCOPED_DECLS = 22,
-      
+
       /// \brief Record code for the array of VTable uses.
       VTABLE_USES = 24,
 
@@ -320,7 +320,7 @@ namespace mlang {
       /// \brief Record of updates for a declaration that was modified after
       /// being deserialized.
       DECL_UPDATES = 36,
-      
+
       /// \brief Record code for the table of offsets to CXXBaseSpecifier
       /// sets.
       CXX_BASE_SPECIFIER_OFFSETS = 37,
@@ -330,7 +330,7 @@ namespace mlang {
 
       /// \brief Record code for special CUDA declarations.
       CUDA_SPECIAL_DECL_REFS = 39,
-      
+
       /// \brief Record code for header search information.
       HEADER_SEARCH_TABLE = 40,
 
@@ -360,8 +360,8 @@ namespace mlang {
       /// SM_SLOC_BUFFER_ENTRY record.
       SM_SLOC_BUFFER_BLOB = 3,
       /// \brief Describes a source location entry (SLocEntry) for a
-      /// macro instantiation.
-      SM_SLOC_INSTANTIATION_ENTRY = 4,
+      /// macro expansion.
+      SM_SLOC_EXPANSION_ENTRY = 4,
       /// \brief Describes the SourceManager's line table, with
       /// information about #line directives.
       SM_LINE_TABLE = 5

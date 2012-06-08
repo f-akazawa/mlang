@@ -30,7 +30,7 @@ public:
 
   /// If given, the name of the target C++ ABI to use. If not given, defaults
   /// to "itanium".
-  std::string CXXABI;
+  std::string GmatABI;
 
   /// If given, the version string of the linker in use.
   std::string LinkerVersion;

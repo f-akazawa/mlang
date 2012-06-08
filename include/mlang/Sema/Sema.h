@@ -39,7 +39,7 @@ class ASTContext;
 class ArrayType;
 // class AttributeList;
 class ClassMethodDefn;
-class DefinitionNameInfo;
+struct DefinitionNameInfo;
 class Defn;
 class DefnAccessPair;
 class DefnContext;
@@ -84,165 +84,165 @@ class FunctionScopeInfo;
 
 /// Sema - This implements semantic analysis and AST building for Mlang.
 class Sema {
-	Sema(const Sema&); // DO NOT IMPLEMENT
-	void operator=(const Sema&); // DO NOT IMPLEMENT
+  Sema(const Sema&); // DO NOT IMPLEMENT
+  void operator=(const Sema&); // DO NOT IMPLEMENT
 
 public:
-	typedef OpaquePtr<DefnGroupRef> DefnGroupPtrTy;
-	typedef OpaquePtr<Type> TypeTy; //is this needed and if yes where?
-	typedef Expr ExprTy; //is this needed and if yes where?
-	typedef Stmt StmtTy; //is this needed and if yes where?
+  typedef OpaquePtr<DefnGroupRef> DefnGroupPtrTy;
+  typedef OpaquePtr<Type> TypeTy; //is this needed and if yes where?
+  typedef Expr ExprTy; //is this needed and if yes where?
+  typedef Stmt StmtTy; //is this needed and if yes where?
 
-	const LangOptions &LangOpts;
-	Preprocessor &PP;
-	ASTContext &Context;
-	ASTConsumer &Consumer;
-	Diagnostic &Diags;
-	SourceManager &SourceMgr;
+  const LangOptions &LangOpts;
+  Preprocessor &PP;
+  ASTContext &Context;
+  ASTConsumer &Consumer;
+  DiagnosticsEngine &Diags;
+  SourceManager &SourceMgr;
 
-	/// \brief Source of additional semantic information.
-	ExternalSemaSource *ExternalSource;
+  /// \brief Source of additional semantic information.
+  ExternalSemaSource *ExternalSource;
 
-	/// CurContext - This is the current definition context of parsing.
-	DefnContext *CurContext;
+  /// CurContext - This is the current definition context of parsing.
+  DefnContext *CurContext;
 
-	/// \brief Stack containing information about each of the nested
-	/// function, block, and method scopes that are currently active.
-	///
-	/// This array is never empty. Clients should ignore the first
-	/// element, which is used to cache a single FunctionScopeInfo
-	/// that's used to parse every top-level function.
-	llvm::SmallVector<sema::FunctionScopeInfo *, 4> FunctionScopes;
+  /// \brief Stack containing information about each of the nested
+  /// function, block, and method scopes that are currently active.
+  ///
+  /// This array is never empty. Clients should ignore the first
+  /// element, which is used to cache a single FunctionScopeInfo
+  /// that's used to parse every top-level function.
+  llvm::SmallVector<sema::FunctionScopeInfo *, 4> FunctionScopes;
 
-	/// PureVirtualClassDiagSet - a set of class declarations which we have
-	/// emitted a list of pure virtual functions. Used to prevent emitting the
-	/// same list more than once.
-	typedef llvm::SmallPtrSet<const UserClassDefn*, 8> RecordDefnSetTy;
-	llvm::OwningPtr<RecordDefnSetTy> PureVirtualClassDiagSet;
+  /// PureVirtualClassDiagSet - a set of class declarations which we have
+  /// emitted a list of pure virtual functions. Used to prevent emitting the
+  /// same list more than once.
+  typedef llvm::SmallPtrSet<const UserClassDefn*, 8> RecordDefnSetTy;
+  llvm::OwningPtr<RecordDefnSetTy> PureVirtualClassDiagSet;
 
-	/// \brief A mapping from external names to the most recent
-	/// locally-scoped external declaration with that name.
-	///
-	/// This map contains external declarations introduced in local
-	/// scoped, e.g.,
-	///
-	/// \code
-	/// void f() {
-	///   void foo(int, int);
-	/// }
-	/// \endcode
-	///
-	/// Here, the name "foo" will be associated with the declaration on
-	/// "foo" within f. This name is not visible outside of
-	/// "f". However, we still find it in two cases:
-	///
-	///   - If we are declaring another external with the name "foo", we
-	///     can find "foo" as a previous declaration, so that the types
-	///     of this external declaration can be checked for
-	///     compatibility.
-	///
-	///   - If we would implicitly declare "foo" (e.g., due to a call to
-	///     "foo" in C when no prototype or definition is visible), then
-	///     we find this declaration of "foo" and complain that it is
-	///     not visible.
-	llvm::DenseMap<DefinitionName, NamedDefn *> LocallyScopedExternalDefns;
+  /// \brief A mapping from external names to the most recent
+  /// locally-scoped external declaration with that name.
+  ///
+  /// This map contains external declarations introduced in local
+  /// scoped, e.g.,
+  ///
+  /// \code
+  /// void f() {
+  ///   void foo(int, int);
+  /// }
+  /// \endcode
+  ///
+  /// Here, the name "foo" will be associated with the declaration on
+  /// "foo" within f. This name is not visible outside of
+  /// "f". However, we still find it in two cases:
+  ///
+  ///   - If we are declaring another external with the name "foo", we
+  ///     can find "foo" as a previous declaration, so that the types
+  ///     of this external declaration can be checked for
+  ///     compatibility.
+  ///
+  ///   - If we would implicitly declare "foo" (e.g., due to a call to
+  ///     "foo" in C when no prototype or definition is visible), then
+  ///     we find this declaration of "foo" and complain that it is
+  ///     not visible.
+  llvm::DenseMap<DefinitionName, NamedDefn *> LocallyScopedExternalDefns;
 
-	/// \brief All the tentative definitions encountered in the TU.
-	llvm::SmallVector<VarDefn *, 2> TentativeDefinitions;
+  /// \brief All the tentative definitions encountered in the TU.
+  llvm::SmallVector<VarDefn *, 2> TentativeDefinitions;
 
-	/// \brief The depth of the current ParsingDeclaration stack.
-	/// If nonzero, we are currently parsing a declaration (and
-	/// hence should delay deprecation warnings).
-	unsigned ParsingDefnDepth;
+  /// \brief The depth of the current ParsingDeclaration stack.
+  /// If nonzero, we are currently parsing a declaration (and
+  /// hence should delay deprecation warnings).
+  unsigned ParsingDefnDepth;
 
-	IdentifierResolver IdResolver;
+  IdentifierResolver IdResolver;
 
-	/// BaseWorkspace - Top-level scope for current base workspace.
-	Scope *BaseWorkspace;
+  /// BaseWorkspace - Top-level scope for current base workspace.
+  Scope *BaseWorkspace;
 
-	/// \brief The "std" namespace, where the standard library resides.
-	LazyDefnPtr StdNamespace;
+  /// \brief The "std" namespace, where the standard library resides.
+  LazyDefnPtr StdNamespace;
 
-	/// \brief The C++ "std::bad_alloc" class, which is defined by the C++
-	/// standard library.
-	LazyDefnPtr StdBadAlloc;
+  /// \brief The C++ "std::bad_alloc" class, which is defined by the C++
+  /// standard library.
+  LazyDefnPtr StdBadAlloc;
 
-	/// \brief The set of declarations that have been referenced within
-	/// a potentially evaluated expression.
-	typedef llvm::SmallVector<std::pair<SourceLocation, Defn *>, 10>
-			PotentiallyReferencedDefns;
+  /// \brief The set of declarations that have been referenced within
+  /// a potentially evaluated expression.
+  typedef llvm::SmallVector<std::pair<SourceLocation, Defn *>, 10>
+      PotentiallyReferencedDefns;
 
-	/// \brief A set of diagnostics that may be emitted.
-	typedef llvm::SmallVector<std::pair<SourceLocation, PartialDiagnostic>, 10>
-			PotentiallyEmittedDiagnostics;
+  /// \brief A set of diagnostics that may be emitted.
+  typedef llvm::SmallVector<std::pair<SourceLocation, PartialDiagnostic>, 10>
+      PotentiallyEmittedDiagnostics;
 
-	/// \brief Describes how the expressions currently being parsed are
-	/// evaluated at run-time, if at all.
-	enum ExpressionEvaluationContext {
-		/// \brief The current expression and its subexpressions occur within an
-		/// unevaluated operand (C++0x [expr]p8), such as a constant expression
-		/// or the subexpression of \c sizeof, where the type or the value of the
-		/// expression may be significant but no code will be generated to evaluate
-		/// the value of the expression at run time.
-		Unevaluated,
+  /// \brief Describes how the expressions currently being parsed are
+  /// evaluated at run-time, if at all.
+  enum ExpressionEvaluationContext {
+    /// \brief The current expression and its subexpressions occur within an
+    /// unevaluated operand (C++0x [expr]p8), such as a constant expression
+    /// or the subexpression of \c sizeof, where the type or the value of the
+    /// expression may be significant but no code will be generated to evaluate
+    /// the value of the expression at run time.
+    Unevaluated,
 
-		/// \brief The current expression is potentially evaluated at run time,
-		/// which means that code may be generated to evaluate the value of the
-		/// expression at run time.
-		PotentiallyEvaluated,
+    /// \brief The current expression is potentially evaluated at run time,
+    /// which means that code may be generated to evaluate the value of the
+    /// expression at run time.
+    PotentiallyEvaluated,
 
-		/// \brief The current expression may be potentially evaluated or it may
-		/// be unevaluated, but it is impossible to tell from the lexical context.
-		/// This evaluation context is used primary for the operand of the C++
-		/// \c typeid expression, whose argument is potentially evaluated only when
-		/// it is an lvalue of polymorphic class type (C++ [basic.def.odr]p2).
-		PotentiallyPotentiallyEvaluated,
+    /// \brief The current expression may be potentially evaluated or it may
+    /// be unevaluated, but it is impossible to tell from the lexical context.
+    /// This evaluation context is used primary for the operand of the C++
+    /// \c typeid expression, whose argument is potentially evaluated only when
+    /// it is an lvalue of polymorphic class type (C++ [basic.def.odr]p2).
+    PotentiallyPotentiallyEvaluated,
 
-		/// \brief The current expression is potentially evaluated, but any
-		/// declarations referenced inside that expression are only used if
-		/// in fact the current expression is used.
-		///
-		/// This value is used when parsing default function arguments, for which
-		/// we would like to provide diagnostics (e.g., passing non-POD arguments
-		/// through varargs) but do not want to mark declarations as "referenced"
-		/// until the default argument is used.
-		PotentiallyEvaluatedIfUsed
-	};
+    /// \brief The current expression is potentially evaluated, but any
+    /// declarations referenced inside that expression are only used if
+    /// in fact the current expression is used.
+    ///
+    /// This value is used when parsing default function arguments, for which
+    /// we would like to provide diagnostics (e.g., passing non-POD arguments
+    /// through varargs) but do not want to mark declarations as "referenced"
+    /// until the default argument is used.
+    PotentiallyEvaluatedIfUsed
+  };
 
-	/// \brief Data structure used to record current or nested
-	/// expression evaluation contexts.
-	struct ExpressionEvaluationContextRecord {
-		/// \brief The expression evaluation context.
-		ExpressionEvaluationContext Context;
+  /// \brief Data structure used to record current or nested
+  /// expression evaluation contexts.
+  struct ExpressionEvaluationContextRecord {
+    /// \brief The expression evaluation context.
+    ExpressionEvaluationContext Context;
 
-		/// \brief The number of temporaries that were active when we
-		/// entered this expression evaluation context.
-		unsigned NumTemporaries;
+    /// \brief The number of temporaries that were active when we
+    /// entered this expression evaluation context.
+    unsigned NumTemporaries;
 
-		/// \brief The set of declarations referenced within a
-		/// potentially potentially-evaluated context.
-		///
-		/// When leaving a potentially potentially-evaluated context, each
-		/// of these elements will be as referenced if the corresponding
-		/// potentially potentially evaluated expression is potentially
-		/// evaluated.
-		PotentiallyReferencedDefns *PotentiallyReferenced;
+    /// \brief The set of declarations referenced within a
+    /// potentially potentially-evaluated context.
+    ///
+    /// When leaving a potentially potentially-evaluated context, each
+    /// of these elements will be as referenced if the corresponding
+    /// potentially potentially evaluated expression is potentially
+    /// evaluated.
+    PotentiallyReferencedDefns *PotentiallyReferenced;
 
-		/// \brief The set of diagnostics to emit should this potentially
-		/// potentially-evaluated context become evaluated.
-		PotentiallyEmittedDiagnostics *PotentiallyDiagnosed;
+    /// \brief The set of diagnostics to emit should this potentially
+    /// potentially-evaluated context become evaluated.
+    PotentiallyEmittedDiagnostics *PotentiallyDiagnosed;
 
-		ExpressionEvaluationContextRecord(ExpressionEvaluationContext Context,
-				unsigned NumTemporaries) :
-			Context(Context), NumTemporaries(NumTemporaries),
-					PotentiallyReferenced(0), PotentiallyDiagnosed(0) {
-		}
+    ExpressionEvaluationContextRecord(ExpressionEvaluationContext Context,
+                                      unsigned NumTemporaries) :
+      Context(Context), NumTemporaries(NumTemporaries),
+      PotentiallyReferenced(0), PotentiallyDiagnosed(0) {
+      }
 
-		void addReferencedDefn(SourceLocation Loc, Defn *Defn) {
-			if (!PotentiallyReferenced)
-				PotentiallyReferenced = new PotentiallyReferencedDefns;
-			PotentiallyReferenced->push_back(std::make_pair(Loc, Defn));
-		}
+    void addReferencedDefn(SourceLocation Loc, Defn *Defn) {
+      if (!PotentiallyReferenced)
+        PotentiallyReferenced = new PotentiallyReferencedDefns;
+      PotentiallyReferenced->push_back(std::make_pair(Loc, Defn));
+    }
 
 		void addDiagnostic(SourceLocation Loc, const PartialDiagnostic &PD) {
 			if (!PotentiallyDiagnosed)
@@ -277,118 +277,134 @@ public:
 	/// \brief The number of SFINAE diagnostics that have been trapped.
 	unsigned NumSFINAEErrors;
 
-	/// \brief Worker object for performing CFG-based warnings.
-	// sema::AnalysisBasedWarnings AnalysisWarnings;
+  /// \brief Worker object for performing CFG-based warnings.
+  // sema::AnalysisBasedWarnings AnalysisWarnings;
 
-	/// Private Helper predicate to check for 'self'.
-	bool isSelfExpr(Expr *RExpr);
+  /// Private Helper predicate to check for 'self'.
+  bool isSelfExpr(Expr *RExpr);
+
+  /// \brief Cause the active diagnostic on the DiagosticsEngine to be
+  /// emitted. This is closely coupled to the SemaDiagnosticBuilder class and
+  /// should not be used elsewhere.
+  void EmitCurrentDiagnostic(unsigned DiagID);
 
 public:
-	Sema(Preprocessor &pp, ASTContext &ctxt, ASTConsumer &consumer,
-			 bool CompleteTranslationUnit = true);
-	~Sema();
+  Sema(Preprocessor &pp, ASTContext &ctxt, ASTConsumer &consumer,
+       bool CompleteTranslationUnit = true);
+  ~Sema();
 
-	/// \brief Perform initialization that occurs after the parser has been
-	/// initialized but before it parses anything.
-	void Initialize();
+  /// \brief Perform initialization that occurs after the parser has been
+  /// initialized but before it parses anything.
+  void Initialize();
 
-	const LangOptions &getLangOptions() const {
-		return LangOpts;
-	}
-	Diagnostic &getDiagnostics() const {
-		return Diags;
-	}
-	SourceManager &getSourceManager() const {
-		return SourceMgr;
-	}
+  const LangOptions &getLangOptions() const {
+    return LangOpts;
+  }
+  DiagnosticsEngine &getDiagnostics() const {
+    return Diags;
+  }
+  SourceManager &getSourceManager() const {
+    return SourceMgr;
+  }
 
-	// const TargetAttributesSema &getTargetAttributesSema() const;
+  // const TargetAttributesSema &getTargetAttributesSema() const;
+  Preprocessor &getPreprocessor() const {
+    return PP;
+  }
+  ASTContext &getASTContext() const {
+    return Context;
+  }
+  ASTConsumer &getASTConsumer() const {
+    return Consumer;
+  }
 
-	Preprocessor &getPreprocessor() const {
-		return PP;
-	}
-	ASTContext &getASTContext() const {
-		return Context;
-	}
-	ASTConsumer &getASTConsumer() const {
-		return Consumer;
-	}
+  /// \brief Helper class that creates diagnostics with optional
+  /// template instantiation stacks.
+  ///
+  /// This class provides a wrapper around the basic DiagnosticBuilder
+  /// class that emits diagnostics. SemaDiagnosticBuilder is
+  /// responsible for emitting the diagnostic (as DiagnosticBuilder
+  /// does) and, if the diagnostic comes from inside a template
+  /// instantiation, printing the template instantiation stack as
+  /// well.
+  class SemaDiagnosticBuilder: public DiagnosticBuilder {
+    Sema &SemaRef;
+    unsigned DiagID;
 
-	/// \brief Helper class that creates diagnostics with optional
-	/// template instantiation stacks.
-	///
-	/// This class provides a wrapper around the basic DiagnosticBuilder
-	/// class that emits diagnostics. SemaDiagnosticBuilder is
-	/// responsible for emitting the diagnostic (as DiagnosticBuilder
-	/// does) and, if the diagnostic comes from inside a template
-	/// instantiation, printing the template instantiation stack as
-	/// well.
-	class SemaDiagnosticBuilder: public DiagnosticBuilder {
-		Sema &SemaRef;
-		unsigned DiagID;
+  public:
+    SemaDiagnosticBuilder(DiagnosticBuilder &DB, Sema &SemaRef, unsigned DiagID)
+      : DiagnosticBuilder(DB), SemaRef(SemaRef), DiagID(DiagID) { }
 
-	public:
-		SemaDiagnosticBuilder(DiagnosticBuilder &DB, Sema &SemaRef,
-				unsigned DiagID) :
-			DiagnosticBuilder(DB), SemaRef(SemaRef), DiagID(DiagID) {
-		}
+    ~SemaDiagnosticBuilder() {
+       // If we aren't active, there is nothing to do.
+       if (!isActive()) return;
 
-		explicit SemaDiagnosticBuilder(Sema &SemaRef) :
-			DiagnosticBuilder(DiagnosticBuilder::Suppress), SemaRef(SemaRef) {
-		}
+       // Otherwise, we need to emit the diagnostic. First flush the underlying
+       // DiagnosticBuilder data, and clear the diagnostic builder itself so it
+       // won't emit the diagnostic in its own destructor.
+       //
+       // This seems wasteful, in that as written the DiagnosticBuilder dtor
+       // will do its own needless checks to see if the diagnostic needs to be
+       // emitted. However, because we take care to ensure that the builder
+       // objects never escape, a sufficiently smart compiler will be able to
+       // eliminate that code.
+       FlushCounts();
+       Clear();
+    }
+  };
 
-		~SemaDiagnosticBuilder();
-	};
+  /// \brief Emit a diagnostic.
+  SemaDiagnosticBuilder Diag(SourceLocation Loc, unsigned DiagID) {
+    DiagnosticBuilder DB = Diags.Report(Loc, DiagID);
+    return SemaDiagnosticBuilder(DB, *this, DiagID);
+  }
 
-	/// \brief Emit a diagnostic.
-	SemaDiagnosticBuilder Diag(SourceLocation Loc, unsigned DiagID);
+  /// \brief Emit a partial diagnostic.
+  SemaDiagnosticBuilder Diag(SourceLocation Loc, const PartialDiagnostic& PD);
 
-	/// \brief Emit a partial diagnostic.
-	SemaDiagnosticBuilder Diag(SourceLocation Loc, const PartialDiagnostic& PD);
+  /// \brief Build a partial diagnostic.
+  PartialDiagnostic PDiag(unsigned DiagID = 0);
 
-	/// \brief Build a partial diagnostic.
-	PartialDiagnostic PDiag(unsigned DiagID = 0);
+  ExprResult Owned(Expr* E) {
+    return E;
+  }
+  ExprResult Owned(ExprResult R) {
+    return R;
+  }
+  StmtResult Owned(Cmd* C) {
+    return C;
+  }
+  StmtResult Owned(Stmt* S) {
+    return S;
+  }
 
-	ExprResult Owned(Expr* E) {
-		return E;
-	}
-	ExprResult Owned(ExprResult R) {
-		return R;
-	}
-	StmtResult Owned(Cmd* C) {
-		return C;
-	}
-	StmtResult Owned(Stmt* S) {
-		return S;
-	}
+  void ActOnEndOfTranslationUnit();
 
-	void ActOnEndOfTranslationUnit();
+  Scope *getScopeForContext(DefnContext *Ctx);
 
-	Scope *getScopeForContext(DefnContext *Ctx);
+  void PushFunctionScope();
+  void PushBlockScope(Scope *BlockScope, ScriptDefn *Block);
+  void PopFunctionOrBlockScope();
 
-	void PushFunctionScope();
-	void PushBlockScope(Scope *BlockScope, ScriptDefn *Block);
-	void PopFunctionOrBlockScope();
+  sema::FunctionScopeInfo *getCurFunction() const {
+    return FunctionScopes.back();
+  }
 
-	sema::FunctionScopeInfo *getCurFunction() const {
-		return FunctionScopes.back();
-	}
+  bool hasAnyErrorsInThisFunction() const;
 
-	bool hasAnyErrorsInThisFunction() const;
+  /// \brief Retrieve the current block, if any.
+  sema::BlockScopeInfo *getCurBlock();
 
-	/// \brief Retrieve the current block, if any.
-	sema::BlockScopeInfo *getCurBlock();
-
-	//===--------------------------------------------------------------------===//
-	// Type Analysis / Processing: SemaType.cpp.
-	//===--------------------------------------------------------------------===//
-	Type adjustParameterType(Type T);
-	Type BuildQualifiedType(Type T, SourceLocation Loc, TypeInfo Qs);
-	Type BuildQualifiedType(Type T, SourceLocation Loc, unsigned CVR) {
-		return BuildQualifiedType(T, Loc, TypeInfo::fromFastMask(CVR));
-	}
-	Type BuildPointerType(Type T, SourceLocation Loc, DefinitionName Entity);
-	Type BuildReferenceType(Type T, bool LValueRef, SourceLocation Loc,
+  //===--------------------------------------------------------------------===//
+  // Type Analysis / Processing: SemaType.cpp.
+  //===--------------------------------------------------------------------===//
+  Type adjustParameterType(Type T);
+  Type BuildQualifiedType(Type T, SourceLocation Loc, TypeInfo Qs);
+  Type BuildQualifiedType(Type T, SourceLocation Loc, unsigned CVR) {
+    return BuildQualifiedType(T, Loc, TypeInfo::fromFastMask(CVR));
+  }
+  Type BuildPointerType(Type T, SourceLocation Loc, DefinitionName Entity);
+  Type BuildReferenceType(Type T, bool LValueRef, SourceLocation Loc,
 			DefinitionName Entity);
 	Type BuildArrayType(Type T, Expr *ArraySize, unsigned Quals,
 			SourceRange Brackets, DefinitionName Entity);

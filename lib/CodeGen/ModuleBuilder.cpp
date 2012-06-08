@@ -28,7 +28,7 @@ using namespace mlang;
 
 namespace {
   class CodeGeneratorImpl : public CodeGenerator {
-    Diagnostic &Diags;
+    DiagnosticsEngine &Diags;
     llvm::OwningPtr<const llvm::TargetData> TD;
     ASTContext *Ctx;
     const CodeGenOptions CodeGenOpts;  // Intentionally copied in.
@@ -36,7 +36,7 @@ namespace {
     llvm::OwningPtr<llvm::Module> M;
     llvm::OwningPtr<CodeGen::CodeGenModule> Builder;
   public:
-    CodeGeneratorImpl(Diagnostic &diags, const std::string& ModuleName,
+    CodeGeneratorImpl(DiagnosticsEngine &diags, const std::string& ModuleName,
                       const CodeGenOptions &CGO, llvm::LLVMContext& C)
       : Diags(diags), CodeGenOpts(CGO), M(new llvm::Module(ModuleName, C)) {}
 
@@ -112,7 +112,7 @@ namespace {
   };
 }
 
-CodeGenerator *mlang::CreateLLVMCodeGen(Diagnostic &Diags,
+CodeGenerator *mlang::CreateLLVMCodeGen(DiagnosticsEngine &Diags,
                                         const std::string& ModuleName,
                                         const CodeGenOptions &CGO,
                                         llvm::LLVMContext& C) {

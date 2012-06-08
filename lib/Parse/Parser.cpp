@@ -332,21 +332,21 @@ void Parser::Initialize() {
   // Prime the lexer look-ahead.
   ConsumeToken();
 
-//  Ident_super = &PP.getIdentifierTable().get("super");
-  PP.getBuiltinInfo().InitializeBuiltins(
-  				PP.getIdentifierTable(), false);
+  // Ident_super = &PP.getIdentifierTable().get("super");
+  PP.getBuiltinInfo().InitializeBuiltins(PP.getIdentifierTable(),
+                                         PP.getLangOptions());
 }
 
 /// ParseTopLevelDefn - Parse one top-level definition, return whatever the
 /// action tells us to.  This returns true if the EOF was encountered.
 bool Parser::ParseTopLevelDefn(DefnGroupPtrTy &Result) {
-	Result = DefnGroupPtrTy();
-	if (Tok.is(tok::EoF)) {
-		Actions.ActOnEndOfTranslationUnit();
-		return true;
-	}
+  Result = DefnGroupPtrTy();
+  if (Tok.is(tok::EoF)) {
+    Actions.ActOnEndOfTranslationUnit();
+    return true;
+  }
 
-	Result = ParseExternalDefinition();
+  Result = ParseExternalDefinition();
   return false;
 }
 

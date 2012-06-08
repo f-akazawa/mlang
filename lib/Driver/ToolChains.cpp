@@ -1446,6 +1446,7 @@ static std::string findGCCBaseLibDir(const std::string &GccTriple) {
   // CXX_INCLUDE_ROOT = CXX_GCC_ROOT/include/c++/CXX_GCC_VER
   // and this function would return
   // CXX_GCC_ROOT/lib/gcc/CXX_INCLUDE_ARCH/CXX_GCC_VER
+#if 0
   llvm::SmallString<128> CxxIncludeRoot(CXX_INCLUDE_ROOT);
   if (CxxIncludeRoot != "") {
     // This is of the form /foo/bar/include/c++/4.5.2/
@@ -1462,6 +1463,7 @@ static std::string findGCCBaseLibDir(const std::string &GccTriple) {
     ret.append(Version);
     return ret;
   }
+#endif
   static const char* GccVersions[] = {"4.6.0", "4.6",
                                       "4.5.2", "4.5.1", "4.5",
                                       "4.4.5", "4.4.4", "4.4.3", "4.4",

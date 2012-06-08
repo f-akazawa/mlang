@@ -467,11 +467,7 @@ public:
   }
 
   llvm::Constant *VisitStringLiteral(StringLiteral *E) {
-    // This must be a string initializing an array in a static initializer.
-    // Don't emit it as the address of the string, emit the string data itself
-    // as an inline array.
-    return llvm::ConstantArray::get(VMContext,
-                                    CGM.GetStringForStringLiteral(E), false);
+    return CGM.GetConstantArrayFromStringLiteral(E);
   }
 
 

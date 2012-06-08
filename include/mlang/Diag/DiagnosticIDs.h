@@ -64,7 +64,7 @@ namespace mlang {
       MAP_IGNORE  = 1, //< Map this diagnostic to nothing, ignore it.
       MAP_WARNING = 2, //< Map this diagnostic to a warning.
       MAP_ERROR   = 3, //< Map this diagnostic to an error.
-      MAP_FATAL   = 4, //< Map this diagnostic to a fatal error.
+      MAP_FATAL   = 4  //< Map this diagnostic to a fatal error.
     };
   }  // end namespace diag
 

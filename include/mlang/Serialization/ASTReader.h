@@ -136,7 +136,7 @@ private:
 
   SourceManager &SourceMgr;
   FileManager &FileMgr;
-  Diagnostic &Diags;
+  DiagnosticsEngine &Diags;
 
   /// \brief The semantic analysis object that will be processing the
   /// AST files and the translation unit that uses it.
@@ -147,7 +147,7 @@ private:
 
   /// \brief The AST context into which we'll read the AST files.
   ASTContext *Context;
-      
+
   /// \brief The AST consumer.
   ASTConsumer *Consumer;
 
@@ -219,11 +219,11 @@ private:
     void *IdentifierLookupTable;
 
     // === Header search information ===
-    
+
     /// \brief The number of local ImportedFileInfo structures.
     unsigned LocalNumHeaderFileInfos;
-    
-    /// \brief Actual data for the on-disk hash table of header file 
+
+    /// \brief Actual data for the on-disk hash table of header file
     /// information.
     ///
     /// This pointer points into a memory buffer, where the on-disk hash
@@ -235,7 +235,7 @@ private:
     void *HeaderFileInfoTable;
 
     // === Declarations ===
-      
+
     /// DefnsCursor - This is a cursor to the start of the DECLS_BLOCK block. It
     /// has read all the abbreviations at the start of the block and is ready to
     /// jump around with these in context.
@@ -258,11 +258,11 @@ private:
 
     /// \brief The number of C++ base specifier sets in this AST file.
     unsigned LocalNumClassBaseSpecifiers;
-    
+
     /// \brief Offset of each C++ base specifier set within the bitstream,
     /// indexed by the C++ base specifier set ID (-1).
     const uint32_t *ClassBaseSpecifiersOffsets;
-    
+
     // === Types ===
 
     /// \brief The number of types in this AST file.
@@ -622,8 +622,8 @@ private:
   ASTReadResult ReadASTBlock(PerFileData &F);
   bool ParseLineTable(PerFileData &F, llvm::SmallVectorImpl<uint64_t> &Record);
   ASTReadResult ReadSourceManagerBlock(PerFileData &F);
-  ASTReadResult ReadSLocEntryRecord(unsigned ID);
-  PerFileData *SLocCursorForID(unsigned ID);
+  ASTReadResult ReadSLocEntryRecord(int ID);
+  PerFileData *SLocCursorForID(int ID);
   SourceLocation getImportLocation(PerFileData *F);
   bool ParseLanguageOptions(const llvm::SmallVectorImpl<uint64_t> &Record);
 
@@ -706,7 +706,7 @@ public:
   /// underlying files in the file system may have changed, but
   /// parsing should still continue.
   ASTReader(SourceManager &SourceMgr, FileManager &FileMgr,
-            Diagnostic &Diags, const char *isysroot = 0,
+            DiagnosticsEngine &Diags, const char *isysroot = 0,
             bool DisableValidation = false, bool DisableStatCache = false);
   ~ASTReader();
 
@@ -745,12 +745,12 @@ public:
   /// the AST file, without actually loading the AST file.
   static std::string getOriginalSourceFile(const std::string &ASTFileName,
                                            FileManager &FileMgr,
-                                           Diagnostic &Diags);
+                                           DiagnosticsEngine &Diags);
 
   /// \brief Read the header file information for the given file entry.
   virtual ImportedFileInfo GetImportedFileInfo(const FileEntry *FE);
 
-  void ReadPragmaDiagnosticMappings(Diagnostic &Diag);
+  void ReadPragmaDiagnosticMappings(DiagnosticsEngine &Diag);
 
   /// \brief Returns the number of source locations found in the chain.
   unsigned getTotalNumSLocs() const {
@@ -914,7 +914,7 @@ public:
   }
 
   /// \brief Read the source location entry with index ID.
-  virtual bool ReadSLocEntry(unsigned ID);
+  virtual bool ReadSLocEntry(int ID);
 
   /// \brief Read a declaration name.
   DefinitionName ReadDefinitionName(const RecordData &Record, unsigned &Idx);

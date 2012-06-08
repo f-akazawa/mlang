@@ -664,8 +664,8 @@ void CodeGenModule::ConstructAttributeList(const CGFunctionInfo &FI,
                                            const Defn *TargetDecl,
                                            AttributeListType &PAL,
                                            unsigned &CallingConv) {
-  unsigned FuncAttrs = 0;
-  unsigned RetAttrs = 0;
+  llvm::Attributes FuncAttrs;
+  llvm::Attributes RetAttrs;
 
   CallingConv = FI.getEffectiveCallingConvention();
 
@@ -741,7 +741,7 @@ void CodeGenModule::ConstructAttributeList(const CGFunctionInfo &FI,
          ie = FI.arg_end(); it != ie; ++it) {
     Type ParamType = it->type;
     const ABIArgInfo &AI = it->info;
-    unsigned Attributes = 0;
+    llvm::Attributes Attributes;
 
     // 'restrict' -> 'noalias' is done in EmitFunctionProlog when we
     // have the corresponding parameter variable.  It doesn't make
@@ -1481,8 +1481,7 @@ RValue CodeGenFunction::EmitCall(const CGFunctionInfo &CallInfo,
   unsigned CallingConv;
   CodeGen::AttributeListType AttributeList;
   CGM.ConstructAttributeList(CallInfo, TargetDecl, AttributeList, CallingConv);
-  llvm::AttrListPtr Attrs = llvm::AttrListPtr::get(AttributeList.begin(),
-                                                   AttributeList.end());
+  llvm::AttrListPtr Attrs = llvm::AttrListPtr::get(AttributeList);
 
   llvm::BasicBlock *InvokeDest = 0;
   if (!(Attrs.getFnAttributes() & llvm::Attribute::NoUnwind))

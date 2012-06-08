@@ -24,7 +24,7 @@ namespace llvm {
 }
 
 namespace mlang {
-  class Diagnostic;
+  class DiagnosticsEngine;
 
 namespace driver {
   class Arg;
@@ -201,7 +201,7 @@ namespace driver {
     /// getLastArgValue - Return the value of the last argument as an integer,
     /// or a default. Emits an error if the argument is given, but non-integral.
     int getLastArgIntValue(OptSpecifier Id, int Default,
-                           Diagnostic &Diags) const;
+                           DiagnosticsEngine &Diags) const;
 
     /// getAllArgValues - Get the values of all instances of the given argument
     /// as strings.

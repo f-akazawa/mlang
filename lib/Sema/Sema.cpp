@@ -74,11 +74,11 @@ Sema::Sema(Preprocessor &pp, ASTContext &ctxt, ASTConsumer &consumer,
   //  FieldCollector.reset(new CXXFieldCollector());
 
   // Tell diagnostics how to render things from the AST library.
-  PP.getDiagnostics().SetArgToStringFn(&FormatASTNodeDiagnosticArgument, 
+  PP.getDiagnostics().SetArgToStringFn(&FormatASTNodeDiagnosticArgument,
                                        &Context);
 
   ExprEvalContexts.push_back(
-                  ExpressionEvaluationContextRecord(PotentiallyEvaluated, 0));  
+    ExpressionEvaluationContextRecord(PotentiallyEvaluated, 0));
 
   FunctionScopes.push_back(new FunctionScopeInfo(Diags));
 }
@@ -86,11 +86,11 @@ Sema::Sema(Preprocessor &pp, ASTContext &ctxt, ASTConsumer &consumer,
 void Sema::Initialize() {
   // Tell the AST consumer about this Sema object.
   Consumer.Initialize(Context);
-  
+
   // FIXME: Isn't this redundant with the initialization above?
   if (SemaConsumer *SC = dyn_cast<SemaConsumer>(&Consumer))
     SC->InitializeSema(*this);
-  
+
   // Tell the external Sema source about this Sema object.
   if (ExternalSemaSource *ExternalSema
       = dyn_cast_or_null<ExternalSemaSource>(Context.getExternalSource()))
@@ -172,16 +172,6 @@ NamedDefn *Sema::getCurFunctionOrMethodDefn() {
   if (isa<FunctionDefn>(DC))
     return cast<NamedDefn>(DC);
   return 0;
-}
-
-Sema::SemaDiagnosticBuilder::~SemaDiagnosticBuilder() {
-  if (!isActive())
-    return;
-}
-
-Sema::SemaDiagnosticBuilder Sema::Diag(SourceLocation Loc, unsigned DiagID) {
-  DiagnosticBuilder DB = Diags.Report(Loc, DiagID);
-  return SemaDiagnosticBuilder(DB, *this, DiagID);
 }
 
 Sema::SemaDiagnosticBuilder

@@ -58,7 +58,7 @@ namespace mlang {
   class VarDefn;
   class LangOptions;
   class CodeGenOptions;
-  class Diagnostic;
+  class DiagnosticsEngine;
 //  class AnnotateAttr;
   class ClassDestructorDefn;
 
@@ -69,42 +69,42 @@ namespace CodeGen {
   class CGOOPABI;
   class CGDebugInfo;
 
-  
+
 struct OrderGlobalInits {
-	unsigned int priority;
-	unsigned int lex_order;
-	OrderGlobalInits(unsigned int p, unsigned int l) :
-		priority(p), lex_order(l) {
-	}
+  unsigned int priority;
+  unsigned int lex_order;
+  OrderGlobalInits(unsigned int p, unsigned int l) :
+    priority(p), lex_order(l) {
+  }
 
-	bool operator==(const OrderGlobalInits &RHS) const {
-		return priority == RHS.priority && lex_order == RHS.lex_order;
-	}
+  bool operator==(const OrderGlobalInits &RHS) const {
+    return priority == RHS.priority && lex_order == RHS.lex_order;
+  }
 
-	bool operator<(const OrderGlobalInits &RHS) const {
-		if (priority < RHS.priority)
-			return true;
+  bool operator<(const OrderGlobalInits &RHS) const {
+    if (priority < RHS.priority)
+      return true;
 
-		return priority == RHS.priority && lex_order < RHS.lex_order;
-	}
+    return priority == RHS.priority && lex_order < RHS.lex_order;
+  }
 };
 
 struct CodeGenTypeCache {
-	/// void
-	llvm::Type *VoidTy;
+  /// void
+  llvm::Type *VoidTy;
 
-	/// i8, i32, and i64
-	llvm::IntegerType *Int8Ty, *Int32Ty, *Int64Ty;
+  /// i8, i32, and i64
+  llvm::IntegerType *Int8Ty, *Int32Ty, *Int64Ty;
 
-	/// int
-	llvm::IntegerType *IntTy;
+  /// int
+  llvm::IntegerType *IntTy;
 
-	/// intptr_t, size_t, and ptrdiff_t, which we assume are the same size.
-	union {
-		llvm::IntegerType *IntPtrTy;
-		llvm::IntegerType *SizeTy;
-		llvm::IntegerType *PtrDiffTy;
-	};
+  /// intptr_t, size_t, and ptrdiff_t, which we assume are the same size.
+  union {
+    llvm::IntegerType *IntPtrTy;
+    llvm::IntegerType *SizeTy;
+    llvm::IntegerType *PtrDiffTy;
+  };
 
 	/// void* in address space 0
 	union {
@@ -139,7 +139,7 @@ class CodeGenModule : public CodeGenTypeCache {
   llvm::Module &TheModule;
   const llvm::TargetData &TheTargetData;
   mutable const TargetCodeGenInfo *TheTargetCodeGenInfo;
-  Diagnostic &Diags;
+  DiagnosticsEngine &Diags;
   CGOOPABI &ABI;
   CodeGenTypes Types;
   CodeGenTBAA *TBAA;
@@ -248,7 +248,8 @@ class CodeGenModule : public CodeGenTypeCache {
   /// @}
 public:
   CodeGenModule(ASTContext &C, const CodeGenOptions &CodeGenOpts,
-                llvm::Module &M, const llvm::TargetData &TD, Diagnostic &Diags);
+                llvm::Module &M, const llvm::TargetData &TD,
+                DiagnosticsEngine &Diags);
 
   ~CodeGenModule();
 
@@ -274,7 +275,7 @@ public:
   llvm::Module &getModule() const { return TheModule; }
   CodeGenTypes &getTypes() { return Types; }
   CodeGenVTables &getVTables() { return VTables; }
-  Diagnostic &getDiags() const { return Diags; }
+  DiagnosticsEngine &getDiags() const { return Diags; }
   const llvm::TargetData &getTargetData() const { return TheTargetData; }
   const TargetInfo &getTarget() const { return Context.Target; }
   llvm::LLVMContext &getLLVMContext() { return VMContext; }
@@ -433,6 +434,10 @@ public:
   /// for the given string. Or a user defined String object as defined via
   /// -fconstant-string-class=class_name option.
   llvm::Constant *GetAddrOfConstantString(const StringLiteral *Literal);
+
+  /// GetConstantArrayFromStringLiteral - Return a constant array for the given
+  /// string.
+  llvm::Constant *GetConstantArrayFromStringLiteral(const StringLiteral *E);
 
   /// GetAddrOfConstantStringFromLiteral - Return a pointer to a constant array
   /// for the given string literal.

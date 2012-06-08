@@ -19,12 +19,11 @@ CGOOPABI::~CGOOPABI() { }
 
 static void ErrorUnsupportedABI(CodeGenFunction &CGF,
                                 llvm::StringRef S) {
-  Diagnostic &Diags = CGF.CGM.getDiags();
-  unsigned DiagID = Diags.getCustomDiagID(Diagnostic::Error,
+  DiagnosticsEngine &Diags = CGF.CGM.getDiags();
+  unsigned DiagID = Diags.getCustomDiagID(DiagnosticsEngine::Error,
                                           "cannot yet compile %1 in this ABI");
   Diags.Report(CGF.getContext().getFullLoc(CGF.CurCodeDefn->getLocation()),
-               DiagID)
-    << S;
+               DiagID) << S;
 }
 
 void CGOOPABI::BuildThisParam(CodeGenFunction &CGF, FunctionArgList &Params) {

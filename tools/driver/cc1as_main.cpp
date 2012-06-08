@@ -49,9 +49,9 @@
 #include "llvm/Support/Path.h"
 #include "llvm/Support/Signals.h"
 #include "llvm/Support/system_error.h"
+#include "llvm/Support/TargetRegistry.h"
+#include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetData.h"
-#include "llvm/Target/TargetRegistry.h"
-#include "llvm/Target/TargetSelect.h"
 using namespace mlang;
 using namespace mlang::driver;
 using namespace llvm;
@@ -121,7 +121,7 @@ public:
   }
 
   static void CreateFromArgs(AssemblerInvocation &Res, const char **ArgBegin,
-                             const char **ArgEnd, Diagnostic &Diags);
+                             const char **ArgEnd, DiagnosticsEngine &Diags);
 };
 
 }
@@ -129,7 +129,7 @@ public:
 void AssemblerInvocation::CreateFromArgs(AssemblerInvocation &Opts,
                                          const char **ArgBegin,
                                          const char **ArgEnd,
-                                         Diagnostic &Diags) {
+                                         DiagnosticsEngine &Diags) {
   using namespace mlang::driver::cc1asoptions;
   // Parse the arguments.
   OwningPtr<OptTable> OptTbl(createCC1AsOptTable());
@@ -152,7 +152,7 @@ void AssemblerInvocation::CreateFromArgs(AssemblerInvocation &Opts,
   // Target Options
   Opts.Triple = Triple::normalize(Args->getLastArgValue(OPT_triple));
   if (Opts.Triple.empty()) // Use the host triple if unspecified.
-    Opts.Triple = sys::getHostTriple();
+    Opts.Triple = sys::getDefaultTargetTriple();
 
   // Language Options
   Opts.IncludePaths = Args->getAllArgValues(OPT_I);
@@ -203,7 +203,7 @@ void AssemblerInvocation::CreateFromArgs(AssemblerInvocation &Opts,
 }
 
 static formatted_raw_ostream *GetOutputStream(AssemblerInvocation &Opts,
-                                              Diagnostic &Diags,
+                                              DiagnosticsEngine &Diags,
                                               bool Binary) {
   if (Opts.OutputPath.empty())
     Opts.OutputPath = "-";
@@ -226,7 +226,8 @@ static formatted_raw_ostream *GetOutputStream(AssemblerInvocation &Opts,
   return new formatted_raw_ostream(*Out, formatted_raw_ostream::DELETE_STREAM);
 }
 
-static bool ExecuteAssembler(AssemblerInvocation &Opts, Diagnostic &Diags) {
+static bool ExecuteAssembler(AssemblerInvocation &Opts,
+                             DiagnosticsEngine &Diags) {
   // Get the target specific parser.
   std::string Error;
   const Target *TheTarget(TargetRegistry::lookupTarget(Opts.Triple, Error));
@@ -282,23 +283,24 @@ static bool ExecuteAssembler(AssemblerInvocation &Opts, Diagnostic &Diags) {
   // FIXME: There is a bit of code duplication with addPassesToEmitFile.
   if (Opts.OutputType == AssemblerInvocation::FT_Asm) {
     MCInstPrinter *IP =
-      TheTarget->createMCInstPrinter(Opts.OutputAsmVariant, *MAI);
+      TheTarget->createMCInstPrinter(Opts.OutputAsmVariant, *MAI, *MCII, *MRI,
+                                     *STI);
     MCCodeEmitter *CE = 0;
     MCAsmBackend *MAB = 0;
     if (Opts.ShowEncoding) {
-      CE = TheTarget->createMCCodeEmitter(*MCII, *STI, Ctx);
+      CE = TheTarget->createMCCodeEmitter(*MCII, *MRI, *STI, Ctx);
       MAB = TheTarget->createMCAsmBackend(Opts.Triple);
     }
     Str.reset(TheTarget->createAsmStreamer(Ctx, *Out, /*asmverbose*/true,
-                                           /*useLoc*/ true,
-                                           /*useCFI*/ true, IP, CE, MAB,
-                                           Opts.ShowInst));
+                                           /*useLoc*/ true, /*useCFI*/ true,
+                                           /*useDwarfDirectory*/ true, IP, CE,
+                                           MAB, Opts.ShowInst));
   } else if (Opts.OutputType == AssemblerInvocation::FT_Null) {
     Str.reset(createNullStreamer(Ctx));
   } else {
     assert(Opts.OutputType == AssemblerInvocation::FT_Obj &&
            "Invalid file type!");
-    MCCodeEmitter *CE = TheTarget->createMCCodeEmitter(*MCII, *STI, Ctx);
+    MCCodeEmitter *CE = TheTarget->createMCCodeEmitter(*MCII, *MRI, *STI, Ctx);
     MCAsmBackend *MAB = TheTarget->createMCAsmBackend(Opts.Triple);
     Str.reset(TheTarget->createMCObjectStreamer(Opts.Triple, Ctx, *MAB, *Out,
                                                 CE, Opts.RelaxAll,
@@ -306,8 +308,8 @@ static bool ExecuteAssembler(AssemblerInvocation &Opts, Diagnostic &Diags) {
     Str.get()->InitSections();
   }
 
-  OwningPtr<MCAsmParser> Parser(createMCAsmParser(*TheTarget, SrcMgr, Ctx,
-                                                  *Str.get(), *MAI));
+  OwningPtr<MCAsmParser> Parser(createMCAsmParser(SrcMgr, Ctx, *Str.get(),
+                                                  *MAI));
   OwningPtr<MCTargetAsmParser> TAP(TheTarget->createMCAsmParser(*STI, *Parser));
   if (!TAP) {
     Diags.Report(diag::err_target_unknown_triple) << Opts.Triple;
@@ -329,7 +331,7 @@ static bool ExecuteAssembler(AssemblerInvocation &Opts, Diagnostic &Diags) {
 }
 
 static void LLVMErrorHandler(void *UserData, const std::string &Message) {
-  Diagnostic &Diags = *static_cast<Diagnostic*>(UserData);
+  DiagnosticsEngine &Diags = *static_cast<DiagnosticsEngine*>(UserData);
 
   Diags.Report(diag::err_fe_error_backend) << Message;
 
@@ -356,7 +358,7 @@ int cc1as_main(const char **ArgBegin, const char **ArgEnd,
     = new TextDiagnosticPrinter(errs(), DiagnosticOptions());
   DiagClient->setPrefix("mlang -cc1as");
   llvm::IntrusiveRefCntPtr<DiagnosticIDs> DiagID(new DiagnosticIDs());
-  Diagnostic Diags(DiagID, DiagClient);
+  DiagnosticsEngine Diags(DiagID, DiagClient);
 
   // Set an error handler, so that any LLVM backend diagnostics go through our
   // error handler.

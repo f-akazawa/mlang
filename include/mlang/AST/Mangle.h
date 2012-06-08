@@ -64,27 +64,27 @@ private:
 /// calls to the C++ name mangler.
 class MangleContext {
   ASTContext &Context;
-  Diagnostic &Diags;
+  DiagnosticsEngine &Diags;
 
   llvm::DenseMap<const NamedDefn *, uint64_t> AnonStructIds;
   unsigned Discriminator;
   llvm::DenseMap<const NamedDefn*, unsigned> Uniquifier;
   llvm::DenseMap<const ScriptDefn*, unsigned> GlobalBlockIds;
   llvm::DenseMap<const ScriptDefn*, unsigned> LocalBlockIds;
-  
+
 public:
   explicit MangleContext(ASTContext &Context,
-                         Diagnostic &Diags)
+                         DiagnosticsEngine &Diags)
     : Context(Context), Diags(Diags) { }
 
   virtual ~MangleContext() { }
 
   ASTContext &getASTContext() const { return Context; }
 
-  Diagnostic &getDiags() const { return Diags; }
+  DiagnosticsEngine &getDiags() const { return Diags; }
 
   void startNewFunction() { LocalBlockIds.clear(); }
-  
+
   uint64_t getAnonymousStructId(const NamedDefn *TD) {
     std::pair<llvm::DenseMap<const NamedDefn *,
       uint64_t>::iterator, bool> Result =
@@ -99,7 +99,7 @@ public:
       Result = BlockIds.insert(std::make_pair(BD, BlockIds.size()));
     return Result.first->second;
   }
-  
+
   /// @name Mangler Entry Points
   /// @{
 
@@ -108,7 +108,8 @@ public:
   virtual void mangleThunk(const ClassMethodDefn *MD,
                            const ThunkInfo &Thunk,
                            llvm::raw_ostream &) = 0;
-  virtual void mangleCXXDtorThunk(const ClassDestructorDefn *DD, ClassDtorType Type,
+  virtual void mangleCXXDtorThunk(const ClassDestructorDefn *DD,
+                                  ClassDtorType Type,
                                   const ThisAdjustment &ThisAdjustment,
                                   llvm::raw_ostream &) = 0;
   virtual void mangleReferenceTemporary(const VarDefn *D,

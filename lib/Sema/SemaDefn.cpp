@@ -578,7 +578,7 @@ NamedDefn *Sema::LazilyCreateBuiltin(IdentifierInfo *II, unsigned bid,
                                      SourceLocation Loc) {
 	Builtin::ID BID = (Builtin::ID) bid;
 	ASTContext::GetBuiltinTypeError Error;
-	Type R = Context.GetBuiltinFunctionType(BID, Error);
+	Type R = Context.GetBuiltinType(BID, Error);
 
 	if (!ForRedefinition && Context.BuiltinInfo.isPredefinedLibFunction(BID)) {
 //		Diag(Loc, diag::ext_implicit_lib_function_decl)

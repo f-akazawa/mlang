@@ -50,7 +50,7 @@ Driver::Driver(llvm::StringRef ClangExecutable,
                llvm::StringRef DefaultHostTriple,
                llvm::StringRef DefaultImageName,
                bool IsProduction, bool CXXIsProduction,
-               Diagnostic &Diags)
+               DiagnosticsEngine &Diags)
   : Opts(createDriverOptTable()), Diags(Diags),
     ClangExecutable(ClangExecutable), UseStdLib(true),
     DefaultHostTriple(DefaultHostTriple), DefaultImageName(DefaultImageName),
@@ -1347,7 +1347,7 @@ std::string Driver::GetTemporaryPath(const char *Suffix) const {
   llvm::sys::Path P(TmpDir);
   P.appendComponent("cc");
   if (P.makeUnique(false, &Error)) {
-    Diag(mlang::diag::err_drv_unable_to_make_temp) << Error;
+//    Diag(mlang::diag::err_drv_unable_to_make_temp) << Error;
     return "";
   }
 

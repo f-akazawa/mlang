@@ -31,7 +31,7 @@ using namespace mlang;
 /// argument vector.
 CompilerInvocation *
 mlang::createInvocationFromCommandLine(llvm::ArrayRef<const char *> ArgList,
-                                   llvm::IntrusiveRefCntPtr<Diagnostic> Diags) {
+                            llvm::IntrusiveRefCntPtr<DiagnosticsEngine> Diags) {
   if (!Diags.getPtr()) {
     // No diagnostics engine was provided, so create our own diagnostics object
     // with the default options.
@@ -49,7 +49,7 @@ mlang::createInvocationFromCommandLine(llvm::ArrayRef<const char *> ArgList,
   Args.push_back("-fsyntax-only");
 
   // FIXME: We shouldn't have to pass in the path info.
-  driver::Driver TheDriver("mlang", llvm::sys::getHostTriple(),
+  driver::Driver TheDriver("mlang", llvm::sys::getDefaultTargetTriple(),
                            "a.out", false, false, *Diags);
 
   // Don't check that inputs exist, they may have been remapped.
@@ -76,7 +76,7 @@ mlang::createInvocationFromCommandLine(llvm::ArrayRef<const char *> ArgList,
 
   const driver::Command *Cmd = cast<driver::Command>(*Jobs.begin());
   if (llvm::StringRef(Cmd->getCreator().getName()) != "mlang") {
-    Diags->Report(diag::err_fe_expected_clang_command);
+    Diags->Report(diag::err_fe_expected_mlang_command);
     return 0;
   }
 

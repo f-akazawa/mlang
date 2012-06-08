@@ -30,7 +30,7 @@ using namespace mlang;
 
 // Initialize the remapping of files to alternative contents, e.g.,
 // those specified through other files.
-static void InitializeFileRemapping(Diagnostic &Diags,
+static void InitializeFileRemapping(DiagnosticsEngine &Diags,
                                     SourceManager &SourceMgr,
                                     FileManager &FileMgr,
                                     const PreprocessorOptions &InitOpts) {

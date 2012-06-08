@@ -1,4 +1,4 @@
-//===--- ChainedDiagnosticClient.h - Chain Diagnostic Clients ---*- C++ -*-===//
+//===--- ChainedDiagnosticConsumer.h - Chain Diagnostic Clients -*- C++ -*-===//
 //
 // Copyright (C) 2010 yabin @ CGCL
 // HuaZhong University of Science and Technology, China
@@ -8,8 +8,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef MLANG_FRONTEND_CHAINEDDIAGNOSTICCLIENT_H_
-#define MLANG_FRONTEND_CHAINEDDIAGNOSTICCLIENT_H_
+#ifndef MLANG_FRONTEND_CHAINEDDIAGNOSTICCONSUMER_H_
+#define MLANG_FRONTEND_CHAINEDDIAGNOSTICCONSUMER_H_
 
 #include "mlang/Diag/Diagnostic.h"
 #include "llvm/ADT/OwningPtr.h"
@@ -17,17 +17,17 @@
 namespace mlang {
 class LangOptions;
 
-/// ChainedDiagnosticClient - Chain two diagnostic clients so that diagnostics
+/// ChainedDiagnosticConsumer - Chain two diagnostic clients so that diagnostics
 /// go to the first client and then the second. The first diagnostic client
 /// should be the "primary" client, and will be used for computing whether the
 /// diagnostics should be included in counts.
-class ChainedDiagnosticClient : public DiagnosticClient {
-  llvm::OwningPtr<DiagnosticClient> Primary;
-  llvm::OwningPtr<DiagnosticClient> Secondary;
+class ChainedDiagnosticConsumer : public DiagnosticConsumer {
+  llvm::OwningPtr<DiagnosticConsumer> Primary;
+  llvm::OwningPtr<DiagnosticConsumer> Secondary;
 
 public:
-  ChainedDiagnosticClient(DiagnosticClient *_Primary,
-                          DiagnosticClient *_Secondary) {
+  ChainedDiagnosticConsumer(DiagnosticConsumer *_Primary,
+                            DiagnosticConsumer *_Secondary) {
     Primary.reset(_Primary);
     Secondary.reset(_Secondary);
   }
@@ -47,13 +47,18 @@ public:
     return Primary->IncludeInDiagnosticCounts();
   }
 
-  virtual void HandleDiagnostic(Diagnostic::Level DiagLevel,
-                                const DiagnosticInfo &Info) {
+  virtual void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel,
+                                const Diagnostic &Info) {
     // Default implementation (Warnings/errors count).
-    DiagnosticClient::HandleDiagnostic(DiagLevel, Info);
+    DiagnosticConsumer::HandleDiagnostic(DiagLevel, Info);
 
     Primary->HandleDiagnostic(DiagLevel, Info);
     Secondary->HandleDiagnostic(DiagLevel, Info);
+  }
+
+  DiagnosticConsumer *clone(DiagnosticsEngine &Diags) const {
+    return new ChainedDiagnosticConsumer(Primary->clone(Diags),
+                                         Secondary->clone(Diags));
   }
 };
 

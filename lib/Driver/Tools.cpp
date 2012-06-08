@@ -474,9 +474,6 @@ static bool isSignedCharDefault(const llvm::Triple &Triple) {
     if (Triple.getOS() == llvm::Triple::Darwin)
       return true;
     return false;
-
-  case llvm::Triple::systemz:
-    return false;
   }
 }
 
@@ -1583,51 +1580,9 @@ void Clang::ConstructJob(Compilation &C, const JobAction &JA,
                     options::OPT_fno_lax_vector_conversions))
     CmdArgs.push_back("-fno-lax-vector-conversions");
 
-  // Allow -fno-objc-arr to trump -fobjc-arr/-fobjc-arc.
-  // NOTE: This logic is duplicated in ToolChains.cpp.
-  bool ARC = isObjCAutoRefCount(Args);
-  if (ARC) {
-    CmdArgs.push_back("-fobjc-arc");
-
-    // Certain deployment targets don't have runtime support.
-    if (!getToolChain().HasARCRuntime())
-      CmdArgs.push_back("-fobjc-no-arc-runtime");
-
-    // Allow the user to enable full exceptions code emission.
-    // We define off for Objective-CC, on for Objective-C++.
-    if (Args.hasFlag(options::OPT_fobjc_arc_exceptions,
-                     options::OPT_fno_objc_arc_exceptions,
-                     /*default*/ types::isCXX(InputType)))
-      CmdArgs.push_back("-fobjc-arc-exceptions");
-  }
-
-  // -fobjc-infer-related-result-type is the default, except in the Objective-C
-  // rewriter.
-  if (IsRewriter)
-    CmdArgs.push_back("-fno-objc-infer-related-result-type");
-  
-  // Handle -fobjc-gc and -fobjc-gc-only. They are exclusive, and -fobjc-gc-only
-  // takes precedence.
-  const Arg *GCArg = Args.getLastArg(options::OPT_fobjc_gc_only);
-  if (!GCArg)
-    GCArg = Args.getLastArg(options::OPT_fobjc_gc);
-  if (GCArg) {
-    if (ARC) {
-//      D.Diag(mlang::diag::err_drv_objc_gc_arr)
-//        << GCArg->getAsString(Args);
-    } else if (getToolChain().SupportsObjCGC()) {
-      GCArg->render(Args, CmdArgs);
-    } else {
-      // FIXME: We should move this to a hard error.
-      D.Diag(mlang::diag::warn_drv_objc_gc_unsupported)
-        << GCArg->getAsString(Args);
-    }
-  }
-
   if (Args.getLastArg(options::OPT_fapple_kext))
     CmdArgs.push_back("-fapple-kext");
 
-  Args.AddLastArg(CmdArgs, options::OPT_fobjc_sender_dependent_dispatch);
   Args.AddLastArg(CmdArgs, options::OPT_fdiagnostics_print_source_range_info);
   Args.AddLastArg(CmdArgs, options::OPT_fdiagnostics_parseable_fixits);
   Args.AddLastArg(CmdArgs, options::OPT_ftime_report);

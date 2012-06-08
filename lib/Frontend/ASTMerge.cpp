@@ -42,17 +42,17 @@ void ASTMergeAction::ExecuteAction() {
   llvm::IntrusiveRefCntPtr<DiagnosticIDs>
       DiagIDs(CI.getDiagnostics().getDiagnosticIDs());
   for (unsigned I = 0, N = ASTFiles.size(); I != N; ++I) {
-    llvm::IntrusiveRefCntPtr<Diagnostic>
-        Diags(new Diagnostic(DiagIDs, CI.getDiagnostics().getClient(),
+    llvm::IntrusiveRefCntPtr<DiagnosticsEngine>
+        Diags(new DiagnosticsEngine(DiagIDs, CI.getDiagnostics().getClient(),
                              /*ShouldOwnClient=*/false));
     ASTUnit *Unit = ASTUnit::LoadFromASTFile(ASTFiles[I], Diags,
                                              CI.getFileSystemOpts(), false);
     if (!Unit)
       continue;
 
-    ASTImporter Importer(CI.getASTContext(), 
+    ASTImporter Importer(CI.getASTContext(),
                          CI.getFileManager(),
-                         Unit->getASTContext(), 
+                         Unit->getASTContext(),
                          Unit->getFileManager());
 
     TranslationUnitDefn *TU = Unit->getASTContext().getTranslationUnitDefn();
@@ -64,7 +64,7 @@ void ASTMergeAction::ExecuteAction() {
         if (IdentifierInfo *II = ND->getIdentifier())
           if (II->isStr("__va_list_tag") || II->isStr("__builtin_va_list"))
             continue;
-      
+
       Importer.Import(*D);
     }
 
@@ -85,7 +85,7 @@ ASTMergeAction::ASTMergeAction(FrontendAction *AdaptedAction,
   assert(AdaptedAction && "ASTMergeAction needs an action to adapt");
 }
 
-ASTMergeAction::~ASTMergeAction() { 
+ASTMergeAction::~ASTMergeAction() {
   delete AdaptedAction;
 }
 

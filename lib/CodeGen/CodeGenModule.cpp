@@ -43,10 +43,10 @@ using namespace mlang;
 using namespace CodeGen;
 
 static CGOOPABI &createOOPABI(CodeGenModule &CGM) {
-  switch (CGM.getContext().Target.getGmatABI()) {
-  case GmatABI_Nvidia: return *CreateNVGmatABI(CGM);
-  case GmatABI_AMD: return *CreateAMDGmatABI(CGM);
-  }
+//  switch (CGM.getContext().Target.getGmatABI()) {
+//  case GmatABI_Nvidia: return *CreateNVGmatABI(CGM);
+//  case GmatABI_AMD: return *CreateAMDGmatABI(CGM);
+//  }
 
   llvm_unreachable("invalid Gmat ABI kind");
   return *CreateNVGmatABI(CGM);
@@ -54,7 +54,7 @@ static CGOOPABI &createOOPABI(CodeGenModule &CGM) {
 
 CodeGenModule::CodeGenModule(ASTContext &C, const CodeGenOptions &CGO,
                              llvm::Module &M, const llvm::TargetData &TD,
-                             Diagnostic &diags)
+                             DiagnosticsEngine &diags)
   : Context(C), Features(C.getLangOptions()), CodeGenOpts(CGO), TheModule(M),
     TheTargetData(TD), TheTargetCodeGenInfo(0), Diags(diags),
     ABI(createOOPABI(*this)),
@@ -146,7 +146,7 @@ bool CodeGenModule::isTargetDarwin() const {
 }
 
 void CodeGenModule::Error(SourceLocation loc, llvm::StringRef error) {
-  unsigned diagID = getDiags().getCustomDiagID(Diagnostic::Error, error);
+  unsigned diagID = getDiags().getCustomDiagID(DiagnosticsEngine::Error, error);
   getDiags().Report(Context.getFullLoc(loc), diagID);
 }
 
@@ -156,7 +156,7 @@ void CodeGenModule::ErrorUnsupported(const Stmt *S, const char *Type,
                                      bool OmitOnError) {
   if (OmitOnError && getDiags().hasErrorOccurred())
     return;
-  unsigned DiagID = getDiags().getCustomDiagID(Diagnostic::Error,
+  unsigned DiagID = getDiags().getCustomDiagID(DiagnosticsEngine::Error,
                                                "cannot compile this %0 yet");
   std::string Msg = Type;
   getDiags().Report(Context.getFullLoc(S->getLocStart()), DiagID)
@@ -169,7 +169,7 @@ void CodeGenModule::ErrorUnsupported(const Defn *D, const char *Type,
                                      bool OmitOnError) {
   if (OmitOnError && getDiags().hasErrorOccurred())
     return;
-  unsigned DiagID = getDiags().getCustomDiagID(Diagnostic::Error,
+  unsigned DiagID = getDiags().getCustomDiagID(DiagnosticsEngine::Error,
                                                "cannot compile this %0 yet");
   std::string Msg = Type;
   getDiags().Report(Context.getFullLoc(D->getLocation()), DiagID) << Msg;
@@ -179,6 +179,45 @@ llvm::ConstantInt *CodeGenModule::getSize(CharUnits size) {
   return llvm::ConstantInt::get(SizeTy, size.getQuantity());
 }
 
+llvm::Constant *
+CodeGenModule::GetConstantArrayFromStringLiteral(const StringLiteral *E) {
+//  assert(!E->getType()->isPointerType() && "Strings are always arrays");
+
+  // Don't emit it as the address of the string, emit the string data itself
+  // as an inline array.
+//  if (E->getCharByteWidth() == 1) {
+    SmallString<64> Str(E->getString());
+    // Resize the string to the right size, which is indicated by its type.
+ // const ConstantArrayType *CAT = Context.getAsConstantArrayType(E->getType());
+ //   Str.resize(CAT->getSize().getZExtValue());
+    return llvm::ConstantDataArray::getString(VMContext, Str, false);
+//  }
+#if 0
+  llvm::ArrayType *AType =
+    cast<llvm::ArrayType>(getTypes().ConvertType(E->getType()));
+  llvm::Type *ElemTy = AType->getElementType();
+  unsigned NumElements = AType->getNumElements();
+
+  // Wide strings have either 2-byte or 4-byte elements.
+  if (ElemTy->getPrimitiveSizeInBits() == 16) {
+    SmallVector<uint16_t, 32> Elements;
+    Elements.reserve(NumElements);
+    for (unsigned i = 0, e = E->getLength(); i != e; ++i)
+      Elements.push_back(E->getCodeUnit(i));
+    Elements.resize(NumElements);
+    return llvm::ConstantDataArray::get(VMContext, Elements);
+  }
+
+  assert(ElemTy->getPrimitiveSizeInBits() == 32);
+  SmallVector<uint32_t, 32> Elements;
+  Elements.reserve(NumElements);
+
+  for (unsigned i = 0, e = E->getLength(); i != e; ++i)
+    Elements.push_back(E->getCodeUnit(i));
+  Elements.resize(NumElements);
+  return llvm::ConstantDataArray::get(VMContext, Elements);
+#endif
+}
 void CodeGenModule::setGlobalVisibility(llvm::GlobalValue *GV,
                                         const NamedDefn *D) const {
   // Internal definitions always have default visibility.
@@ -366,8 +405,7 @@ void CodeGenModule::SetLLVMFunctionAttributes(const Defn *D,
   unsigned CallingConv;
   AttributeListType AttributeList;
   ConstructAttributeList(Info, D, AttributeList, CallingConv);
-  F->setAttributes(llvm::AttrListPtr::get(AttributeList.begin(),
-                                          AttributeList.size()));
+  F->setAttributes(llvm::AttrListPtr::get(AttributeList));
   F->setCallingConv(static_cast<llvm::CallingConv::ID>(CallingConv));
 }
 
@@ -1664,8 +1702,7 @@ static llvm::Constant *GenerateStringLiteral(llvm::StringRef str,
                                              const char *GlobalName) {
   // Create Constant for this string literal. Don't add a '\0'.
   llvm::Constant *C =
-      llvm::ConstantArray::get(CGM.getLLVMContext(), str, false);
-
+      llvm::ConstantDataArray::getString(CGM.getLLVMContext(), str, false);
   // Create a global variable for this string
   llvm::GlobalVariable *GV =
     new llvm::GlobalVariable(CGM.getModule(), C->getType(), constant,

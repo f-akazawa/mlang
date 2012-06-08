@@ -20,27 +20,27 @@ namespace mlang {
 class DiagnosticOptions;
 class LangOptions;
 
-class LogDiagnosticPrinter : public DiagnosticClient {
+class LogDiagnosticPrinter : public DiagnosticConsumer {
   struct DiagEntry {
     /// The primary message line of the diagnostic.
     std::string Message;
-  
+
     /// The source file name, if available.
     std::string Filename;
-  
+
     /// The source file line number, if available.
     unsigned Line;
-  
+
     /// The source file column number, if available.
     unsigned Column;
-  
+
     /// The ID of the diagnostic.
     unsigned DiagnosticID;
-  
+
     /// The level of the diagnostic.
-    Diagnostic::Level DiagnosticLevel;
+    DiagnosticsEngine::Level DiagnosticLevel;
   };
-  
+
   llvm::raw_ostream &OS;
   const LangOptions *LangOpts;
   const DiagnosticOptions *DiagOpts;
@@ -69,8 +69,10 @@ public:
 
   void EndSourceFile();
 
-  virtual void HandleDiagnostic(Diagnostic::Level DiagLevel,
-                                const DiagnosticInfo &Info);
+  virtual void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel,
+                                const Diagnostic &Info);
+
+  DiagnosticConsumer *clone(DiagnosticsEngine &Diags) const;
 };
 
 } // end namespace mlang

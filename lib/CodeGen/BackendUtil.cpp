@@ -1,17 +1,21 @@
 //===--- BackendUtil.cpp - LLVM Backend Utilities -------------------------===//
 //
-// Copyright (C) 2010 yabin @ CGCL
-// HuaZhong University of Science and Technology, China
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #include "mlang/CodeGen/BackendUtil.h"
-#include "mlang/Basic/TargetInfo.h"
+#include "mlang/Basic/TargetOptions.h"
+#include "mlang/Basic/LangOptions.h"
 #include "mlang/Diag/Diagnostic.h"
 #include "mlang/Frontend/CodeGenOptions.h"
 #include "mlang/Frontend/FrontendDiagnostic.h"
 #include "llvm/Module.h"
 #include "llvm/PassManager.h"
+#include "llvm/Analysis/Verifier.h"
 #include "llvm/Assembly/PrintModulePass.h"
 #include "llvm/Bitcode/ReaderWriter.h"
 #include "llvm/CodeGen/RegAllocRegistry.h"
@@ -20,23 +24,27 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/FormattedStream.h"
 #include "llvm/Support/PrettyStackTrace.h"
-#include "llvm/Support/PassManagerBuilder.h"
+#include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/Timer.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Target/TargetData.h"
+#include "llvm/Target/TargetLibraryInfo.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/Target/TargetOptions.h"
-#include "llvm/Target/TargetRegistry.h"
 #include "llvm/Transforms/Instrumentation.h"
+#include "llvm/Transforms/IPO.h"
+#include "llvm/Transforms/IPO/PassManagerBuilder.h"
+#include "llvm/Transforms/Scalar.h"
 using namespace mlang;
 using namespace llvm;
 
 namespace {
 
 class EmitAssemblyHelper {
-  Diagnostic &Diags;
+  DiagnosticsEngine &Diags;
   const CodeGenOptions &CodeGenOpts;
-  const TargetOptions &TargetOpts;
+  const mlang::TargetOptions &TargetOpts;
+  const LangOptions &LangOpts;
   Module *TheModule;
 
   Timer CodeGenerationTime;
@@ -78,10 +86,12 @@ private:
   bool AddEmitPasses(BackendAction Action, formatted_raw_ostream &OS);
 
 public:
-  EmitAssemblyHelper(Diagnostic &_Diags,
-                     const CodeGenOptions &CGOpts, const TargetOptions &TOpts,
+  EmitAssemblyHelper(DiagnosticsEngine &_Diags,
+                     const CodeGenOptions &CGOpts,
+                     const mlang::TargetOptions &TOpts,
+                     const LangOptions &LOpts,
                      Module *M)
-    : Diags(_Diags), CodeGenOpts(CGOpts), TargetOpts(TOpts),
+    : Diags(_Diags), CodeGenOpts(CGOpts), TargetOpts(TOpts), LangOpts(LOpts),
       TheModule(M), CodeGenerationTime("Code Generation Time"),
       CodeGenPasses(0), PerModulePasses(0), PerFunctionPasses(0) {}
 
@@ -94,6 +104,22 @@ public:
   void EmitAssembly(BackendAction Action, raw_ostream *OS);
 };
 
+}
+
+static unsigned BoundsChecking;
+static void addBoundsCheckingPass(const PassManagerBuilder &Builder,
+                                    PassManagerBase &PM) {
+  PM.add(createBoundsCheckingPass(BoundsChecking));
+}
+
+static void addAddressSanitizerPass(const PassManagerBuilder &Builder,
+                                    PassManagerBase &PM) {
+  PM.add(createAddressSanitizerPass());
+}
+
+static void addThreadSanitizerPass(const PassManagerBuilder &Builder,
+                                   PassManagerBase &PM) {
+  PM.add(createThreadSanitizerPass());
 }
 
 void EmitAssemblyHelper::CreatePasses() {
@@ -114,7 +140,29 @@ void EmitAssemblyHelper::CreatePasses() {
   PMBuilder.DisableSimplifyLibCalls = !CodeGenOpts.SimplifyLibCalls;
   PMBuilder.DisableUnitAtATime = !CodeGenOpts.UnitAtATime;
   PMBuilder.DisableUnrollLoops = !CodeGenOpts.UnrollLoops;
+#if 0
+  if (CodeGenOpts.BoundsChecking > 0) {
+    BoundsChecking = CodeGenOpts.BoundsChecking;
+    PMBuilder.addExtension(PassManagerBuilder::EP_ScalarOptimizerLate,
+                           addBoundsCheckingPass);
+    PMBuilder.addExtension(PassManagerBuilder::EP_EnabledOnOptLevel0,
+                           addBoundsCheckingPass);
+  }
 
+  if (LangOpts.AddressSanitizer) {
+    PMBuilder.addExtension(PassManagerBuilder::EP_ScalarOptimizerLate,
+                           addAddressSanitizerPass);
+    PMBuilder.addExtension(PassManagerBuilder::EP_EnabledOnOptLevel0,
+                           addAddressSanitizerPass);
+  }
+
+  if (LangOpts.ThreadSanitizer) {
+    PMBuilder.addExtension(PassManagerBuilder::EP_OptimizerLast,
+                           addThreadSanitizerPass);
+    PMBuilder.addExtension(PassManagerBuilder::EP_EnabledOnOptLevel0,
+                           addThreadSanitizerPass);
+  }
+#endif
   // Figure out TargetLibraryInfo.
   Triple TargetTriple(TheModule->getTargetTriple());
   PMBuilder.LibraryInfo = new TargetLibraryInfo(TargetTriple);
@@ -137,7 +185,11 @@ void EmitAssemblyHelper::CreatePasses() {
   }
   case CodeGenOptions::OnlyAlwaysInlining:
     // Respect always_inline.
-    PMBuilder.Inliner = createAlwaysInlinerPass();
+    if (OptLevel == 0)
+      // Do not insert lifetime intrinsics at -O0.
+      PMBuilder.Inliner = createAlwaysInlinerPass(false);
+    else
+      PMBuilder.Inliner = createAlwaysInlinerPass();
     break;
   }
 
@@ -156,10 +208,9 @@ void EmitAssemblyHelper::CreatePasses() {
                                     CodeGenOpts.EmitGcovArcs,
                                     TargetTriple.isMacOSX()));
 
-    if (!CodeGenOpts.DebugInfo)
-      MPM->add(createStripSymbolsPass(true));
+    //if (CodeGenOpts.DebugInfo == CodeGenOptions::NoDebugInfo)
+    //  MPM->add(createStripSymbolsPass(true));
   }
-
 
   PMBuilder.populateModulePassManager(*MPM);
 }
@@ -171,42 +222,13 @@ bool EmitAssemblyHelper::AddEmitPasses(BackendAction Action,
   std::string Triple = TheModule->getTargetTriple();
   const llvm::Target *TheTarget = TargetRegistry::lookupTarget(Triple, Error);
   if (!TheTarget) {
-    Diags.Report(diag::err_fe_unable_to_create_target) << Error;
+    // Diags.Report(diag::err_fe_unable_to_create_target) << Error;
     return false;
   }
 
   // FIXME: Expose these capabilities via actual APIs!!!! Aside from just
   // being gross, this is also totally broken if we ever care about
   // concurrency.
-
-  // Set frame pointer elimination mode.
-  if (!CodeGenOpts.DisableFPElim) {
-    llvm::NoFramePointerElim = false;
-    llvm::NoFramePointerElimNonLeaf = false;
-  } else if (CodeGenOpts.OmitLeafFramePointer) {
-    llvm::NoFramePointerElim = false;
-    llvm::NoFramePointerElimNonLeaf = true;
-  } else {
-    llvm::NoFramePointerElim = true;
-    llvm::NoFramePointerElimNonLeaf = true;
-  }
-
-  // Set float ABI type.
-  if (CodeGenOpts.FloatABI == "soft")
-    llvm::FloatABIType = llvm::FloatABI::Soft;
-  else if (CodeGenOpts.FloatABI == "hard")
-    llvm::FloatABIType = llvm::FloatABI::Hard;
-  else {
-    assert(CodeGenOpts.FloatABI.empty() && "Invalid float abi!");
-    llvm::FloatABIType = llvm::FloatABI::Default;
-  }
-
-  llvm::LessPreciseFPMADOption = CodeGenOpts.LessPreciseFPMAD;
-  llvm::NoInfsFPMath = CodeGenOpts.NoInfsFPMath;
-  llvm::NoNaNsFPMath = CodeGenOpts.NoNaNsFPMath;
-  NoZerosInBSS = CodeGenOpts.NoZeroInitializedInBSS;
-  llvm::UnsafeFPMath = CodeGenOpts.UnsafeFPMath;
-  llvm::UseSoftFloat = CodeGenOpts.SoftFloat;
 
   TargetMachine::setAsmVerbosityDefault(CodeGenOpts.AsmVerbose);
 
@@ -215,20 +237,20 @@ bool EmitAssemblyHelper::AddEmitPasses(BackendAction Action,
 
   // FIXME: Parse this earlier.
   llvm::CodeModel::Model CM;
-	if (CodeGenOpts.CodeModel == "small") {
-		CM = llvm::CodeModel::Small;
-	} else if (CodeGenOpts.CodeModel == "kernel") {
-		CM = llvm::CodeModel::Kernel;
-	} else if (CodeGenOpts.CodeModel == "medium") {
-		CM = llvm::CodeModel::Medium;
-	} else if (CodeGenOpts.CodeModel == "large") {
-		CM = llvm::CodeModel::Large;
-	} else {
-		assert(CodeGenOpts.CodeModel.empty() && "Invalid code model!");
-		CM = llvm::CodeModel::Default;
-	}
+  if (CodeGenOpts.CodeModel == "small") {
+    CM = llvm::CodeModel::Small;
+  } else if (CodeGenOpts.CodeModel == "kernel") {
+    CM = llvm::CodeModel::Kernel;
+  } else if (CodeGenOpts.CodeModel == "medium") {
+    CM = llvm::CodeModel::Medium;
+  } else if (CodeGenOpts.CodeModel == "large") {
+    CM = llvm::CodeModel::Large;
+  } else {
+    assert(CodeGenOpts.CodeModel.empty() && "Invalid code model!");
+    CM = llvm::CodeModel::Default;
+  }
 
-  std::vector<const char *> BackendArgs;
+  SmallVector<const char *, 16> BackendArgs;
   BackendArgs.push_back("mlang"); // Fake program name.
   if (!CodeGenOpts.DebugPass.empty()) {
     BackendArgs.push_back("-debug-pass");
@@ -240,46 +262,101 @@ bool EmitAssemblyHelper::AddEmitPasses(BackendAction Action,
   }
   if (llvm::TimePassesIsEnabled)
     BackendArgs.push_back("-time-passes");
+  for (unsigned i = 0, e = CodeGenOpts.BackendOptions.size(); i != e; ++i)
+    BackendArgs.push_back(CodeGenOpts.BackendOptions[i].c_str());
+//  if (CodeGenOpts.NoGlobalMerge)
+//    BackendArgs.push_back("-global-merge=false");
   BackendArgs.push_back(0);
   llvm::cl::ParseCommandLineOptions(BackendArgs.size() - 1,
-                                    const_cast<char **>(&BackendArgs[0]));
+                                    BackendArgs.data());
 
   std::string FeaturesStr;
-	if (TargetOpts.Features.size()) {
-		SubtargetFeatures Features;
-		for (std::vector<std::string>::const_iterator it =
-				TargetOpts.Features.begin(), ie = TargetOpts.Features.end(); it
-				!= ie; ++it)
-			Features.AddFeature(*it);
-		FeaturesStr = Features.getString();
-	}
+  if (TargetOpts.Features.size()) {
+    SubtargetFeatures Features;
+    for (std::vector<std::string>::const_iterator
+           it = TargetOpts.Features.begin(),
+           ie = TargetOpts.Features.end(); it != ie; ++it)
+      Features.AddFeature(*it);
+    FeaturesStr = Features.getString();
+  }
 
   llvm::Reloc::Model RM = llvm::Reloc::Default;
-	if (CodeGenOpts.RelocationModel == "static") {
-		RM = llvm::Reloc::Static;
-	} else if (CodeGenOpts.RelocationModel == "pic") {
-		RM = llvm::Reloc::PIC_;
-	} else {
-		assert(CodeGenOpts.RelocationModel == "dynamic-no-pic" &&
-				"Invalid PIC model!");
-		RM = llvm::Reloc::DynamicNoPIC;
-	}
+  if (CodeGenOpts.RelocationModel == "static") {
+    RM = llvm::Reloc::Static;
+  } else if (CodeGenOpts.RelocationModel == "pic") {
+    RM = llvm::Reloc::PIC_;
+  } else {
+    assert(CodeGenOpts.RelocationModel == "dynamic-no-pic" &&
+           "Invalid PIC model!");
+    RM = llvm::Reloc::DynamicNoPIC;
+  }
 
-  TargetMachine *TM = TheTarget->createTargetMachine(Triple, TargetOpts.CPU,
-                                                     FeaturesStr, RM, CM);
-
-  if (CodeGenOpts.RelaxAll)
-    TM->setMCRelaxAll(true);
-
-  // Create the code generator passes.
-  PassManager *PM = getCodeGenPasses();
   CodeGenOpt::Level OptLevel = CodeGenOpt::Default;
-
   switch (CodeGenOpts.OptimizationLevel) {
   default: break;
   case 0: OptLevel = CodeGenOpt::None; break;
   case 3: OptLevel = CodeGenOpt::Aggressive; break;
   }
+
+  llvm::TargetOptions Options;
+
+  // Set frame pointer elimination mode.
+  if (!CodeGenOpts.DisableFPElim) {
+    Options.NoFramePointerElim = false;
+    Options.NoFramePointerElimNonLeaf = false;
+  } else if (CodeGenOpts.OmitLeafFramePointer) {
+    Options.NoFramePointerElim = false;
+    Options.NoFramePointerElimNonLeaf = true;
+  } else {
+    Options.NoFramePointerElim = true;
+    Options.NoFramePointerElimNonLeaf = true;
+  }
+
+  // Set float ABI type.
+  if (CodeGenOpts.FloatABI == "soft" || CodeGenOpts.FloatABI == "softfp")
+    Options.FloatABIType = llvm::FloatABI::Soft;
+  else if (CodeGenOpts.FloatABI == "hard")
+    Options.FloatABIType = llvm::FloatABI::Hard;
+  else {
+    assert(CodeGenOpts.FloatABI.empty() && "Invalid float abi!");
+    Options.FloatABIType = llvm::FloatABI::Default;
+  }
+
+  Options.LessPreciseFPMADOption = CodeGenOpts.LessPreciseFPMAD;
+  Options.NoInfsFPMath = CodeGenOpts.NoInfsFPMath;
+  Options.NoNaNsFPMath = CodeGenOpts.NoNaNsFPMath;
+  Options.NoZerosInBSS = CodeGenOpts.NoZeroInitializedInBSS;
+  Options.UnsafeFPMath = CodeGenOpts.UnsafeFPMath;
+  Options.UseSoftFloat = CodeGenOpts.SoftFloat;
+//  Options.StackAlignmentOverride = CodeGenOpts.StackAlignment;
+//  Options.RealignStack = CodeGenOpts.StackRealignment;
+//  Options.DisableTailCalls = CodeGenOpts.DisableTailCalls;
+//  Options.TrapFuncName = CodeGenOpts.TrapFuncName;
+//  Options.PositionIndependentExecutable = LangOpts.PIELevel != 0;
+
+  TargetMachine *TM = TheTarget->createTargetMachine(Triple, TargetOpts.CPU,
+                                                     FeaturesStr, Options,
+                                                     RM, CM, OptLevel);
+
+  if (CodeGenOpts.RelaxAll)
+    TM->setMCRelaxAll(true);
+//  if (CodeGenOpts.SaveTempLabels)
+//    TM->setMCSaveTempLabels(true);
+//  if (CodeGenOpts.NoDwarf2CFIAsm)
+//    TM->setMCUseCFI(false);
+//  if (!CodeGenOpts.NoDwarfDirectoryAsm)
+//    TM->setMCUseDwarfDirectory(true);
+  if (CodeGenOpts.NoExecStack)
+    TM->setMCNoExecStack(true);
+
+  // Create the code generator passes.
+  PassManager *PM = getCodeGenPasses();
+
+  // Add LibraryInfo.
+  TargetLibraryInfo *TLI = new TargetLibraryInfo();
+  if (!CodeGenOpts.SimplifyLibCalls)
+    TLI->disableAllFunctions();
+  PM->add(TLI);
 
   // Normal mode, emit a .s or .o file by running the code generator. Note,
   // this also adds codegenerator level optimization passes.
@@ -290,9 +367,10 @@ bool EmitAssemblyHelper::AddEmitPasses(BackendAction Action,
     CGFT = TargetMachine::CGFT_Null;
   else
     assert(Action == Backend_EmitAssembly && "Invalid action!");
-  if (TM->addPassesToEmitFile(*PM, OS, CGFT, OptLevel,
+
+  if (TM->addPassesToEmitFile(*PM, OS, CGFT,
                               /*DisableVerify=*/!CodeGenOpts.VerifyModule)) {
-    Diags.Report(diag::err_fe_unable_to_interface_with_target);
+//    Diags.Report(diag::err_fe_unable_to_interface_with_target);
     return false;
   }
 
@@ -323,6 +401,9 @@ void EmitAssemblyHelper::EmitAssembly(BackendAction Action, raw_ostream *OS) {
       return;
   }
 
+  // Before executing passes, print the final values of the LLVM options.
+  cl::PrintOptionValues();
+
   // Run passes. For now we do all passes at once, but eventually we
   // would like to have the option of streaming code generation.
 
@@ -348,10 +429,13 @@ void EmitAssemblyHelper::EmitAssembly(BackendAction Action, raw_ostream *OS) {
   }
 }
 
-void mlang::EmitBackendOutput(Diagnostic &Diags, const CodeGenOptions &CGOpts,
-                              const TargetOptions &TOpts, Module *M,
+void mlang::EmitBackendOutput(DiagnosticsEngine &Diags,
+                              const CodeGenOptions &CGOpts,
+                              const mlang::TargetOptions &TOpts,
+                              const LangOptions &LOpts,
+                              Module *M,
                               BackendAction Action, raw_ostream *OS) {
-  EmitAssemblyHelper AsmHelper(Diags, CGOpts, TOpts, M);
+  EmitAssemblyHelper AsmHelper(Diags, CGOpts, TOpts, LOpts, M);
 
   AsmHelper.EmitAssembly(Action, OS);
 }

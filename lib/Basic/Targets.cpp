@@ -1234,8 +1234,8 @@ TargetInfo *TargetInfo::CreateTargetInfo(DiagnosticsEngine &Diags,
   }
 
   // Set the target C++ ABI.
-  if (!Opts.CXXABI.empty() && !Target->setCXXABI(Opts.CXXABI)) {
-    Diags.Report(diag::err_target_unknown_cxxabi) << Opts.CXXABI;
+  if (!Opts.GmatABI.empty() && !Target->setCXXABI(Opts.GmatABI)) {
+    Diags.Report(diag::err_target_unknown_cxxabi) << Opts.GmatABI;
     return 0;
   }
 

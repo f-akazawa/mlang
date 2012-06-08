@@ -45,7 +45,7 @@ namespace driver {
 class Driver {
   OptTable *Opts;
 
-  Diagnostic &Diags;
+  DiagnosticsEngine &Diags;
 
 public:
   // Diag - Forwarding function for diagnostics.
@@ -177,7 +177,7 @@ public:
          llvm::StringRef _DefaultHostTriple,
          llvm::StringRef _DefaultImageName,
          bool IsProduction, bool CXXIsProduction,
-         Diagnostic &_Diags);
+         DiagnosticsEngine &_Diags);
   ~Driver();
 
   /// @name Accessors
@@ -189,7 +189,7 @@ public:
 
   const OptTable &getOpts() const { return *Opts; }
 
-  const Diagnostic &getDiags() const { return Diags; }
+  const DiagnosticsEngine &getDiags() const { return Diags; }
 
   bool getCheckInputsExist() const { return CheckInputsExist; }
 

@@ -17,6 +17,7 @@
 
 #include "mlang/Basic/LangOptions.h"
 #include "mlang/Basic/TargetInfo.h"
+#include "mlang/Basic/TargetOptions.h"
 #include "mlang/Basic/FileSystemOptions.h"
 // #include "mlang/Frontend/AnalyzerOptions.h"
 #include "mlang/Frontend/CodeGenOptions.h"
@@ -38,7 +39,7 @@ namespace llvm {
 }
 
 namespace mlang {
-class Diagnostic;
+class DiagnosticsEngine;
 
 /// CompilerInvocation - Helper class for holding the data necessary to invoke
 /// the compiler.
@@ -96,7 +97,7 @@ public:
   static void CreateFromArgs(CompilerInvocation &Res,
                              const char* const *ArgBegin,
                              const char* const *ArgEnd,
-                             Diagnostic &Diags);
+                             DiagnosticsEngine &Diags);
 
   /// GetBuiltinIncludePath - Get the directory where the compiler headers
   /// reside, relative to the compiler binary (found by the passed in

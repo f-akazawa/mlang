@@ -16,8 +16,8 @@ let Component = "Common" in {
 // Basic.
 
 def fatal_too_many_errors
-  : Error<"too many errors emitted, stopping now">, DefaultFatal; 
-
+  : Error<"too many errors emitted, stopping now">, DefaultFatal;
+def note_declared_at : Note<"declared here">;
 def note_previous_definition : Note<"previous definition is here">;
 def note_previous_declaration : Note<"previous declaration is here">;
 def note_previous_implicit_declaration : Note<
@@ -87,4 +87,6 @@ def err_file_modified : Error<
   "file '%0' modified since it was first processed">, DefaultFatal;
 def err_unsupported_bom : Error<"%0 byte order mark detected in '%1', but "
   "encoding is not supported">, DefaultFatal;
+def err_unable_to_rename_temp : Error<
+  "unable to rename temporary '%0' to output file '%1': '%2'">;
 }

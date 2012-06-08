@@ -91,10 +91,10 @@ class Parser {
   unsigned short ParenCount, BracketCount, BraceCount;
 
   /// Actions - These are the callbacks we invoke as we parse various constructs
-  /// in the file. 
+  /// in the file.
   Sema &Actions;
 
-  Diagnostic &Diags;
+  DiagnosticsEngine &Diags;
 
   /// ScopeCache - Cache scopes to reduce malloc traffic.
   enum { ScopeCacheSize = 16 };

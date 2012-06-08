@@ -23,7 +23,7 @@ namespace mlang {
 class DiagnosticOptions;
 class LangOptions;
 
-class TextDiagnosticPrinter : public DiagnosticClient {
+class TextDiagnosticPrinter : public DiagnosticConsumer {
   llvm::raw_ostream &OS;
   const LangOptions *LangOpts;
   const DiagnosticOptions *DiagOpts;
@@ -67,13 +67,14 @@ public:
                            const SourceManager &SM,
                            const FixItHint *Hints,
                            unsigned NumHints,
-                           unsigned Columns,  
+                           unsigned Columns,
                            unsigned OnMacroInst,
                            unsigned MacroSkipStart,
                            unsigned MacroSkipEnd);
 
-  virtual void HandleDiagnostic(Diagnostic::Level DiagLevel,
-                                const DiagnosticInfo &Info);
+  virtual void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel,
+                                const Diagnostic &Info);
+  DiagnosticConsumer *clone(DiagnosticsEngine &Diags) const;
 };
 
 } // end namespace mlang
